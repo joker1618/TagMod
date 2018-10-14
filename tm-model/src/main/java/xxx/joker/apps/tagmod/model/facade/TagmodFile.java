@@ -1,6 +1,5 @@
 package xxx.joker.apps.tagmod.model.facade;
 
-import it.sauronsoftware.jave.EncoderException;
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.beans.TmSignature;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
@@ -43,7 +42,7 @@ public class TagmodFile {
 
 	private LocalDateTime tagTime;
 
-	public TagmodFile(Path mp3FilePath) throws IOException, EncoderException {
+	public TagmodFile(Path mp3FilePath) throws IOException {
 		this.mp3File = MP3FileFactory.parse(mp3FilePath);
 		this.textInfoAttrs = new TreeMap<>(Comparator.comparing(MP3Attribute::getPosition));
 		this.pictures = new ArrayList<>();
