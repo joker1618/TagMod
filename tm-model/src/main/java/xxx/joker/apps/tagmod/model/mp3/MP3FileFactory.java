@@ -1,6 +1,5 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
-import it.sauronsoftware.jave.EncoderException;
 import xxx.joker.apps.tagmod.model.beans.FPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
@@ -30,7 +29,7 @@ public class MP3FileFactory {
 		try (RandomAccessFile raf = new RandomAccessFile(filePath.toFile(), "r")) {
 			MP3FileImpl mp3File = parseMP3File(raf);
 			mp3File.setFilePath(filePath);
-			JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeAudio(filePath);
+			JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
 			mp3File.setAudioInfo(audioInfo);
 			return mp3File;
 		}
