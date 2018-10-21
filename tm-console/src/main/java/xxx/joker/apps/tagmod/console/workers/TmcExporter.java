@@ -15,7 +15,7 @@ import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public class TmcExporter {
 
-	public static List<Path> exportPictures(TagmodFile tmFile) throws IOException {
+	public static List<Path> exportPictures(TagmodFile tmFile) {
 
 		List<Picture> pics = new ArrayList<>(tmFile.getPictures());
 		if(tmFile.getCover() != null) {
@@ -36,7 +36,7 @@ public class TmcExporter {
 		return plist;
 	}
 
-	public static List<Path> exportLyrics(TagmodFile tmFile) throws IOException {
+	public static List<Path> exportLyrics(TagmodFile tmFile) {
 		List<Lyrics> lyricsList = new ArrayList<>(tmFile.getOtherLyrics());
 		if(tmFile.getLyrics() != null) {
 			lyricsList.add(0, tmFile.getLyrics());
@@ -55,6 +55,7 @@ public class TmcExporter {
 
 		return plist;
 	}
+
 	private static Path getLyricsPath(Path tmFilePath, Lyrics lyrics, String suffix) {
 		String lyricsName = strf("%s.%s.%s%s.lyrics",
 			JkFiles.getFileName(tmFilePath),

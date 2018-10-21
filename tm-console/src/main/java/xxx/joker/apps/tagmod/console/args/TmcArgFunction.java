@@ -7,6 +7,7 @@ import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
+import xxx.joker.apps.tagmod.util.TmFormat;
 import xxx.joker.libs.javalibs.utils.*;
 
 import java.io.IOException;
@@ -31,15 +32,10 @@ class TmcArgFunction {
 				if(Files.isRegularFile(p)) {
 					finalList.add(p);
 				} else if(Files.isDirectory(p)) {
-					try {
-						finalList.addAll(JkFiles.findFiles(p, true, Files::isRegularFile, p1 -> StringUtils.endsWithIgnoreCase(p1.toString(), ".mp3")));
-					} catch (IOException e) {
-						throw new RuntimeException(strf("Error finding MP3 files in '%s'", p), e);
-					}
+					finalList.addAll(JkFiles.findFiles(p, true, TmFormat::isMP3File));
 				}
 			}
-			Collections.sort(finalList);
-			return JkStreams.distinct(finalList).toArray(new Path[0]);
+			return JkStreams.distinctSorted(finalList).toArray(new Path[0]);
 		};
 	}
 
@@ -51,7 +47,7 @@ class TmcArgFunction {
 
 			Path[] paths = (Path[]) objArr;
 			for(Path path : paths) {
-				if(!Files.isRegularFile(path) || !StringUtils.endsWithIgnoreCase(path.toString(), ".mp3")) {
+				if(!TmFormat.isMP3File(path)) {
 					return strf("File '%s' is not an MP3 file", path);
 				}
 			}

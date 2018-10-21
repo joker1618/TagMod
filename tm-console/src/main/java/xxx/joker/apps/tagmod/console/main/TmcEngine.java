@@ -1,4 +1,4 @@
-package xxx.joker.apps.tagmod.console;
+package xxx.joker.apps.tagmod.console.main;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
@@ -55,18 +55,16 @@ public class TmcEngine {
 			case CMD_INFO:
 				manageInfo(inputArgs);
 				break;
+			case CMD_CONFIG:
+				manageConfig();
+				break;
 			case CMD_EXPORT:
 				manageExport(inputArgs);
-				break;
-			case CMD_CONFIG:
-				manageConfig(inputArgs);
-				break;
-			case CMD_DISTINCT:
-				manageDistinct(inputArgs);
 				break;
             case CMD_EDIT:
 				manageEdit(inputArgs);
 				break;
+
 			case CMD_HELP:
 				manageHelp();
 				break;
@@ -106,8 +104,8 @@ public class TmcEngine {
 		String[] sarr = new String[2];
 		for(int i = 0; i < 2; i++) {
 			String fn = diff[i].getMp3File().getFilePath().toString();
-			if(fn.length() > TmcConfig.getMaxFilenameWidth()-7) {
-				String tmp = "..." + StringUtils.substring(fn, fn.length() - (TmcConfig.getMaxFilenameWidth()-10));
+			if(fn.length() > TmcConfig.getMaxHalfDisplayWidth()-7) {
+				String tmp = "..." + StringUtils.substring(fn, fn.length() - (TmcConfig.getMaxHalfDisplayWidth()-10));
 				fn = tmp;
 			}
 			sarr[i] = "File:  " + fn;
@@ -126,39 +124,8 @@ public class TmcEngine {
 		display(outb.toString(colSep, "  |  ", false));
 	}
 
-	private static void manageConfig(TmcArgs inputArgs) {
-		if(inputArgs.isShow()) {
-			display("TAGMOD CONFIGURATIONS\n\n%s", TmcConfig.toStringConfigurations());
-
-		} else {
-			for(String str : inputArgs.getEdit()) {
-				String[] split = JkStrings.splitAllFields(str, "=", true);
-				TmcConfig.setProperty(split[0], split[1]);
-				display("Property '%s' set to '%s'", split[0].toUpperCase(), split[1]);
-			}
-		}
-	}
-
-	private static void manageDistinct(TmcArgs inputArgs) {
-		if(inputArgs.isCover()) {
-			Map<Path,String> md5Map = new HashMap<>();
-			for(Path coverPath : inputArgs.getDistinctCoverPaths()) {
-				try {
-					String md5 = JkEncryption.getMD5(coverPath);
-					if(!md5Map.values().contains(md5)) {
-						md5Map.put(coverPath, md5);
-					} else {
-						Files.deleteIfExists(coverPath);
-						display("Deleted duplicated picture '%s'", coverPath);
-					}
-				} catch (Exception e) {
-					display("Error working on cover file '%s'", coverPath);
-				}
-			}
-
-			display("Distinct covers:");
-			md5Map.keySet().forEach(p -> display("  - " + p.toString()));
-		}
+	private static void manageConfig() {
+        display("TAGMOD CONFIGURATIONS\n\n%s", TmcConfig.toStringConfigurations());
 	}
 
 	private static void manageExport(TmcArgs inputArgs) {
@@ -180,7 +147,6 @@ public class TmcEngine {
                 logger.error("Error exporting from " + tmFilePath, ex);
             }
         }
-
 	}
 
 	private static void manageInfo(TmcArgs inputArgs) {
@@ -191,64 +157,63 @@ public class TmcEngine {
 	}
 
 	private static void manageEdit(TmcArgs args) {
-        TxtEncoding enc = args.getEncoding() != null ? args.getEncoding() : TmcConfig.getDefaultOutputEncoding();
-        Integer version = args.getVersion() != null ? args.getVersion() : TmcConfig.getDefaultOutputVersion();
-        boolean unsynch = false;
-        int padding = TmcConfig.getDefaultOutputPadding();
-        boolean sign = args.isSign() || (!args.isNoSign() && TmcConfig.isDefaultOutputSign());
-        LocalDateTime signTime = sign ? LocalDateTime.now() : null;
-
-        for(TagmodFile tmFile : args.getTagmodFiles()) {
-
-            Path fpath = tmFile.getMp3File().getFilePath();
-
-            try {
-                if (args.isClear()) {
-                    tmFile.clearAllAttributes();
-                }
-
-                AutoAttributes autoAttributes = new AutoAttributes(fpath);
-
-                setTextAttrib(tmFile, TITLE, args.getTitle(), autoAttributes);
-                setTextAttrib(tmFile, ARTIST, args.getArtist(), null);
-                setTextAttrib(tmFile, ALBUM, args.getAlbum(), null);
-                setTextAttrib(tmFile, YEAR, args.getYear(), null);
-                setTextAttrib(tmFile, TRACK, args.getTrack(), autoAttributes);
-                setTextAttrib(tmFile, GENRE, args.getGenre(), null);
-                setTextAttrib(tmFile, CD_POS, args.getCdPos(), null);
-
-                if (args.getCover() != null) {
-                    MimeType mt = MimeType.getByExtension(args.getCover());
-                    byte[] picData = JkBytes.getBytes(args.getCover());
-                    Picture cover = new Picture(mt, TagmodConfig.COVER_TYPE, TagmodConfig.COVER_DESCR, picData);
-                    tmFile.setCover(cover);
-                }
-
-                if (args.getLyrics() != null) {
-                    Path lpath;
-                    if (TmcCmd.AUTO_VALUE.equalsIgnoreCase(args.getLyrics())) {
-                        String slyr = autoAttributes.getAutoValue(LYRICS);
-                        lpath = slyr == null ? null : Paths.get(slyr);
-                    } else {
-                        lpath = Paths.get(args.getLyrics());
-                    }
-
-                    if (lpath != null && Files.exists(lpath)) {
-                        String lyrics = JkStreams.join(Files.readAllLines(lpath), "\n");
-                        JkLanguage lan = JkLanguageDetector.detectLanguage(lyrics);
-                        Lyrics l = new Lyrics(lan, TagmodConfig.LYRICS_DESCR, lyrics);
-                        tmFile.setLyrics(l);
-                    }
-                }
-
-                byte[] editBytes = tmFile.toBytes(version, enc, unsynch, padding, signTime);
-                JkFiles.writeFile(fpath, editBytes, true);
-                display("File %s edit complete", fpath);
-
-            } catch (Exception ex) {
-                logger.error("Error editing " + fpath, ex);
-            }
-        }
+//        TxtEncoding enc = args.getEncoding() != null ? args.getEncoding() : TmcConfig.getDefaultOutputEncoding();
+//        Integer version = args.getVersion() != null ? args.getVersion() : TmcConfig.getDefaultOutputVersion();
+//        boolean unsynch = false;
+//        int padding = TmcConfig.getDefaultOutputPadding();
+//        LocalDateTime signTime = sign ? LocalDateTime.now() : null;
+//
+//        for(TagmodFile tmFile : args.getTagmodFiles()) {
+//
+//            Path fpath = tmFile.getMp3File().getFilePath();
+//
+//            try {
+//                if (args.isClear()) {
+//                    tmFile.clearAllAttributes();
+//                }
+//
+//                AutoAttributes autoAttributes = new AutoAttributes(fpath);
+//
+//                setTextAttrib(tmFile, TITLE, args.getTitle(), autoAttributes);
+//                setTextAttrib(tmFile, ARTIST, args.getArtist(), null);
+//                setTextAttrib(tmFile, ALBUM, args.getAlbum(), null);
+//                setTextAttrib(tmFile, YEAR, args.getYear(), null);
+//                setTextAttrib(tmFile, TRACK, args.getTrack(), autoAttributes);
+//                setTextAttrib(tmFile, GENRE, args.getGenre(), null);
+//                setTextAttrib(tmFile, CD_POS, args.getCdPos(), null);
+//
+//                if (args.getCover() != null) {
+//                    MimeType mt = MimeType.getByExtension(args.getCover());
+//                    byte[] picData = JkBytes.getBytes(args.getCover());
+//                    Picture cover = new Picture(mt, TagmodConfig.COVER_TYPE, TagmodConfig.COVER_DESCR, picData);
+//                    tmFile.setCover(cover);
+//                }
+//
+//                if (args.getLyrics() != null) {
+//                    Path lpath;
+//                    if (TmcCmd.AUTO_VALUE.equalsIgnoreCase(args.getLyrics())) {
+//                        String slyr = autoAttributes.getAutoValue(LYRICS);
+//                        lpath = slyr == null ? null : Paths.get(slyr);
+//                    } else {
+//                        lpath = Paths.get(args.getLyrics());
+//                    }
+//
+//                    if (lpath != null && Files.exists(lpath)) {
+//                        String lyrics = JkStreams.join(Files.readAllLines(lpath), "\n");
+//                        JkLanguage lan = JkLanguageDetector.detectLanguage(lyrics);
+//                        Lyrics l = new Lyrics(lan, TagmodConfig.LYRICS_DESCR, lyrics);
+//                        tmFile.setLyrics(l);
+//                    }
+//                }
+//
+//                byte[] editBytes = tmFile.toBytes(version, enc, unsynch, padding, signTime);
+//                JkFiles.writeFile(fpath, editBytes, true);
+//                display("File %s edit complete", fpath);
+//
+//            } catch (Exception ex) {
+//                logger.error("Error editing " + fpath, ex);
+//            }
+//        }
     }
     private static void setTextAttrib(TagmodFile tmFile, MP3Attribute attr, String inputValue, AutoAttributes autoAttributes) {
         if(inputValue != null) {
@@ -264,10 +229,6 @@ public class TmcEngine {
             }
         }
     }
-
-	private static void manageDeleteAttributes(TmcArgs inputArgs) {
-		// todo impl
-	}
 
 	private static void manageHelp() {
 		display("USAGE:\n%s", TmcHelp.HELP);
@@ -308,7 +269,7 @@ public class TmcEngine {
                     String strTrack;
                     try {
                         strTrack = strf("%d/%d", trackNum, getTotTrack());
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         strTrack = strf("%d", trackNum);
                     }
                     autoValues.put(TITLE, strfn.substring(idx+1).trim());
@@ -318,12 +279,12 @@ public class TmcEngine {
 
             try {
                 autoValues.put(LYRICS, getLyricsPath());
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.warn("Error finding lyrics path for {}", mp3Path);
             }
         }
 
-        private int getTotTrack() throws IOException {
+        private int getTotTrack() {
             Path folder = JkFiles.getParent(mp3Path);
             Integer tot = totMap.get(folder);
             if(tot == null) {
@@ -333,7 +294,7 @@ public class TmcEngine {
             return tot;
         }
 
-        private String getLyricsPath() throws IOException {
+        private String getLyricsPath()  {
             Path folder = JkFiles.getParent(mp3Path);
             List<Path> lpaths = lyricsMap.get(folder);
             if(lpaths == null) {

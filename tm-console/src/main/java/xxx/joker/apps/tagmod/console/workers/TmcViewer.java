@@ -10,6 +10,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
+import xxx.joker.libs.javalibs.datetime.JkTime;
 import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
 import xxx.joker.libs.javalibs.format.JkOutputFmt;
 import xxx.joker.libs.javalibs.utils.JkFiles;
@@ -68,6 +69,15 @@ public class TmcViewer {
 		long counter = 0L;
 		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
 
+		outb.addLines(strf("Length;%s", JkTime.of(tmFile.getMp3File().getAudioInfo().getDuration()).toStringElapsed(false)));
+		outb.addLines(strf("Content-Type;%s", tmFile.getMp3File().getAudioInfo().getContentType()));
+		outb.addLines(strf("Version;%s", tmFile.getMp3File().getAudioInfo().getVersionLabel()));
+		outb.addLines(strf("Sample rate;%d", tmFile.getMp3File().getAudioInfo().getSampleRate()));
+
+		outb.insertPrefix(LEFT_PAD_PREFIX);
+		String strDetails = outb.toString(";", COLUMNS_DISTANCE);
+
+		outb = new JkColumnFmtBuilder();
 		long fsize = JkFiles.safeSize(mp3File.getFilePath());
 		outb.addLines(strf("Size;%d;%s", fsize, JkOutputFmt.humanSize(fsize)));
 
@@ -97,7 +107,7 @@ public class TmcViewer {
 
 		outb.insertPrefix(LEFT_PAD_PREFIX);
 		outb.setColumnAlign(TextAlignment.RIGHT, 1, 2);
-		String strDetails = outb.toString(";", COLUMNS_DISTANCE);
+		strDetails += "\n" + outb.toString(";", COLUMNS_DISTANCE);
 
 		return "MAIN DETAILS\n" + strDetails;
 	}

@@ -45,7 +45,7 @@
                 <executions>
                     <execution>
                         <id>create-jar-with-dependencies</id>
-                        <phase>package</phase>
+                        <phase>verify</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
@@ -86,7 +86,7 @@
                             <outputDirectory>${user.home}/JokerApps/tagmod/config</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>src/main/resources/config</directory>
+                                    <directory>../config</directory>
                                     <includes>
                                         <include>tagmod.config</include>
                                     </includes>

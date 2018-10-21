@@ -26,7 +26,7 @@ public class TmSignature {
 
 	private static final String ID3v2_SIGN_DESCRIPTION = "TagMod (J@K3R) tag time";
 
-	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmm");
+	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 
 	private LocalDateTime tagTime;
 
@@ -34,60 +34,60 @@ public class TmSignature {
 		this.tagTime = tagTime;
 	}
 
-	public static LocalDateTime parseSignature(MP3File mp3file) {
-		LocalDateTime tagTimeV2 = getTagTimeV2(mp3file);
-		LocalDateTime tagTimeV1 = getTagTimeV1(mp3file);
-		return tagTimeV2 == null || tagTimeV1 == null ? null : tagTimeV2;
-	}
-	private static LocalDateTime getTagTimeV2(MP3File mp3file) {
-		List<TAGv2> t2list = mp3file.getTAGv2List();
-		if(t2list.size() != 1)		return null;
-
-		List<ID3v2Frame> frameList = t2list.get(0).getFrameList();
-		if(frameList.isEmpty())		return null;
-
-		ID3v2Frame frame = frameList.get(frameList.size() - 1);
-		if(!(frame.getFrameData() instanceof UserTextInfo))	{
-			return null;
-		}
-
-		UserTextInfo userTextInfo = frame.getFrameData();
-		if(!ID3v2_SIGN_DESCRIPTION.equals(userTextInfo.getDescription())) {
-			return null;
-		}
-
-		try {
-			return LocalDateTime.parse(userTextInfo.getInfo(), dtf);
-		} catch (Exception ex) {
-			return null;
-		}
-	}
-	private static LocalDateTime getTagTimeV1(MP3File mp3file) {
-		TAGv1 tag1 = mp3file.getTAGv1();
-		if(tag1 == null)	return null;
-
-		if(!tag1.getComments().startsWith(ID3v1_SIGN_PREFIX))	return null;
-
-		try {
-			String strTagTime = tag1.getComments().replace(ID3v1_SIGN_PREFIX, "").trim();
-			return LocalDateTime.parse(strTagTime, dtf);
-		} catch (Exception ex) {
-			return null;
-		}
-	}
-
-	public UserTextInfo createTAGv2Sign() 	{
-		UserTextInfo userTextInfo = new UserTextInfo();
-		userTextInfo.setDescription(ID3v2_SIGN_DESCRIPTION);
-		userTextInfo.setInfo(dtf.format(tagTime));
-		return userTextInfo;
-	}
-
-	public String createTAGv1Sign() {
-		return strf("%s %s", ID3v1_SIGN_PREFIX, dtf.format(tagTime));
-	}
-
-	public LocalDateTime getTagTime() {
-		return tagTime;
-	}
+//	public static LocalDateTime parseSignature(MP3File mp3file) {
+//		LocalDateTime tagTimeV2 = getTagTimeV2(mp3file);
+//		LocalDateTime tagTimeV1 = getTagTimeV1(mp3file);
+//		return tagTimeV2 == null || tagTimeV1 == null ? null : tagTimeV2;
+//	}
+//	private static LocalDateTime getTagTimeV2(MP3File mp3file) {
+//		List<TAGv2> t2list = mp3file.getTAGv2List();
+//		if(t2list.size() != 1)		return null;
+//
+//		List<ID3v2Frame> frameList = t2list.get(0).getFrameList();
+//		if(frameList.isEmpty())		return null;
+//
+//		ID3v2Frame frame = frameList.get(frameList.size() - 1);
+//		if(!(frame.getFrameData() instanceof UserTextInfo))	{
+//			return null;
+//		}
+//
+//		UserTextInfo userTextInfo = frame.getFrameData();
+//		if(!ID3v2_SIGN_DESCRIPTION.equals(userTextInfo.getDescription())) {
+//			return null;
+//		}
+//
+//		try {
+//			return LocalDateTime.parse(userTextInfo.getInfo(), dtf);
+//		} catch (Exception ex) {
+//			return null;
+//		}
+//	}
+//	private static LocalDateTime getTagTimeV1(MP3File mp3file) {
+//		TAGv1 tag1 = mp3file.getTAGv1();
+//		if(tag1 == null)	return null;
+//
+//		if(!tag1.getComments().startsWith(ID3v1_SIGN_PREFIX))	return null;
+//
+//		try {
+//			String strTagTime = tag1.getComments().replace(ID3v1_SIGN_PREFIX, "").trim();
+//			return LocalDateTime.parse(strTagTime, dtf);
+//		} catch (Exception ex) {
+//			return null;
+//		}
+//	}
+//
+//	public UserTextInfo createTAGv2Sign() 	{
+//		UserTextInfo userTextInfo = new UserTextInfo();
+//		userTextInfo.setDescription(ID3v2_SIGN_DESCRIPTION);
+//		userTextInfo.setInfo(dtf.format(tagTime));
+//		return userTextInfo;
+//	}
+//
+//	public String createTAGv1Sign() {
+//		return strf("%s %s", ID3v1_SIGN_PREFIX, dtf.format(tagTime));
+//	}
+//
+//	public LocalDateTime getTagTime() {
+//		return tagTime;
+//	}
 }

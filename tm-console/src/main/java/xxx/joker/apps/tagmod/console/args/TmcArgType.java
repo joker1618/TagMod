@@ -14,11 +14,9 @@ public enum TmcArgType implements OptionName {
 	@OptName
 	INFO("info"),
 	@OptName
-	EXPORT("export"),
-	@OptName
 	CONFIG("config"),
 	@OptName
-	DISTINCT("distinct"),
+	EXPORT("export"),
 
 	@OptName
 	EDIT("edit"),

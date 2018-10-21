@@ -40,15 +40,12 @@ public class TagmodFile {
 	private Lyrics lyrics;
 	private List<Lyrics> otherLyrics;
 
-	private LocalDateTime tagTime;
-
 	public TagmodFile(Path mp3FilePath) throws IOException {
 		this.mp3File = MP3FileFactory.parse(mp3FilePath);
 		this.textInfoAttrs = new TreeMap<>(Comparator.comparing(MP3Attribute::getPosition));
 		this.pictures = new ArrayList<>();
 		this.otherLyrics = new ArrayList<>();
 		extractMP3Attributes();
-		this.tagTime = TmSignature.parseSignature(mp3File);
 	}
 
 	public void clearAllAttributes() {
@@ -104,11 +101,7 @@ public class TagmodFile {
 		otherLyrics.clear();
 	}
 
-	public LocalDateTime getTagTime() {
-		return tagTime;
-	}
-
-    public byte[] toBytes(int version, TxtEncoding encoding, boolean unsynch, int padding, LocalDateTime signTime) throws IOException {
+    public byte[] toBytes(int version, TxtEncoding encoding, boolean unsynch, int padding) throws IOException {
 		// Frames
 		List<byte[]> fblist = new ArrayList<>();
 
@@ -128,12 +121,6 @@ public class TagmodFile {
 			fblist.add(ID3v2FrameFactory.createFrameBytes(version, FrameName.USLT, encoding, lyr, unsynch))
 		);
 
-		TmSignature sign = null;
-		if(signTime != null) {
-			sign = new TmSignature(signTime);
-			fblist.add(ID3v2FrameFactory.createFrameBytes(version, FrameName.TXXX, encoding, sign.createTAGv2Sign(), unsynch));
-		}
-
 		// TAGv2
 		ByteBuilder bb = new ByteBuilder();
 		bb.add(TAGv2Factory.createTAGv2(version, fblist, unsynch, padding));
@@ -142,19 +129,19 @@ public class TagmodFile {
 		bb.add(JkBytes.getBytes(mp3File.getFilePath(), mp3File.getSongDataFPos().getBegin(), mp3File.getSongDataFPos().getLength()));
 
 		// TAGv1
-		bb.add(createTAGv1(sign).toBytes());
+		bb.add(createTAGv1().toBytes());
 
 		return bb.build();
 	}
 
-	private TAGv1 createTAGv1(TmSignature sign) {
+	private TAGv1 createTAGv1() {
 		TAGv1 tag = new TAGv1Impl();
 		tag.setRevision(1);
 		tag.setTitle(getStringAttr(TITLE));
 		tag.setArtist(getStringAttr(ARTIST));
 		tag.setAlbum(getStringAttr(ALBUM));
 		tag.setYear(getStringAttr(YEAR));
-		tag.setComments(sign == null ? "" : sign.createTAGv1Sign());
+		tag.setComments("");
 		tag.setTrack(getTrackAttr());
 		tag.setGenre(getGenreAttr());
 		return tag;
@@ -213,6 +200,10 @@ public class TagmodFile {
 	}
 	private String getAttributeFromTAGv1(MP3Attribute attribute) {
 		TAGv1 tagv1 = mp3File.getTAGv1();
+		if(tagv1 == null) {
+			return null;
+		}
+
 		switch (attribute) {
 			case TITLE:		return tagv1.getTitle();
 			case ARTIST:	return tagv1.getArtist();

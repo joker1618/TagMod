@@ -56,31 +56,7 @@ public enum TmcCmd implements InputCommand {
 	),
 
 	@Cmd
-	CMD_EXPORT(
-		new CmdParam(new CmdOption(EXPORT)),
-		new CmdParam(new CmdOption(PICTURES), new CmdOption(LYRICS, Boolean.class)),
-		new CmdParam(new CmdOption(FILES,
-			ArgsParse.windowsPathFormat(),
-			TmcArgFunction.expandPaths(),
-			TmcArgFunction.validatePaths())
-		)
-	),
-
-	@Cmd
-	CMD_CONFIG(
-		new CmdParam(new CmdOption(CONFIG)),
-		new CmdParam(new CmdOption(SHOW), new CmdOption(EDIT, TmcArgFunction.validateConfigEdit()))
-	),
-
-	@Cmd
-	CMD_DISTINCT(
-		new CmdParam(new CmdOption(DISTINCT)),
-		new CmdParam(new CmdOption(COVER, Boolean.class)),
-		new CmdParam(new CmdOption(FILES,
-			ArgsParse.windowsPathFormat(),
-			TmcArgFunction.validateDistinctCoverPaths()
-		))
-	),
+	CMD_CONFIG(new CmdParam(new CmdOption(CONFIG))),
 
 	@Cmd
 	CMD_EDIT(
@@ -107,6 +83,17 @@ public enum TmcCmd implements InputCommand {
                 TmcArgFunction.expandPaths(),
                 TmcArgFunction.validatePaths()
 		))
+	),
+
+	@Cmd
+	CMD_EXPORT(
+		new CmdParam(new CmdOption(EXPORT)),
+		new CmdParam(new CmdOption(PICTURES), new CmdOption(LYRICS, Boolean.class)),
+		new CmdParam(new CmdOption(FILES,
+			ArgsParse.windowsPathFormat(),
+			TmcArgFunction.expandPaths(),
+			TmcArgFunction.validatePaths())
+		)
 	),
 
 //	@Cmd

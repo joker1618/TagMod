@@ -28,8 +28,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	private Boolean export = false;
 	@Opt(name = "config", aliases = {"-config"})
 	private Boolean config = false;
-	@Opt(name = "distinct", aliases = {"-distinct"})
-	private Boolean distinct = false;
 	@Opt(name = "edit", aliases = {"-edit"})
 	private String[] edit;
 //	@Opt(name = "set", aliases = {"-set"})
@@ -89,7 +87,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 		return config;
 	}
 	public List<String> getEdit() {
-		return Arrays.asList(edit);
+		return edit == null ? null : Arrays.asList(edit);
 	}
 
 	public List<TagmodFile> getTagmodFiles() {

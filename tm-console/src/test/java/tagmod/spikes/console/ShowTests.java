@@ -1,44 +1,57 @@
 package tagmod.spikes.console;
 
-import org.junit.Before;
 import org.junit.Test;
-import xxx.joker.apps.tagmod.console.TmcEngine;
+import xxx.joker.apps.tagmod.console.main.TmcEngine;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
-import xxx.joker.apps.tagmod.console.common.TmcConfig;
-import xxx.joker.apps.tagmod.console.workers.TmcInfo;
-import xxx.joker.apps.tagmod.console.workers.TmcViewer;
-import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.console.main.TmcMain;
 
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
 public class ShowTests extends CommonTest {
 
     @Test
-    public void showAttributesFile() throws IOException {
-        String[] args = {"show", "files", "C:\\Users\\f.barbano\\Desktop\\finalMusic\\Vasco Rossi\\1989 Liberi liberi\\06 Liberi liberi.mp3"};
-        TmcArgs tmcArgs = super.parseArgs(args);
+    public void show() {
+        doTest("show;files;Metallica");
+    }
+
+    @Test
+    public void describe() {
+        doTest("describe;files;Vasco");
+    }
+
+    @Test
+    public void diff() {
+        doTest("diff;Vasco/1993 Gli spari sopra/01 Lo show.mp3;Vasco/1993 Gli spari sopra/02 Non appari mai.mp3");
+    }
+
+    @Test
+    public void infoPicType() {
+        doTest("info;picType");
+    }
+
+    @Test
+    public void infoGenre() {
+        doTest("info;genre");
+    }
+
+    @Test
+    public void configShow() {
+        doTest("config");
+    }
+
+
+
+
+
+
+
+    private void doTest(String str) {
+        TmcArgs tmcArgs = super.parseArgs(str);
         TmcEngine.execute(tmcArgs);
         display("\n\nEND");
     }
 
-    @Test
-    public void showAttributesFolder() throws IOException {
-        String[] args = {"show", "files", "C:\\Users\\f.barbano\\Desktop\\finalMusic\\Vasco Rossi\\1989 Liberi liberi"};
-        TmcArgs tmcArgs = super.parseArgs(args);
-        TmcEngine.execute(tmcArgs);
-        display("\n\nEND");
-    }
-
-    @Test
-    public void showLyricsFile() throws IOException {
-        String[] args = {"show", "lyrics", "files", "C:\\Users\\f.barbano\\Desktop\\finalMusic\\Vasco Rossi\\1989 Liberi liberi\\06 Liberi liberi.mp3"};
-        TmcArgs tmcArgs = super.parseArgs(args);
-        TmcEngine.execute(tmcArgs);
-        display("\n\nEND");
-    }
 
 }
