@@ -1,6 +1,7 @@
 package tagmod.spikes.console;
 
 import org.junit.Test;
+import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.main.TmcEngine;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.main.TmcMain;
@@ -41,7 +42,10 @@ public class ShowTests extends CommonTest {
         doTest("config");
     }
 
-
+    @Test
+    public void printHelp() {
+        display(TmcHelp.HELP);
+    }
 
 
 

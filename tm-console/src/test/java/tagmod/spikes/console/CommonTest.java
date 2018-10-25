@@ -19,8 +19,8 @@ import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
 public abstract class CommonTest {
 
-    private static final Path PREFIX = Paths.get("C:\\Users\\f.barbano\\IdeaProjects\\APPS\\tagmod\\tagmod-samples");
-    private static final Path configPath = Paths.get("C:\\Users\\f.barbano\\IdeaProjects\\apps\\tagmod\\config\\tagmod.config");
+    protected static final Path TAGMOD_FOLDER = Paths.get(System.getProperty("user.home")).resolve("IdeaProjects\\APPS\\tagmod");
+    private static final Path configPath = TAGMOD_FOLDER.resolve("config\\tagmod.config");
 
     @Before
     public void init() {
@@ -49,7 +49,7 @@ public abstract class CommonTest {
         String[] toRet = new String[elems.length];
         boolean addPrefix = false;
         for(int i = 0; i < elems.length; i++) {
-            toRet[i] = addPrefix ? PREFIX.resolve(elems[i]).toString() : elems[i];
+            toRet[i] = addPrefix ? TAGMOD_FOLDER.resolve("tagmod-samples").resolve(elems[i]).toString() : elems[i];
             addPrefix |= elems[i].equals("files") || elems[i].equals("diff");
         }
         return toRet;
