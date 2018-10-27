@@ -36,9 +36,11 @@ public class EditTests extends CommonTest {
 
     @Test
     public void testOutputFormats() {
-        doTest("test;-of;" +
-                "title;_auto;track;_auto;album;ALBIIIII;genre;87;year;1618;" +
-                "files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of\\04 Toffee.mp3");
+//        doTest("test;-of;" +
+//                "title;_auto;track;_auto;album;ALBIIIII;genre;87;year;1618;" +
+//                "files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of\\04 Toffee.mp3");
+        doTest("edit;album;ALBIIIII;genre;87;year;1618;title;titolo;track;2;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of");
+        doTest("edit;title;titolo;track;2;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of");
     }
 
 

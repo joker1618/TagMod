@@ -206,14 +206,15 @@ public class TmcEngine {
         boolean unsync = args.isUnsynchronized();
         int padding = args.getPadding() == null ? TmcConfig.getDefaultOutputPadding() : args.getPadding();
 
+        int counter = 1;
         List<TagmodFile> tagmodFiles = args.getTagmodFiles();
         for(int i = 0; i < tagmodFiles.size(); i++) {
             TagmodFile tmFile = tagmodFiles.get(i);
             try {
                 editor.editTagmodFile(tmFile, version, encoding, unsync, padding);
-                display("%d/%d\tFile %s modified", i, tagmodFiles.size(), tmFile.getMp3File().getFilePath());
+                display("%d\tFile %s modified", counter++, tmFile.getMp3File().getFilePath());
             } catch (IOException ex) {
-                display("%d/%d\tERROR editing file %s", i, tagmodFiles.size(), tmFile.getMp3File().getFilePath());
+                display("%d\tERROR editing file %s", counter++, tmFile.getMp3File().getFilePath());
                 logger.error("ERROR editing file " + tmFile.getMp3File().getFilePath(), ex);
             }
         }

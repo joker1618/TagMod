@@ -54,7 +54,6 @@ public class TmcHelp {
 //			"DELETE OPTIONS:",
 //			"  [title]  [artist]  [album]   [year]  [track]  [genre]",
 //			"  [cdPos]  [cover]   [lyrics]  [pics]  [otherLyrics]",
-//			"  [-all]",
 			""
 		);
 
