@@ -1,26 +1,25 @@
 package xxx.joker.apps.tagmod.console.args;
 
-import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.console.common.TmcConfig;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.utils.*;
+import xxx.joker.libs.javalibs.utils.JkConverter;
+import xxx.joker.libs.javalibs.utils.JkFiles;
+import xxx.joker.libs.javalibs.utils.JkStreams;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static xxx.joker.apps.tagmod.console.common.TmcConfig.Conf;
-import static xxx.joker.apps.tagmod.console.common.TmcConfig.ConfKey;
 import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 class TmcArgFunction {
@@ -55,55 +54,6 @@ class TmcArgFunction {
 		};
 	}
 
-	static Function<Object[],String> validateConfigEdit() {
-		return objArr -> {
-			if(objArr.length == 0) {
-				return "No properties found";
-			}
-
-			String[] strArr = (String[]) objArr;
-			Map<Boolean, List<String>> map = JkStreams.toMap(Arrays.asList(strArr), s -> s.contains("="));
-			if(map.get(false) != null) {
-				return strf("Wrong input property [%s]", map.get(false).get(0));
-			}
-
-			Map<String, String> inputProps = JkStreams.toMapSingle(map.get(true), l -> JkStrings.splitAllFields(l, "=", true)[0], l -> JkStrings.splitAllFields(l, "=", true)[1]);
-			Map<ConfKey, Conf> allConfig = TmcConfig.getAllProperties();
-			for(Map.Entry<String,String> entry : inputProps.entrySet()) {
-				List<Conf> filtered = JkStreams.filter(allConfig.values(), c -> StringUtils.equalsIgnoreCase(entry.getKey(), c.getConfKey().name()));
-				if(filtered.isEmpty()) {
-					return strf("Property '%s' does not exists", entry.getKey());
-				}
-				if(JkTests.duplicatesPresents(JkStreams.map(filtered, c -> c.getConfKey().name()))) {
-					return strf("Duplicated input properties found");
-				}
-				Conf conf = filtered.get(0);
-				if(!conf.getValueCheck().test(entry.getValue())) {
-					return strf("Wrong value [%s] for property '%s'", entry.getValue(), entry.getKey());
-				}
-			}
-
-			return null;
-		};
-	}
-
-	static Function<Object[],String> validateDistinctCoverPaths() {
-		return objArr -> {
-			if(objArr.length == 0) {
-				return "No cover files found";
-			}
-
-			Path[] parr = (Path[]) objArr;
-			List<Path> wrongs = Arrays.stream(parr).filter(p -> MimeType.getByExtension(p) == null).collect(Collectors.toList());
-			if(!wrongs.isEmpty()) {
-				String extAllowed = Arrays.stream(MimeType.values()).flatMap(mt -> mt.allowedExtensions().stream()).collect(Collectors.joining(", "));
-				return strf("Wrong picture %s. Allowed images: %s", wrongs, extAllowed);
-			}
-
-			return null;
-		};
-	}
-
 	static Function<Object[],String> validateCoverPath() {
 		return objArr -> {
 			if(objArr.length != 1) {
@@ -123,7 +73,8 @@ class TmcArgFunction {
     static final Function<Object[],String> validateYear() {
         return oarr -> {
             String syear = ((String[]) oarr)[0];
-            if(!TmcCmd.AUTO_VALUE.equalsIgnoreCase(syear) && !JkTests.isInteger(syear)) {
+            Integer year = JkConverter.stringToInteger(syear);
+            if(year == null || year < 0) {
                 return strf("Invalid year %s", syear);
             }
             return null;
@@ -161,12 +112,11 @@ class TmcArgFunction {
     static final UnaryOperator<Object[]> fixGenreName() {
         return oarr -> {
             String sgenre = ((String[]) oarr)[0];
-            if(ID3Genre.getByName(sgenre) == null) {
-                String gname = ID3Genre.getByNumber(JkConverter.stringToInteger(sgenre)).getGenreName();
-                return new String[]{gname};
-            } else {
-                return oarr;
+            ID3Genre genre = ID3Genre.getByName(sgenre);
+            if(genre == null) {
+                genre = ID3Genre.getByNumber(JkConverter.stringToInteger(sgenre));
             }
+            return new String[]{genre == null ? sgenre : genre.getGenreName()};
         };
     }
 

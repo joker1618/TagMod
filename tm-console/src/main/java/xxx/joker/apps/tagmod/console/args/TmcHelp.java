@@ -34,7 +34,7 @@ public class TmcHelp {
 			"OUTPUT FORMATS:",
 			"  [enc ENCODING]",
             "  [ver VERSION]",
-            "  [sign|noSign]",
+//            "  [sign|noSign]",
 			"",
 			"EDIT OPTIONS:",
 			"  [clear]",

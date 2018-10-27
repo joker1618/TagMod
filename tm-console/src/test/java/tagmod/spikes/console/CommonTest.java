@@ -1,5 +1,6 @@
 package tagmod.spikes.console;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import xxx.joker.apps.tagmod.console.args.TmcArgType;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
@@ -49,8 +50,16 @@ public abstract class CommonTest {
         String[] toRet = new String[elems.length];
         boolean addPrefix = false;
         for(int i = 0; i < elems.length; i++) {
-            toRet[i] = addPrefix ? TAGMOD_FOLDER.resolve("tagmod-samples").resolve(elems[i]).toString() : elems[i];
-            addPrefix |= elems[i].equals("files") || elems[i].equals("diff");
+            if(addPrefix) {
+                Path p = TAGMOD_FOLDER.resolve("tagmod-samples");
+                if(StringUtils.isNotBlank(elems[i])) {
+                    p = p.resolve(elems[i]);
+                }
+                toRet[i] = p.toString();
+            } else {
+                toRet[i] = elems[i];
+                addPrefix = elems[i].equals("files") || elems[i].equals("diff");
+            }
         }
         return toRet;
     }

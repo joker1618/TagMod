@@ -1,8 +1,8 @@
 package xxx.joker.apps.tagmod.console.common;
 
-import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
+import xxx.joker.libs.javalibs.exception.JkRuntimeException;
 import xxx.joker.libs.javalibs.utils.JkConverter;
 import xxx.joker.libs.javalibs.utils.JkFiles;
 import xxx.joker.libs.javalibs.utils.JkStreams;
@@ -21,7 +21,7 @@ import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public class TmcConfig {
 
-	public enum ConfKey {
+	private enum ConfKey {
 		MAX_HALF_DISPLAY_WIDTH,
 		DEFAULT_OUTPUT_ENCODING,
 		DEFAULT_OUTPUT_VERSION,
@@ -44,11 +44,15 @@ public class TmcConfig {
         try {
             readConfigFile(CONF_PATH);
         } catch (Exception e) {
-            throw new RuntimeException("Error reading configuration file " + CONF_PATH, e);
+            throw new JkRuntimeException(e, "Error reading configuration file %s", CONF_PATH);
         }
     }
 
-	private static void initDefaultValues() {
+    public static Path getConfPath() {
+        return CONF_PATH;
+    }
+
+    private static void initDefaultValues() {
 		confMap.put(ConfKey.MAX_HALF_DISPLAY_WIDTH, new Conf(
 			ConfKey.MAX_HALF_DISPLAY_WIDTH,
 			"Max file path length for 'diff' command",
@@ -105,24 +109,20 @@ public class TmcConfig {
 	public static Integer getDefaultOutputVersion() {
 		return JkConverter.stringToInteger(confMap.get(ConfKey.DEFAULT_OUTPUT_VERSION).value);
 	}
-    public static Integer getDefaultOutputPadding() {
-        return JkConverter.stringToInteger(confMap.get(ConfKey.DEFAULT_OUTPUT_PADDING).value);
+    public static int getDefaultOutputPadding() {
+        return JkConverter.stringToInteger(confMap.get(ConfKey.DEFAULT_OUTPUT_PADDING).value, 0);
     }
 
 	public static String toStringConfigurations() {
 		return JkStreams.join(confMap.values(), "\n\n", c -> strf("###  %s ###\n%s = %s", c.description, c.confKey.name(), c.value));
 	}
 
-	public static Map<ConfKey,Conf> getAllProperties() {
-		return confMap;
-	}
-
-	public static void persistConfigurations() {
+	private static void persistConfigurations() {
 		List<String> lines = JkStreams.map(confMap.values(), conf -> strf("%s=%s", conf.confKey.name(), conf.value));
 		JkFiles.writeFile(CONF_PATH, lines, true);
 	}
 
-	public static class Conf {
+	private static class Conf {
 		private ConfKey confKey;
 		private String description;
 		private String value;

@@ -4,37 +4,22 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import xxx.joker.apps.tagmod.common.TagmodConfig;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
-import xxx.joker.apps.tagmod.console.args.TmcCmd;
 import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.common.TmcConfig;
 import xxx.joker.apps.tagmod.console.workers.TmcExporter;
 import xxx.joker.apps.tagmod.console.workers.TmcInfo;
 import xxx.joker.apps.tagmod.console.workers.TmcViewer;
-import xxx.joker.apps.tagmod.model.facade.TagmodFile;
-import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
-import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
-import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
-import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
-import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
-import xxx.joker.apps.tagmod.util.TmFormat;
+import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
 import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.language.JkLanguage;
-import xxx.joker.libs.javalibs.language.JkLanguageDetector;
-import xxx.joker.libs.javalibs.utils.*;
+import xxx.joker.libs.javalibs.utils.JkFiles;
+import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.javalibs.utils.JkStrings;
 
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static xxx.joker.apps.tagmod.model.mp3.MP3Attribute.*;
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
@@ -113,7 +98,8 @@ public class TmcEngine {
 
 		List<Pair<String, String>> pairs = new ArrayList<>();
 		pairs.add(Pair.of(sarr[0], sarr[1]));
-		pairs.add(Pair.of(TmcViewer.toStringMainDetails(diff[0]), TmcViewer.toStringMainDetails(diff[1])));
+		pairs.add(Pair.of(TmcViewer.toStringAudioDetails(diff[0]), TmcViewer.toStringAudioDetails(diff[1])));
+		pairs.add(Pair.of(TmcViewer.toStringSizeDetails(diff[0]), TmcViewer.toStringSizeDetails(diff[1])));
 		pairs.add(Pair.of(TmcViewer.toStringMP3Attributes(diff[0]), TmcViewer.toStringMP3Attributes(diff[1])));
 		pairs.add(Pair.of(TmcViewer.toStringTAGv2(diff[0]), TmcViewer.toStringTAGv2(diff[1])));
 		pairs.add(Pair.of(TmcViewer.toStringTAGv1(diff[0]), TmcViewer.toStringTAGv1(diff[1])));
@@ -125,7 +111,7 @@ public class TmcEngine {
 	}
 
 	private static void manageConfig() {
-        display("TAGMOD CONFIGURATIONS\n\n%s", TmcConfig.toStringConfigurations());
+        display("TAGMOD CONFIGURATIONS  (%s)\n\n%s", TmcConfig.getConfPath().toAbsolutePath().normalize(), TmcConfig.toStringConfigurations());
 	}
 
 	private static void manageExport(TmcArgs inputArgs) {
@@ -184,7 +170,7 @@ public class TmcEngine {
 //
 //                if (args.getCover() != null) {
 //                    MimeType mt = MimeType.getByExtension(args.getCover());
-//                    byte[] picData = JkBytes.getBytes(args.getCover());
+//                    byte[] picData = JkBytes.buildBytes(args.getCover());
 //                    Picture cover = new Picture(mt, TagmodConfig.COVER_TYPE, TagmodConfig.COVER_DESCR, picData);
 //                    tmFile.setCover(cover);
 //                }
@@ -215,20 +201,20 @@ public class TmcEngine {
 //            }
 //        }
     }
-    private static void setTextAttrib(TagmodFile tmFile, MP3Attribute attr, String inputValue, AutoAttributes autoAttributes) {
-        if(inputValue != null) {
-            String value;
-            if(autoAttributes == null || !TmcCmd.AUTO_VALUE.equalsIgnoreCase(inputValue)) {
-                value = inputValue;
-            } else {
-                value = autoAttributes.getAutoValue(attr);
-            }
-
-            if(value != null) {
-                tmFile.setTextInfoAttribute(attr, value);
-            }
-        }
-    }
+//    private static void setTextAttrib(TagmodFile tmFile, MP3Attribute attr, String inputValue, AutoAttributes autoAttributes) {
+//        if(inputValue != null) {
+//            String value;
+//            if(autoAttributes == null || !TmcCmd.AUTO_VALUE.equalsIgnoreCase(inputValue)) {
+//                value = inputValue;
+//            } else {
+//                value = autoAttributes.getAutoValue(attr);
+//            }
+//
+//            if(value != null) {
+//                tmFile.setTextInfoAttribute(attr, value);
+//            }
+//        }
+//    }
 
 	private static void manageHelp() {
 		display("USAGE:\n%s", TmcHelp.HELP);
@@ -238,87 +224,87 @@ public class TmcEngine {
 		return strf("\n%s\n", StringUtils.repeat("-", length));
 	}
 
-	private static class AutoAttributes {
-	    private static final Logger logger = LoggerFactory.getLogger(AutoAttributes.class);
-
-	    static Map<Path,Integer> totMap = new HashMap<>();
-	    static Map<Path,List<Path>> lyricsMap = new HashMap<>();
-
-	    final Path mp3Path;
-	    Map<MP3Attribute,String> autoValues;
-
-        public AutoAttributes(Path mp3Path) {
-            this.mp3Path = mp3Path;
-        }
-
-        private void init() {
-            autoValues = new HashMap<>();
-            autoValues.put(TITLE, null);
-            autoValues.put(TRACK, null);
-            autoValues.put(LYRICS, null);
-
-            String strfn = JkFiles.getFileName(mp3Path);
-            int idx = strfn.indexOf(' ');
-            if(idx == -1) {
-                autoValues.put(TITLE, strfn);
-            } else {
-                Integer trackNum = JkConverter.stringToInteger(strfn.substring(0, idx));
-                if(trackNum == null) {
-                    autoValues.put(TITLE, strfn);
-                } else {
-                    String strTrack;
-                    try {
-                        strTrack = strf("%d/%d", trackNum, getTotTrack());
-                    } catch (Exception e) {
-                        strTrack = strf("%d", trackNum);
-                    }
-                    autoValues.put(TITLE, strfn.substring(idx+1).trim());
-                    autoValues.put(TRACK, strTrack);
-                }
-            }
-
-            try {
-                autoValues.put(LYRICS, getLyricsPath());
-            } catch (Exception e) {
-                logger.warn("Error finding lyrics path for {}", mp3Path);
-            }
-        }
-
-        private int getTotTrack() {
-            Path folder = JkFiles.getParent(mp3Path);
-            Integer tot = totMap.get(folder);
-            if(tot == null) {
-                tot = JkFiles.findFiles(folder, false, TmFormat::isMP3File).size();
-                totMap.put(folder, tot);
-            }
-            return tot;
-        }
-
-        private String getLyricsPath()  {
-            Path folder = JkFiles.getParent(mp3Path);
-            List<Path> lpaths = lyricsMap.get(folder);
-            if(lpaths == null) {
-                lpaths = JkFiles.findFiles(folder, false, TmFormat::isMP3Lyrics);
-                lyricsMap.put(folder, lpaths);
-            }
-
-            String strMp3Path = mp3Path.getFileName().toString();
-            for(Path p : lpaths) {
-                String lfn = JkFiles.getFileName(p);
-                if(StringUtils.startsWithIgnoreCase(strMp3Path, lfn)) {
-                    return p.toString();
-                }
-            }
-
-            return null;
-        }
-
-        public String getAutoValue(MP3Attribute attr) {
-            if(autoValues == null) {
-                init();
-            }
-
-            return autoValues.get(attr);
-        }
-    }
+//	private static class AutoAttributes {
+//	    private static final Logger logger = LoggerFactory.getLogger(AutoAttributes.class);
+//
+//	    static Map<Path,Integer> totMap = new HashMap<>();
+//	    static Map<Path,List<Path>> lyricsMap = new HashMap<>();
+//
+//	    final Path mp3Path;
+//	    Map<MP3Attribute,String> autoValues;
+//
+//        public AutoAttributes(Path mp3Path) {
+//            this.mp3Path = mp3Path;
+//        }
+//
+//        private void init() {
+//            autoValues = new HashMap<>();
+//            autoValues.put(TITLE, null);
+//            autoValues.put(TRACK, null);
+//            autoValues.put(LYRICS, null);
+//
+//            String strfn = JkFiles.getFileName(mp3Path);
+//            int idx = strfn.indexOf(' ');
+//            if(idx == -1) {
+//                autoValues.put(TITLE, strfn);
+//            } else {
+//                Integer trackNum = JkConverter.stringToInteger(strfn.substring(0, idx));
+//                if(trackNum == null) {
+//                    autoValues.put(TITLE, strfn);
+//                } else {
+//                    String strTrack;
+//                    try {
+//                        strTrack = strf("%d/%d", trackNum, getTotTrack());
+//                    } catch (Exception e) {
+//                        strTrack = strf("%d", trackNum);
+//                    }
+//                    autoValues.put(TITLE, strfn.substring(idx+1).trim());
+//                    autoValues.put(TRACK, strTrack);
+//                }
+//            }
+//
+//            try {
+//                autoValues.put(LYRICS, getLyricsPath());
+//            } catch (Exception e) {
+//                logger.warn("Error finding lyrics path for {}", mp3Path);
+//            }
+//        }
+//
+//        private int getTotTrack() {
+//            Path folder = JkFiles.getParent(mp3Path);
+//            Integer tot = totMap.get(folder);
+//            if(tot == null) {
+//                tot = JkFiles.findFiles(folder, false, TmFormat::isMP3File).size();
+//                totMap.put(folder, tot);
+//            }
+//            return tot;
+//        }
+//
+//        private String getLyricsPath()  {
+//            Path folder = JkFiles.getParent(mp3Path);
+//            List<Path> lpaths = lyricsMap.get(folder);
+//            if(lpaths == null) {
+//                lpaths = JkFiles.findFiles(folder, false, TmFormat::isMP3Lyrics);
+//                lyricsMap.put(folder, lpaths);
+//            }
+//
+//            String strMp3Path = mp3Path.getFileName().toString();
+//            for(Path p : lpaths) {
+//                String lfn = JkFiles.getFileName(p);
+//                if(StringUtils.startsWithIgnoreCase(strMp3Path, lfn)) {
+//                    return p.toString();
+//                }
+//            }
+//
+//            return null;
+//        }
+//
+//        public String getAutoValue(MP3Attribute attr) {
+//            if(autoValues == null) {
+//                init();
+//            }
+//
+//            return autoValues.get(attr);
+//        }
+//    }
 }

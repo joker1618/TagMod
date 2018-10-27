@@ -112,7 +112,7 @@ public class TAGv1Impl implements TAGv1 {
 		bb.add(artist, 30);
 		bb.add(album, 30);
 		bb.add(year, 4);
-		if (track > 0) {
+		if (revision == 1) {
 			bb.add(String.format("%-28s", comments), 28);
 			bb.add(0x00);
 			bb.add(track);

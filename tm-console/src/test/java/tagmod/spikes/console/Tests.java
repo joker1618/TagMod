@@ -1,26 +1,19 @@
 package tagmod.spikes.console;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.Test;
-import xxx.joker.apps.tagmod.console.workers.TmcViewer;
-import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.libs.javalibs.datetime.JkTime;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.nio.file.attribute.PosixFileAttributes;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
@@ -28,20 +21,15 @@ public class Tests extends CommonTest {
 
 	@Test
 	public void test() throws IOException {
-//		Path path = Paths.get("C:\\Users\\f.barbano\\Desktop\\finalMusic\\Vasco Rossi\\1989 Liberi liberi\\02 Ormai è tardi.mp3");
-		Path path = Paths.get("C:\\Users\\f.barbano\\Desktop\\finalMusic\\Vasco Rossi\\1989 Liberi liberi\\04 Vivere senza te.mp3");
-		TagmodFile tmfile = new TagmodFile(path);
+	    int num = 10;
+	    Integer objNum = 11;
+        display("%s", num == objNum);
+	    objNum = 10;
+        display("%s", num == objNum);
+	    objNum = null;
+        display("%s", num == objNum);
 
-		display(path.toAbsolutePath().toString());
-//		display("\n\n\n");
-		display(TmcViewer.toStringMP3Attributes(tmfile));
-//		display("\n\n\n");
-//		display(TmcViewer.toStringMainDetails(tmfile));
-//		display("\n\n\n");
-//		display(JkStreams.join(TmcViewer.toStringLyrics(tmfile), "\n-----------------------------------------\n"));
-//		display("\n\n\n");
-//		tmfile.getMp3File().getTAGv2List().forEach(tag -> display(TmcViewer.toStringTAGv2(tag)));
-//		display("\n\n\n");
+
 //		display(TmcViewer.toStringTAGv1(tmfile.getMp3File().getTAGv1()));
 	}
 	@Test

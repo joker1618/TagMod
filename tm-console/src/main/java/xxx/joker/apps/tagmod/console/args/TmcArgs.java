@@ -1,7 +1,7 @@
 package xxx.joker.apps.tagmod.console.args;
 
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.libs.argsparser.design.annotation.Opt;
 import xxx.joker.libs.argsparser.design.classType.InputOption;
@@ -93,7 +93,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	public List<TagmodFile> getTagmodFiles() {
 		return toTagmodFiles(paths);
 	}
-	public List<Path> getDistinctCoverPaths() {
+	public List<Path> getFilePaths() {
 		return new ArrayList<>(Arrays.asList(paths));
 	}
 

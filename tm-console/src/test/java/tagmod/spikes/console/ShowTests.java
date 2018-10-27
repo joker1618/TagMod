@@ -1,12 +1,9 @@
 package tagmod.spikes.console;
 
 import org.junit.Test;
+import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.main.TmcEngine;
-import xxx.joker.apps.tagmod.console.args.TmcArgs;
-import xxx.joker.apps.tagmod.console.main.TmcMain;
-
-import java.io.IOException;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
@@ -14,7 +11,7 @@ public class ShowTests extends CommonTest {
 
     @Test
     public void show() {
-        doTest("show;files;Metallica");
+        doTest("show;files;");
     }
 
     @Test

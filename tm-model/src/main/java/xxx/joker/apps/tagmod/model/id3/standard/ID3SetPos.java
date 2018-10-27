@@ -9,13 +9,14 @@ import xxx.joker.libs.javalibs.utils.JkStrings;
 public class ID3SetPos {
 
 	private int index;
-	private int total;
+	private Integer total;
 
 	public ID3SetPos(int index) {
-		this(index, -1);
+        this.index = index;
+        this.total = null;
 	}
 
-    public ID3SetPos(int index, int total) {
+    public ID3SetPos(int index, Integer total) {
         this.index = index;
         this.total = total;
     }
@@ -23,11 +24,14 @@ public class ID3SetPos {
     public int getIndex() {
 		return index;
 	}
-	public int getTotal() {
+	public Integer getTotal() {
 		return total;
 	}
+    public void setTotal(Integer total) {
+        this.total = total;
+    }
 
-	public static ID3SetPos parse(String str) {
+    public static ID3SetPos parse(String str) {
 		String[] split = JkStrings.splitAllFields(str, "/");
 		if(split.length != 1 && split.length != 2) 		return null;
 
@@ -39,4 +43,9 @@ public class ID3SetPos {
 		Integer tot = JkConverter.stringToInteger(split[1]);
 		return tot == null ? null : new ID3SetPos(num, tot);
 	}
+
+	@Override
+	public String toString() {
+	    return index + (total == null ? "" : "/" + total);
+    }
 }

@@ -4,7 +4,6 @@ package xxx.joker.apps.tagmod.model.id3v2;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
 import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2FrameFactory;
-import xxx.joker.apps.tagmod.util.ByteBuilder;
 import xxx.joker.apps.tagmod.util.BytesScanner;
 import xxx.joker.apps.tagmod.util.TmFormat;
 import xxx.joker.libs.javalibs.utils.JkBytes;
@@ -50,35 +49,6 @@ public class TAGv2Factory {
 
 		return tag;
 	}
-
-	public static byte[] createTAGv2(int version, List<byte[]> frameByteList, boolean unsynch, int padding) {
-		ByteBuilder bb = new ByteBuilder();
-
-		// Add frames bytes
-		frameByteList.forEach(bb::add);
-
-		// Add padding
-		if(padding > 0) {
-			bb.addZeroBytes(padding);
-		}
-
-		// Create header bytes
-		byte[] headerBytes = createTAGv2Header(version, 0, bb.length(), unsynch);
-		bb.insertFirst(headerBytes);
-
-		return bb.build();
-	}
-
-	private static byte[] createTAGv2Header(int version, int revision, int size, boolean unsynch) {
-		ByteBuilder bb = new ByteBuilder();
-		bb.add(ID3Specs.ID3v2_HEADER_HEADING);
-		bb.add(version);
-		bb.add(revision);
-		bb.add(unsynch ? JkBytes.setBit(7) : 0x00);
-		bb.add(TmFormat.numberTo32BitSynchsafe(size));
-		return bb.build();
-	}
-
 
 	private static void parseTAGv2(TAGv2Impl tag, BytesScanner scanner) {
 		// Parse ID3v2 extended header

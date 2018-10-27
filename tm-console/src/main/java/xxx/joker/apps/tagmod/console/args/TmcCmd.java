@@ -1,7 +1,5 @@
 package xxx.joker.apps.tagmod.console.args;
 
-import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
-import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.libs.argsparser.design.annotation.Cmd;
 import xxx.joker.libs.argsparser.design.classType.InputCommand;
 import xxx.joker.libs.argsparser.functions.ArgsCheck;
@@ -12,10 +10,8 @@ import xxx.joker.libs.javalibs.utils.JkConverter;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Function;
 
 import static xxx.joker.apps.tagmod.console.args.TmcArgType.*;
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public enum TmcCmd implements InputCommand {
 
@@ -58,6 +54,17 @@ public enum TmcCmd implements InputCommand {
 	@Cmd
 	CMD_CONFIG(new CmdParam(new CmdOption(CONFIG))),
 
+    @Cmd
+    CMD_EXPORT(
+        new CmdParam(new CmdOption(EXPORT)),
+        new CmdParam(new CmdOption(PICTURES), new CmdOption(LYRICS, Boolean.class)),
+        new CmdParam(new CmdOption(FILES,
+                ArgsParse.windowsPathFormat(),
+                TmcArgFunction.expandPaths(),
+                TmcArgFunction.validatePaths())
+        )
+    ),
+
 	@Cmd
 	CMD_EDIT(
 		new CmdParam(new CmdOption(EDIT)),
@@ -83,17 +90,6 @@ public enum TmcCmd implements InputCommand {
                 TmcArgFunction.expandPaths(),
                 TmcArgFunction.validatePaths()
 		))
-	),
-
-	@Cmd
-	CMD_EXPORT(
-		new CmdParam(new CmdOption(EXPORT)),
-		new CmdParam(new CmdOption(PICTURES), new CmdOption(LYRICS, Boolean.class)),
-		new CmdParam(new CmdOption(FILES,
-			ArgsParse.windowsPathFormat(),
-			TmcArgFunction.expandPaths(),
-			TmcArgFunction.validatePaths())
-		)
 	),
 
 //	@Cmd

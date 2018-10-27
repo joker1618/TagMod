@@ -1,12 +1,13 @@
 package xxx.joker.apps.tagmod.console.workers;
 
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodAttributes;
+import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
+import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.libs.javalibs.utils.JkFiles;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,9 +18,11 @@ public class TmcExporter {
 
 	public static List<Path> exportPictures(TagmodFile tmFile) {
 
-		List<Picture> pics = new ArrayList<>(tmFile.getPictures());
-		if(tmFile.getCover() != null) {
-			pics.add(0, tmFile.getCover());
+        TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
+        List<Picture> pics = new ArrayList<>(tmAttribs.getFramesDataCasted(MP3Attribute.PICTURE));
+        Picture cover = tmAttribs.getFrameDataCasted(MP3Attribute.COVER);
+		if(cover != null) {
+			pics.add(0, cover);
 		}
 
 		List<Path> plist = new ArrayList<>();
@@ -37,10 +40,13 @@ public class TmcExporter {
 	}
 
 	public static List<Path> exportLyrics(TagmodFile tmFile) {
-		List<Lyrics> lyricsList = new ArrayList<>(tmFile.getOtherLyrics());
-		if(tmFile.getLyrics() != null) {
-			lyricsList.add(0, tmFile.getLyrics());
-		}
+        TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
+        List<Lyrics> lyricsList = new ArrayList<>(tmAttribs.getFramesDataCasted(MP3Attribute.OTHER_LYRICS));
+        Lyrics lyr = tmAttribs.getFrameDataCasted(MP3Attribute.LYRICS);
+        if(lyr != null) {
+            lyricsList.add(0, lyr);
+        }
+
 
 		List<Path> plist = new ArrayList<>();
 		for(Lyrics lyrics : lyricsList) {

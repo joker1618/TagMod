@@ -2,11 +2,13 @@ package xxx.joker.apps.tagmod.console.workers;
 
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodAttributes;
+import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
 import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
+import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
@@ -33,19 +35,16 @@ public class TmcViewer {
 
 	public static String toStringMP3Attributes(TagmodFile tmFile) {
 		List<String> lines = new ArrayList<>();
+        TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
 
-		for(MP3Attribute attr : MP3Attribute.orderedValues()) {
-			if(attr == MP3Attribute.COVER) {
-				lines.add(strf("%s:;%s", attr, tmFile.getCover() == null ? NO_VALUE : tmFile.getCover().toStringInline()));
-			} else if(attr == MP3Attribute.PICTURE) {
-				tmFile.getPictures().forEach(c -> lines.add(strf("%s:;%s", attr, c.toStringInline())));
-			} else if(attr == MP3Attribute.LYRICS) {
-				lines.add(strf("%s:;%s", attr, tmFile.getLyrics() == null ? NO_VALUE : tmFile.getLyrics().toStringInline()));
-			} else if(attr == MP3Attribute.OTHER_LYRICS) {
-				tmFile.getOtherLyrics().forEach(l -> lines.add(strf("%s:;%s", attr, l.toStringInline())));
-			} else {  // text info attribute
-				lines.add(strf("%s:;%s", attr, tmFile.getTextInfoAttribute(attr) == null ? NO_VALUE : tmFile.getTextInfoAttribute(attr).toStringInline()));
-			}
+        for(MP3Attribute attr : MP3Attribute.orderedValues()) {
+			if(attr.isMultiValue()) {
+                List<IFrameData> framesData = tmAttribs.getFramesData(attr);
+                framesData.forEach(frameData -> lines.add(strf("%s:;%s", attr, frameData.toStringInline())));
+            } else {
+                IFrameData frameData = tmAttribs.getFrameData(attr);
+                lines.add(strf("%s:;%s", attr, frameData == null ? NO_VALUE : frameData.toStringInline()));
+            }
 		}
 
 		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
@@ -58,26 +57,33 @@ public class TmcViewer {
 
 	public static String describe(TagmodFile tmFile) {
 		List<String> lines = new ArrayList<>();
-		lines.add(toStringMainDetails(tmFile));
+		lines.add(toStringAudioDetails(tmFile));
+		lines.add(toStringSizeDetails(tmFile));
 		tmFile.getMp3File().getTAGv2List().forEach(tag -> lines.add(toStringTAGv2(tag)));
 		lines.add(toStringTAGv1(tmFile.getMp3File().getTAGv1()));
 		return JkStreams.join(lines, StringUtils.LF);
 	}
 
-	public static String toStringMainDetails(TagmodFile tmFile) {
+	public static String toStringAudioDetails(TagmodFile tmFile) {
+		MP3File mp3File = tmFile.getMp3File();
+
+		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
+		outb.addLines(strf("Length;%s", JkTime.of(mp3File.getAudioInfo().getDuration()).toStringElapsed(false)));
+		outb.addLines(strf("Content-Type;%s", mp3File.getAudioInfo().getContentType()));
+		outb.addLines(strf("Version;%s", mp3File.getAudioInfo().getVersionLabel()));
+		outb.addLines(strf("Sample rate;%d", mp3File.getAudioInfo().getSampleRate()));
+		outb.insertPrefix(LEFT_PAD_PREFIX);
+		String audioDetails = outb.toString(";", COLUMNS_DISTANCE);
+
+		return "AUDIO DETAILS\n" + audioDetails;
+	}
+
+
+	public static String toStringSizeDetails(TagmodFile tmFile) {
 		MP3File mp3File = tmFile.getMp3File();
 		long counter = 0L;
 		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
 
-		outb.addLines(strf("Length;%s", JkTime.of(tmFile.getMp3File().getAudioInfo().getDuration()).toStringElapsed(false)));
-		outb.addLines(strf("Content-Type;%s", tmFile.getMp3File().getAudioInfo().getContentType()));
-		outb.addLines(strf("Version;%s", tmFile.getMp3File().getAudioInfo().getVersionLabel()));
-		outb.addLines(strf("Sample rate;%d", tmFile.getMp3File().getAudioInfo().getSampleRate()));
-
-		outb.insertPrefix(LEFT_PAD_PREFIX);
-		String strDetails = outb.toString(";", COLUMNS_DISTANCE);
-
-		outb = new JkColumnFmtBuilder();
 		long fsize = JkFiles.safeSize(mp3File.getFilePath());
 		outb.addLines(strf("Size;%d;%s", fsize, JkOutputFmt.humanSize(fsize)));
 
@@ -107,9 +113,9 @@ public class TmcViewer {
 
 		outb.insertPrefix(LEFT_PAD_PREFIX);
 		outb.setColumnAlign(TextAlignment.RIGHT, 1, 2);
-		strDetails += "\n" + outb.toString(";", COLUMNS_DISTANCE);
+		String sizeDetails = outb.toString(";", COLUMNS_DISTANCE);
 
-		return "MAIN DETAILS\n" + strDetails;
+		return "SIZE DETAILS\n" + sizeDetails;
 	}
 
 	public static String toStringTAGv2(TagmodFile tmFile) {
@@ -171,10 +177,16 @@ public class TmcViewer {
 
 	public static List<String> toStringLyrics(TagmodFile tmFile) {
 		List<Lyrics> lyricsList = new ArrayList<>();
-		if(tmFile.getLyrics() != null) {
-		    lyricsList.add(tmFile.getLyrics());
+
+        TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
+
+        IFrameData lyr = tmAttribs.getFrameData(MP3Attribute.LYRICS);
+        if(lyr != null) {
+		    lyricsList.add((Lyrics)lyr);
         }
-		lyricsList.addAll(tmFile.getOtherLyrics());
+
+        List<IFrameData> lyrList = tmAttribs.getFramesData(MP3Attribute.OTHER_LYRICS);
+        lyrList.forEach(l -> lyricsList.add((Lyrics)l));
 
 		List<String> toRet = new ArrayList<>();
 

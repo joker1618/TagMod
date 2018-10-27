@@ -228,12 +228,14 @@ public enum ID3Genre {
 		}
 		return null;
 	}
-	public static ID3Genre getByNumber(int genreNum) {
-		for(ID3Genre g : values()) {
-			if(g.genreNum == genreNum) {
-				return g;
-			}
-		}
+	public static ID3Genre getByNumber(Integer genreNum) {
+	    if(genreNum != null) {
+            for (ID3Genre g : values()) {
+                if (g.genreNum == genreNum) {
+                    return g;
+                }
+            }
+        }
 		return null;
 	}
 

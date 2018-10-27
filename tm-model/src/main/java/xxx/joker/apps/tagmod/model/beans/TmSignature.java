@@ -1,16 +1,7 @@
 package xxx.joker.apps.tagmod.model.beans;
 
-import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
-import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
-import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
-import xxx.joker.apps.tagmod.model.id3v2.frame.data.UserTextInfo;
-import xxx.joker.apps.tagmod.model.mp3.MP3File;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
-
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 /**
  * ID3v2:

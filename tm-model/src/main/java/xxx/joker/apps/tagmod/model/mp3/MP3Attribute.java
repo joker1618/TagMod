@@ -1,8 +1,7 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
 
-import xxx.joker.apps.tagmod.common.TagmodConfig;
-import xxx.joker.apps.tagmod.model.id3.enums.PictureType;
+import xxx.joker.apps.tagmod.common.TagmodConst;
 import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
@@ -27,10 +26,10 @@ public enum MP3Attribute {
 	TRACK			(FrameName.TRCK, 30),
 	GENRE           (FrameName.TCON, 40),
 	CD_POS			(FrameName.TPOS, 45),
-	COVER			(FrameName.APIC, 50, false, f -> ((Picture)f).getPicType() == PictureType.COVER_FRONT && ((Picture)f).getDescription().equals(TagmodConfig.COVER_DESCR)),
-	PICTURE			(FrameName.APIC, 55, true, f -> !(((Picture)f).getPicType() == PictureType.COVER_FRONT && ((Picture)f).getDescription().equals(TagmodConfig.COVER_DESCR))),
-	LYRICS     		(FrameName.USLT, 60, false, f -> ((Lyrics)f).getDescription().equals(TagmodConfig.LYRICS_DESCR)),
-	OTHER_LYRICS	(FrameName.USLT, 65, true, f -> !((Lyrics)f).getDescription().equals(TagmodConfig.LYRICS_DESCR)),
+	COVER			(FrameName.APIC, 50, false, f -> ((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR)),
+	PICTURE			(FrameName.APIC, 55, true, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
+	LYRICS     		(FrameName.USLT, 60, false, f -> ((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
+	OTHER_LYRICS	(FrameName.USLT, 65, true, f -> !((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
 
 	;
 
