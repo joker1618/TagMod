@@ -1,7 +1,7 @@
 package xxx.joker.apps.tagmod.console.args;
 
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.libs.argsparser.design.annotation.Opt;
 import xxx.joker.libs.argsparser.design.classType.InputOption;
@@ -29,12 +29,9 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	@Opt(name = "config", aliases = {"-config"})
 	private Boolean config = false;
 	@Opt(name = "edit", aliases = {"-edit"})
-	private String[] edit;
-//	@Opt(name = "set", aliases = {"-set"})
-//	private Boolean set = false;
-//	@Opt(name = "delete", aliases = {"-delete"})
-//	private Boolean delete = false;
-
+	private Boolean edit = false;
+	@Opt(name = "test", aliases = {"-test"})
+	private Boolean test = false;
 
 	@Opt(name = "picType", aliases = {"-pt", "-picType", "pictype", "-pictype"})
 	private Boolean picType = false;
@@ -59,16 +56,20 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	@Opt(name = "cover", aliases = {"-cover"}, classes = {Boolean.class, Path.class})
 	private Object cover;
 
-//	@Opt(name = "-all")
-//	private Boolean all = false;
-
 	@Opt(name = "clear", aliases = {"-clear"})
 	private Boolean clear = false;
 
+	@Opt(name = "outputFormats", aliases = {"-of"})
+	private Boolean outputFormats = false;
+
 	@Opt(name = "enc", aliases = {"-enc", "encoding", "-encoding"})
 	private String encoding;
-	@Opt(name = "ver", aliases = {"-ver", "version", "-version"})
-	private Integer version;
+    @Opt(name = "ver", aliases = {"-ver", "version", "-version"})
+    private Integer version;
+    @Opt(name = "unsync", aliases = {"-unsync"})
+    private Boolean unsynchronized = false;
+    @Opt(name = "padding", aliases = {"-pad", "pad", "--padding"})
+    private Integer padding;
 	@Opt(name = "sign", aliases = {"-sign"})
 	private Boolean sign = false;
 	@Opt(name = "noSign", aliases = {"nosign", "-nosign", "-noSign"})
@@ -85,9 +86,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	}
 	public boolean isConfig() {
 		return config;
-	}
-	public List<String> getEdit() {
-		return edit == null ? null : Arrays.asList(edit);
 	}
 
 	public List<TagmodFile> getTagmodFiles() {
@@ -138,7 +136,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 		return cover instanceof Boolean && ((Boolean)cover);
 	}
 
-	public boolean isClear() {
+    public boolean isClear() {
 		return clear;
 	}
 
@@ -170,16 +168,23 @@ public class TmcArgs extends InputOption<TmcCmd> {
         return cover instanceof Path ? (Path)cover : null;
     }
 
-//	public boolean isAll() {
-//		return all;
-//	}
-
 	public TxtEncoding getEncoding() {
 		return TxtEncoding.fromLabel(encoding);
 	}
 	public Integer getVersion() {
 		return version;
 	}
+    public boolean isUnsynchronized() {
+        return unsynchronized != null && unsynchronized;
+    }
+
+    public boolean isOutputFormats() {
+        return outputFormats != null && outputFormats;
+    }
+
+    public Integer getPadding() {
+        return padding;
+    }
     public boolean isSign() {
         return sign;
     }

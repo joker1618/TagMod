@@ -1,4 +1,4 @@
-package xxx.joker.apps.tagmod.model.facade.newwwww;
+package xxx.joker.apps.tagmod.model.facade;
 
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;

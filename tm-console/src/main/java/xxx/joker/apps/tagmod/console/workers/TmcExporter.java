@@ -1,8 +1,8 @@
 package xxx.joker.apps.tagmod.console.workers;
 
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodAttributes;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
+import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;

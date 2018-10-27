@@ -1,5 +1,7 @@
 package xxx.joker.apps.tagmod.model.id3.enums;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -221,11 +223,13 @@ public enum ID3Genre {
 	}
 
 	public static ID3Genre getByName(String genreName) {
-		for(ID3Genre g : values()) {
-			if(g.genreName.equals(genreName)) {
-				return g;
-			}
-		}
+		if(StringUtils.isNotBlank(genreName)) {
+            for(ID3Genre g : values()) {
+                if(g.genreName.equals(genreName)) {
+                    return g;
+                }
+            }
+        }
 		return null;
 	}
 	public static ID3Genre getByNumber(Integer genreNum) {

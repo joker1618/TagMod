@@ -47,12 +47,12 @@ public class MP3FileFactory {
 		}
 
 		// Find song start
-		int songStart = MP3Utils.findFirstFramePosition(raf, tagv2Size);
+		long songStart = MP3Utils.findFirstFramePosition(raf, tagv2Size);
 
 		// Find for others TAGv2
-		int dirtyBytes = songStart - tagv2Size;
+		long dirtyBytes = songStart - tagv2Size;
 		if(dirtyBytes > 0) {
-			BytesScanner dirtyScanner = BytesScanner.getScanner(raf, tagv2Size, dirtyBytes);
+			BytesScanner dirtyScanner = BytesScanner.getScanner(raf, tagv2Size, (int)dirtyBytes);
 			while (dirtyBytes > 0) {
 				TAGv2 otherTag = TAGv2Factory.parseTAGv2(dirtyScanner, dirtyScanner.position());
 				if (otherTag != null) {
@@ -69,12 +69,12 @@ public class MP3FileFactory {
 		// Find TAGv1
 		byte[] tagv1Bytes = JkBytes.getBytes(raf, (int) raf.length() - ID3Specs.ID3v1_TAG_LENGTH, ID3Specs.ID3v1_TAG_LENGTH);
 		TAGv1 tagv1 = TAGv1Impl.createFromBytes(tagv1Bytes);
-		int songEnd;
+		long songEnd;
 		if(tagv1 == null) {
-			songEnd = (int) raf.length();
+			songEnd = raf.length();
 		} else {
 			mp3File.setTAGv1(tagv1);
-			songEnd = (int) raf.length() - ID3Specs.ID3v1_TAG_LENGTH;
+			songEnd = raf.length() - ID3Specs.ID3v1_TAG_LENGTH;
 		}
 
 		// Set song end

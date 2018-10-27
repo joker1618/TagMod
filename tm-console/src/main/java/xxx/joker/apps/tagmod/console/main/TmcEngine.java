@@ -4,20 +4,35 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import xxx.joker.apps.tagmod.common.TagmodConst;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
+import xxx.joker.apps.tagmod.console.args.TmcCmd;
 import xxx.joker.apps.tagmod.console.args.TmcHelp;
-import xxx.joker.apps.tagmod.console.common.TmcConfig;
+import xxx.joker.apps.tagmod.console.config.TmcConfig;
+import xxx.joker.apps.tagmod.console.workers.TmcEditor;
 import xxx.joker.apps.tagmod.console.workers.TmcExporter;
 import xxx.joker.apps.tagmod.console.workers.TmcInfo;
 import xxx.joker.apps.tagmod.console.workers.TmcViewer;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
+import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
+import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
+import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
+import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
+import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
+import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
+import xxx.joker.libs.javalibs.exception.JkRuntimeException;
 import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
-import xxx.joker.libs.javalibs.utils.JkStrings;
+import xxx.joker.libs.javalibs.language.JkLanguage;
+import xxx.joker.libs.javalibs.language.JkLanguageDetector;
+import xxx.joker.libs.javalibs.utils.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
@@ -49,7 +64,9 @@ public class TmcEngine {
             case CMD_EDIT:
 				manageEdit(inputArgs);
 				break;
-
+            case CMD_TEST_OUTPUT_FORMATS:
+				manageTestOutputFormats(inputArgs);
+				break;
 			case CMD_HELP:
 				manageHelp();
 				break;
@@ -59,7 +76,7 @@ public class TmcEngine {
 		}
 	}
 
-	private static void manageShow(TmcArgs inputArgs) {
+    private static void manageShow(TmcArgs inputArgs) {
 		List<String> lines = new ArrayList<>();
 
 		for (TagmodFile tmFile : inputArgs.getTagmodFiles()) {
@@ -142,79 +159,122 @@ public class TmcEngine {
 		display(str);
 	}
 
-	private static void manageEdit(TmcArgs args) {
-//        TxtEncoding enc = args.getEncoding() != null ? args.getEncoding() : TmcConfig.getDefaultOutputEncoding();
-//        Integer version = args.getVersion() != null ? args.getVersion() : TmcConfig.getDefaultOutputVersion();
-//        boolean unsynch = false;
-//        int padding = TmcConfig.getDefaultOutputPadding();
-//        LocalDateTime signTime = sign ? LocalDateTime.now() : null;
-//
-//        for(TagmodFile tmFile : args.getTagmodFiles()) {
-//
-//            Path fpath = tmFile.getMp3File().getFilePath();
-//
-//            try {
-//                if (args.isClear()) {
-//                    tmFile.clearAllAttributes();
-//                }
-//
-//                AutoAttributes autoAttributes = new AutoAttributes(fpath);
-//
-//                setTextAttrib(tmFile, TITLE, args.getTitle(), autoAttributes);
-//                setTextAttrib(tmFile, ARTIST, args.getArtist(), null);
-//                setTextAttrib(tmFile, ALBUM, args.getAlbum(), null);
-//                setTextAttrib(tmFile, YEAR, args.getYear(), null);
-//                setTextAttrib(tmFile, TRACK, args.getTrack(), autoAttributes);
-//                setTextAttrib(tmFile, GENRE, args.getGenre(), null);
-//                setTextAttrib(tmFile, CD_POS, args.getCdPos(), null);
-//
-//                if (args.getCover() != null) {
-//                    MimeType mt = MimeType.getByExtension(args.getCover());
-//                    byte[] picData = JkBytes.buildBytes(args.getCover());
-//                    Picture cover = new Picture(mt, TagmodConfig.COVER_TYPE, TagmodConfig.COVER_DESCR, picData);
-//                    tmFile.setCover(cover);
-//                }
-//
-//                if (args.getLyrics() != null) {
-//                    Path lpath;
-//                    if (TmcCmd.AUTO_VALUE.equalsIgnoreCase(args.getLyrics())) {
-//                        String slyr = autoAttributes.getAutoValue(LYRICS);
-//                        lpath = slyr == null ? null : Paths.get(slyr);
-//                    } else {
-//                        lpath = Paths.get(args.getLyrics());
-//                    }
-//
-//                    if (lpath != null && Files.exists(lpath)) {
-//                        String lyrics = JkStreams.join(Files.readAllLines(lpath), "\n");
-//                        JkLanguage lan = JkLanguageDetector.detectLanguage(lyrics);
-//                        Lyrics l = new Lyrics(lan, TagmodConfig.LYRICS_DESCR, lyrics);
-//                        tmFile.setLyrics(l);
-//                    }
-//                }
-//
-//                byte[] editBytes = tmFile.toBytes(version, enc, unsynch, padding, signTime);
-//                JkFiles.writeFile(fpath, editBytes, true);
-//                display("File %s edit complete", fpath);
-//
-//            } catch (Exception ex) {
-//                logger.error("Error editing " + fpath, ex);
-//            }
-//        }
+	private static void manageTestOutputFormats(TmcArgs args) {
+        TmcEditor editor = createEditor(args);
+
+        int padding = args.getPadding() == null ? TmcConfig.getDefaultOutputPadding() : args.getPadding();
+
+        List<TagmodFile> tagmodFiles = args.getTagmodFiles();
+        for(int i = 0; i < tagmodFiles.size(); i++) {
+            Path filePath = tagmodFiles.get(i).getMp3File().getFilePath();
+            try {
+                for(TxtEncoding enc : TxtEncoding.values()) {
+                    for(int ver : ID3Specs.ID3v2_SUPPORTED_VERSIONS) {
+                        for(boolean unsync : Arrays.asList(true, false)) {
+                            String fn = strf("%s-v%d-%s%s.%s",
+                                    JkFiles.getFileName(filePath),
+                                    ver, enc.getLabel(),
+                                    unsync ? "-unsync" : "",
+                                    JkFiles.getExtension(filePath)
+                            );
+                            Path outp = JkFiles.getParent(filePath).resolve(fn);
+                            JkFiles.copyFile(filePath, outp, true, true);
+
+                            TagmodFile newTmFile = new TagmodFile(outp);
+                            editor.editTagmodFile(newTmFile, ver, enc, unsync, padding);
+                            display("%d/%d\tFile %s modified", i, tagmodFiles.size(), filePath);
+                        }
+                    }
+                }
+
+            } catch (IOException ex) {
+                display("%d/%d\tERROR editing file %s", i, tagmodFiles.size(), filePath);
+                logger.error("ERROR editing file " + filePath, ex);
+            }
+        }
     }
-//    private static void setTextAttrib(TagmodFile tmFile, MP3Attribute attr, String inputValue, AutoAttributes autoAttributes) {
-//        if(inputValue != null) {
-//            String value;
-//            if(autoAttributes == null || !TmcCmd.AUTO_VALUE.equalsIgnoreCase(inputValue)) {
-//                value = inputValue;
-//            } else {
-//                value = autoAttributes.getAutoValue(attr);
-//            }
-//
-//            if(value != null) {
-//                tmFile.setTextInfoAttribute(attr, value);
-//            }
-//        }
-//    }
+
+	private static void manageEdit(TmcArgs args) {
+        TmcEditor editor = createEditor(args);
+
+        TxtEncoding encoding = args.getEncoding() == null ? TmcConfig.getDefaultOutputEncoding() : args.getEncoding();
+        int version = args.getVersion() == null ? TmcConfig.getDefaultOutputVersion() : args.getVersion();
+        boolean unsync = args.isUnsynchronized();
+        int padding = args.getPadding() == null ? TmcConfig.getDefaultOutputPadding() : args.getPadding();
+
+        List<TagmodFile> tagmodFiles = args.getTagmodFiles();
+        for(int i = 0; i < tagmodFiles.size(); i++) {
+            TagmodFile tmFile = tagmodFiles.get(i);
+            try {
+                editor.editTagmodFile(tmFile, version, encoding, unsync, padding);
+                display("%d/%d\tFile %s modified", i, tagmodFiles.size(), tmFile.getMp3File().getFilePath());
+            } catch (IOException ex) {
+                display("%d/%d\tERROR editing file %s", i, tagmodFiles.size(), tmFile.getMp3File().getFilePath());
+                logger.error("ERROR editing file " + tmFile.getMp3File().getFilePath(), ex);
+            }
+        }
+    }
+
+    private static TmcEditor createEditor(TmcArgs args) {
+        TmcEditor editor = new TmcEditor();
+
+        editor.setClear(args.isClear());
+
+        if(TmcCmd.AUTO_VALUE.equals(args.getTitle())) {
+            editor.setAutoTiTle(true);
+        } else {
+            editor.setTitle(args.getTitle());
+        }
+
+        editor.setArtist(args.getArtist());
+        editor.setAlbum(args.getAlbum());
+        editor.setYear(JkConverter.stringToInteger(args.getYear()));
+
+        if(TmcCmd.AUTO_VALUE.equals(args.getTrack())) {
+            editor.setAutoTrack(true);
+        } else {
+            editor.setTrack(ID3SetPos.parse(args.getTrack()));
+        }
+
+        ID3Genre genre = ID3Genre.getByName(args.getGenre());
+        genre = genre == null ? ID3Genre.getByNumber(JkConverter.stringToInteger(args.getGenre())) : genre;
+        editor.setGenre(genre);
+
+        editor.setCdPos(ID3SetPos.parse(args.getCdPos()));
+
+        try {
+            if (args.getCover() != null) {
+                MimeType mt = MimeType.getByExtension(args.getCover());
+                byte[] picData = JkBytes.getBytes(args.getCover());
+                Picture cover = new Picture(mt, TagmodConst.COVER_TYPE, TagmodConst.COVER_DESCR, picData);
+                editor.setCover(cover);
+            }
+
+        } catch (Exception ex) {
+            logger.error("ERROR parsing cover", ex);
+            throw new JkRuntimeException(ex, "ERROR parsing cover %s", args.getCover());
+        }
+
+        try {
+            if(TmcCmd.AUTO_VALUE.equals(args.getLyrics())) {
+                editor.setAutoLyrics(true);
+            } else if(StringUtils.isNotBlank(args.getLyrics())) {
+                Path lpath = Paths.get(args.getLyrics());
+                if (Files.exists(lpath)) {
+                    String lyrics = JkStreams.join(Files.readAllLines(lpath), "\n");
+                    JkLanguage lan = JkLanguageDetector.detectLanguage(lyrics);
+                    Lyrics l = new Lyrics(lan, TagmodConst.LYRICS_DESCR, lyrics);
+                    editor.setLyrics(l);
+                }
+            }
+
+        } catch (Exception ex) {
+            logger.error("ERROR parsing lyrics", ex);
+            throw new JkRuntimeException(ex, "ERROR parsing lyrics %s", args.getLyrics());
+        }
+
+        return editor;
+    }
 
 	private static void manageHelp() {
 		display("USAGE:\n%s", TmcHelp.HELP);
@@ -224,87 +284,4 @@ public class TmcEngine {
 		return strf("\n%s\n", StringUtils.repeat("-", length));
 	}
 
-//	private static class AutoAttributes {
-//	    private static final Logger logger = LoggerFactory.getLogger(AutoAttributes.class);
-//
-//	    static Map<Path,Integer> totMap = new HashMap<>();
-//	    static Map<Path,List<Path>> lyricsMap = new HashMap<>();
-//
-//	    final Path mp3Path;
-//	    Map<MP3Attribute,String> autoValues;
-//
-//        public AutoAttributes(Path mp3Path) {
-//            this.mp3Path = mp3Path;
-//        }
-//
-//        private void init() {
-//            autoValues = new HashMap<>();
-//            autoValues.put(TITLE, null);
-//            autoValues.put(TRACK, null);
-//            autoValues.put(LYRICS, null);
-//
-//            String strfn = JkFiles.getFileName(mp3Path);
-//            int idx = strfn.indexOf(' ');
-//            if(idx == -1) {
-//                autoValues.put(TITLE, strfn);
-//            } else {
-//                Integer trackNum = JkConverter.stringToInteger(strfn.substring(0, idx));
-//                if(trackNum == null) {
-//                    autoValues.put(TITLE, strfn);
-//                } else {
-//                    String strTrack;
-//                    try {
-//                        strTrack = strf("%d/%d", trackNum, getTotTrack());
-//                    } catch (Exception e) {
-//                        strTrack = strf("%d", trackNum);
-//                    }
-//                    autoValues.put(TITLE, strfn.substring(idx+1).trim());
-//                    autoValues.put(TRACK, strTrack);
-//                }
-//            }
-//
-//            try {
-//                autoValues.put(LYRICS, getLyricsPath());
-//            } catch (Exception e) {
-//                logger.warn("Error finding lyrics path for {}", mp3Path);
-//            }
-//        }
-//
-//        private int getTotTrack() {
-//            Path folder = JkFiles.getParent(mp3Path);
-//            Integer tot = totMap.get(folder);
-//            if(tot == null) {
-//                tot = JkFiles.findFiles(folder, false, TmFormat::isMP3File).size();
-//                totMap.put(folder, tot);
-//            }
-//            return tot;
-//        }
-//
-//        private String getLyricsPath()  {
-//            Path folder = JkFiles.getParent(mp3Path);
-//            List<Path> lpaths = lyricsMap.get(folder);
-//            if(lpaths == null) {
-//                lpaths = JkFiles.findFiles(folder, false, TmFormat::isMP3Lyrics);
-//                lyricsMap.put(folder, lpaths);
-//            }
-//
-//            String strMp3Path = mp3Path.getFileName().toString();
-//            for(Path p : lpaths) {
-//                String lfn = JkFiles.getFileName(p);
-//                if(StringUtils.startsWithIgnoreCase(strMp3Path, lfn)) {
-//                    return p.toString();
-//                }
-//            }
-//
-//            return null;
-//        }
-//
-//        public String getAutoValue(MP3Attribute attr) {
-//            if(autoValues == null) {
-//                init();
-//            }
-//
-//            return autoValues.get(attr);
-//        }
-//    }
 }

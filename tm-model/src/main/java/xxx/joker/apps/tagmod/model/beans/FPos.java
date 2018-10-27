@@ -5,35 +5,34 @@ package xxx.joker.apps.tagmod.model.beans;
  */
 public class FPos {
 
-	private int begin;
-	private int end;
+	private long begin;
+	private long end;
 
 	public FPos() {
 	}
 
-	public FPos(int begin, int end) {
+    public FPos(long begin, long end) {
+        this.begin = begin;
+        this.end = end;
+    }
 
-		this.begin = begin;
-		this.end = end;
-	}
+    public long getLength() {
+        return end - begin;
+    }
 
-	public int getLength() {
-		return end - begin;
-	}
+    public long getBegin() {
+        return begin;
+    }
 
-	public int getBegin() {
-		return begin;
-	}
+    public void setBegin(long begin) {
+        this.begin = begin;
+    }
 
-	public void setBegin(int begin) {
-		this.begin = begin;
-	}
+    public long getEnd() {
+        return end;
+    }
 
-	public int getEnd() {
-		return end;
-	}
-
-	public void setEnd(int end) {
-		this.end = end;
-	}
+    public void setEnd(long end) {
+        this.end = end;
+    }
 }

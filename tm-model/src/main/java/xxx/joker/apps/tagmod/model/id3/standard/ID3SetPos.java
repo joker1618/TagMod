@@ -1,5 +1,6 @@
 package xxx.joker.apps.tagmod.model.id3.standard;
 
+import org.apache.commons.lang3.StringUtils;
 import xxx.joker.libs.javalibs.utils.JkConverter;
 import xxx.joker.libs.javalibs.utils.JkStrings;
 
@@ -32,6 +33,10 @@ public class ID3SetPos {
     }
 
     public static ID3SetPos parse(String str) {
+	    if(StringUtils.isBlank(str)) {
+	        return null;
+        }
+
 		String[] split = JkStrings.splitAllFields(str, "/");
 		if(split.length != 1 && split.length != 2) 		return null;
 

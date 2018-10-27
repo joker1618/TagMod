@@ -83,8 +83,36 @@ public enum TmcCmd implements InputCommand {
         )),
 		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
 		new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
+		new CmdParam(false, new CmdOption(UNSYNCHRONIZED)),
+		new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
 		new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
 		new CmdParam(false, new CmdOption(SIGN), new CmdOption(NO_SIGN)),
+		new CmdParam(new CmdOption(FILES,
+                ArgsParse.windowsPathFormat(),
+                TmcArgFunction.expandPaths(),
+                TmcArgFunction.validatePaths()
+		))
+	),
+
+	@Cmd
+	CMD_TEST_OUTPUT_FORMATS(
+		new CmdParam(new CmdOption(TEST)),
+		new CmdParam(new CmdOption(OUTPUT_FORMATS)),
+		new CmdParam(false, new CmdOption(CLEAR)),
+		new CmdParam(false, new CmdOption(TITLE, String.class)),
+		new CmdParam(false, new CmdOption(ARTIST, String.class)),
+		new CmdParam(false, new CmdOption(ALBUM, String.class)),
+		new CmdParam(false, new CmdOption(YEAR, String.class, TmcArgFunction.validateYear())),
+		new CmdParam(false, new CmdOption(TRACK, String.class, TmcArgFunction.validateSetPos(true))),
+		new CmdParam(false, new CmdOption(GENRE, String.class, null, TmcArgFunction.fixGenreName(), TmcArgFunction.validateGenre())),
+		new CmdParam(false, new CmdOption(CD_POS, String.class, TmcArgFunction.validateSetPos(false))),
+		new CmdParam(false, new CmdOption(COVER, Path.class,
+                ArgsParse.windowsPathFormat(),
+                ArgsCheck.pathIsFile(),
+                TmcArgFunction.validateCoverPath()
+        )),
+		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
+		new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
 		new CmdParam(new CmdOption(FILES,
                 ArgsParse.windowsPathFormat(),
                 TmcArgFunction.expandPaths(),

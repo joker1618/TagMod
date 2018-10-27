@@ -17,9 +17,10 @@ public enum TmcArgType implements OptionName {
 	CONFIG("config"),
 	@OptName
 	EXPORT("export"),
-
 	@OptName
 	EDIT("edit"),
+	@OptName
+	TEST("test"),
 
 	@OptName
 	PIC_TYPE("picType"),
@@ -52,9 +53,16 @@ public enum TmcArgType implements OptionName {
 	CLEAR("clear"),
 
 	@OptName
+	OUTPUT_FORMATS("outputFormats"),
+
+	@OptName
 	ENCODING("enc"),
 	@OptName
 	VERSION("ver"),
+	@OptName
+	UNSYNCHRONIZED("unsync"),
+	@OptName
+	PADDING("padding"),
 	@OptName
 	SIGN("sign"),
 	@OptName

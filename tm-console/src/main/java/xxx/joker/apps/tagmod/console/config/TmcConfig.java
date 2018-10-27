@@ -1,4 +1,4 @@
-package xxx.joker.apps.tagmod.console.common;
+package xxx.joker.apps.tagmod.console.config;
 
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;

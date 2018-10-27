@@ -1,9 +1,9 @@
 package xxx.joker.apps.tagmod.console.workers;
 
 import xxx.joker.apps.tagmod.common.TagmodConst;
-import xxx.joker.apps.tagmod.console.common.TmcConfig;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodAttributes;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
+import xxx.joker.apps.tagmod.console.config.TmcConfig;
+import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
+import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
@@ -21,7 +21,6 @@ import xxx.joker.libs.javalibs.language.JkLanguageDetector;
 import xxx.joker.libs.javalibs.utils.JkConverter;
 import xxx.joker.libs.javalibs.utils.JkFiles;
 import xxx.joker.libs.javalibs.utils.JkStreams;
-import xxx.joker.libs.javalibs.utils.JkStrings;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -106,7 +105,7 @@ public class TmcEditor {
         this.lyrics = lyrics;
     }
 
-    public void editTagmodFile(TagmodFile tmFile) throws IOException {
+    public void editTagmodFile(TagmodFile tmFile, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws IOException {
         TagmodAttributes tmAttribs = new TagmodAttributes();
 
         // Input attributes
@@ -141,57 +140,10 @@ public class TmcEditor {
             tmAttribs.addAllAttributes(legacy);
         }
 
-        Map<MP3Attribute, List<IFrameData>> attrMap = tmAttribs.getAttributesDataMap();
-
-        byte[] tagv2Bytes;
-        byte[] tagv1Bytes;
-        if(attrMap.isEmpty()) {
-            tagv2Bytes = new byte[0];
-            tagv2Bytes = new byte[0];
-        } else {
-            TAGv2Builder tb = new TAGv2Builder();
-            attrMap.forEach((k, v) ->
-                    v.forEach(val -> tb.addFrameData(k.getFrameName(version), val))
-            );
-            tagv2Bytes = tb.buildBytes(version, encoding, unsynchronized, padding);
-            tagv1Bytes = createTAGv1(tmAttribs).toBytes();
-        }
-
-
+        tmFile.persistChanges(tmAttribs, version, encoding, unsynchronized, padding);
     }
 
-    private TAGv1 createTAGv1(TagmodAttributes tmAttribs) {
-        Integer trackNum = getIntAttr(tmAttribs, TRACK);
-        Integer genreNum = getIntAttr(tmAttribs, GENRE);
-        TAGv1 tag = new TAGv1Impl();
-        tag.setRevision(trackNum != null ? 1 : 0);
-        tag.setTitle(getStringAttr(tmAttribs, TITLE));
-        tag.setArtist(getStringAttr(tmAttribs, ARTIST));
-        tag.setAlbum(getStringAttr(tmAttribs, ALBUM));
-        tag.setYear(getStringAttr(tmAttribs, YEAR));
-        tag.setComments("");
-        if(trackNum != null)    tag.setTrack(trackNum);
-        if(genreNum != null)    tag.setGenre(genreNum);
-        return tag;
-    }
-    private String getStringAttr(TagmodAttributes tmAttribs, MP3Attribute attr) {
-        TextInfo textInfo = tmAttribs.getFrameDataCasted(attr);
-        return textInfo == null ? "" : textInfo.getInfo();
-     }
-    private Integer getIntAttr(TagmodAttributes tmAttribs, MP3Attribute attr) {
-        TextInfo textInfo = tmAttribs.getFrameDataCasted(attr);
-        if(textInfo != null) {
-            if(attr == TRACK) {
-                String s = textInfo.getInfo().replaceAll("/.*", "");
-                return JkConverter.stringToInteger(s);
-            }
-            if(attr == GENRE) {
-                ID3Genre genre = ID3Genre.getByName(textInfo.getInfo());
-                return genre == null ? null : genre.getGenreNum();
-            }
-        }
-        return null;
-     }
+
 
     private Lyrics parseLyrics(Path lyricsPath) throws IOException {
         if(!Files.exists(lyricsPath))    return null;

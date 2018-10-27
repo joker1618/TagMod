@@ -2,8 +2,8 @@ package xxx.joker.apps.tagmod.console.workers;
 
 import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodAttributes;
-import xxx.joker.apps.tagmod.model.facade.newwwww.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
+import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
@@ -96,11 +96,11 @@ public class TmcViewer {
 			}
 		}
 
-		int dirtyLen = mp3File.getDirtyBytes().getLength();
+		long dirtyLen = mp3File.getDirtyBytes().getLength();
 		counter += dirtyLen;
 		outb.addLines(strf("Dirty bytes;%d;%d", dirtyLen, counter));
 
-		int songLen = mp3File.getSongDataFPos().getLength();
+		long songLen = mp3File.getSongDataFPos().getLength();
 		counter += songLen;
 		outb.addLines(strf("Song data;%d;%d", songLen, counter));
 
