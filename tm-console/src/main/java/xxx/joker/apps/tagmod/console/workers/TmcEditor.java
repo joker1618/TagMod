@@ -7,13 +7,8 @@ import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
-import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
-import xxx.joker.apps.tagmod.model.id3v1.TAGv1Impl;
-import xxx.joker.apps.tagmod.model.id3v2.TAGv2Builder;
-import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
-import xxx.joker.apps.tagmod.model.id3v2.frame.data.TextInfo;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.util.TmFormat;
 import xxx.joker.libs.javalibs.language.JkLanguage;
@@ -25,9 +20,9 @@ import xxx.joker.libs.javalibs.utils.JkStreams;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
-import static xxx.joker.apps.tagmod.model.mp3.MP3Attribute.*;
 import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public class TmcEditor {
@@ -112,10 +107,10 @@ public class TmcEditor {
         tmAttribs.setAttributeString(MP3Attribute.TITLE, title);
         tmAttribs.setAttributeString(MP3Attribute.ARTIST, artist);
         tmAttribs.setAttributeString(MP3Attribute.ALBUM, album);
-        tmAttribs.setAttributeString(MP3Attribute.YEAR, ""+year);
-        tmAttribs.setAttributeString(MP3Attribute.TRACK, track.toString());
-        tmAttribs.setAttributeString(MP3Attribute.GENRE, genre.getGenreName());
-        tmAttribs.setAttributeString(MP3Attribute.CD_POS, cdPos.toString());
+        if(year != null)    tmAttribs.setAttributeString(MP3Attribute.YEAR, ""+year);
+        if(track != null)   tmAttribs.setAttributeString(MP3Attribute.TRACK, track.toString());
+        if(genre != null)   tmAttribs.setAttributeString(MP3Attribute.GENRE, genre.getGenreName());
+        if(cdPos != null)   tmAttribs.setAttributeString(MP3Attribute.CD_POS, cdPos.toString());
         tmAttribs.setAttribute(MP3Attribute.COVER, cover);
         tmAttribs.setAttribute(MP3Attribute.LYRICS, lyrics);
 
@@ -149,6 +144,7 @@ public class TmcEditor {
         if(!Files.exists(lyricsPath))    return null;
         String lyricsText = JkStreams.join(Files.readAllLines(lyricsPath), "\n");
         JkLanguage lan = JkLanguageDetector.detectLanguage(lyricsText);
+        lan = lan == null ? JkLanguage.ENGLISH : lan;
         return new Lyrics(lan, TagmodConst.LYRICS_DESCR, lyricsText);
     }
 

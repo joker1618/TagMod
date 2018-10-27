@@ -59,7 +59,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	@Opt(name = "clear", aliases = {"-clear"})
 	private Boolean clear = false;
 
-	@Opt(name = "outputFormats", aliases = {"-of"})
+	@Opt(name = "outputFormats", aliases = {"-of", "of"})
 	private Boolean outputFormats = false;
 
 	@Opt(name = "enc", aliases = {"-enc", "encoding", "-encoding"})

@@ -163,13 +163,17 @@ public class TmcEngine {
         TmcEditor editor = createEditor(args);
 
         int padding = args.getPadding() == null ? TmcConfig.getDefaultOutputPadding() : args.getPadding();
+        Path outp = null;
+        int counter = 1;
 
         List<TagmodFile> tagmodFiles = args.getTagmodFiles();
         for(int i = 0; i < tagmodFiles.size(); i++) {
             Path filePath = tagmodFiles.get(i).getMp3File().getFilePath();
             try {
-                for(TxtEncoding enc : TxtEncoding.values()) {
-                    for(int ver : ID3Specs.ID3v2_SUPPORTED_VERSIONS) {
+                TxtEncoding[] encs = args.getEncoding() != null ? new TxtEncoding[]{args.getEncoding()} : TxtEncoding.values();
+                for(TxtEncoding enc : encs) {
+                    List<Integer> vers = args.getVersion() == null ? ID3Specs.ID3v2_SUPPORTED_VERSIONS : Arrays.asList(args.getVersion());
+                    for(int ver : vers) {
                         for(boolean unsync : Arrays.asList(true, false)) {
                             String fn = strf("%s-v%d-%s%s.%s",
                                     JkFiles.getFileName(filePath),
@@ -177,18 +181,18 @@ public class TmcEngine {
                                     unsync ? "-unsync" : "",
                                     JkFiles.getExtension(filePath)
                             );
-                            Path outp = JkFiles.getParent(filePath).resolve(fn);
+                            outp = JkFiles.getParent(filePath).resolve(fn);
                             JkFiles.copyFile(filePath, outp, true, true);
 
                             TagmodFile newTmFile = new TagmodFile(outp);
                             editor.editTagmodFile(newTmFile, ver, enc, unsync, padding);
-                            display("%d/%d\tFile %s modified", i, tagmodFiles.size(), filePath);
+                            display("%d\tFile %s modified", counter++, outp);
                         }
                     }
                 }
 
             } catch (IOException ex) {
-                display("%d/%d\tERROR editing file %s", i, tagmodFiles.size(), filePath);
+                display("%d\tERROR editing file %s", counter++, outp);
                 logger.error("ERROR editing file " + filePath, ex);
             }
         }
@@ -277,7 +281,7 @@ public class TmcEngine {
     }
 
 	private static void manageHelp() {
-		display("USAGE:\n%s", TmcHelp.HELP);
+		display("%s", TmcHelp.HELP);
 	}
 
 	private static String getLineSeparator(int length) {

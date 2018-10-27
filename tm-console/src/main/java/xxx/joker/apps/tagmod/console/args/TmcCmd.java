@@ -112,7 +112,11 @@ public enum TmcCmd implements InputCommand {
                 TmcArgFunction.validateCoverPath()
         )),
 		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
-		new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
+        new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
+        new CmdParam(false, new CmdOption(UNSYNCHRONIZED)),
+        new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
+        new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
+        new CmdParam(false, new CmdOption(SIGN), new CmdOption(NO_SIGN)),
 		new CmdParam(new CmdOption(FILES,
                 ArgsParse.windowsPathFormat(),
                 TmcArgFunction.expandPaths(),

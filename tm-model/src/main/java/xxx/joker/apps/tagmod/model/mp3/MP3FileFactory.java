@@ -26,13 +26,19 @@ public class MP3FileFactory {
 		if(!TmFormat.isMP3File(filePath))
 			return null;
 
-		try (RandomAccessFile raf = new RandomAccessFile(filePath.toFile(), "r")) {
-			MP3FileImpl mp3File = parseMP3File(raf);
-			mp3File.setFilePath(filePath);
-			JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
-			mp3File.setAudioInfo(audioInfo);
-			return mp3File;
+        MP3FileImpl mp3File;
+        try (RandomAccessFile raf = new RandomAccessFile(filePath.toFile(), "r")) {
+			mp3File = parseMP3File(raf);
 		}
+
+		if(mp3File == null) {
+		    return null;
+        }
+
+        mp3File.setFilePath(filePath);
+        JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
+        mp3File.setAudioInfo(audioInfo);
+        return mp3File;
 	}
 
 	private static MP3FileImpl parseMP3File(RandomAccessFile raf) throws IOException {
@@ -48,6 +54,9 @@ public class MP3FileFactory {
 
 		// Find song start
 		long songStart = MP3Utils.findFirstFramePosition(raf, tagv2Size);
+		if(songStart < 0L) {
+		    return null;
+        }
 
 		// Find for others TAGv2
 		long dirtyBytes = songStart - tagv2Size;

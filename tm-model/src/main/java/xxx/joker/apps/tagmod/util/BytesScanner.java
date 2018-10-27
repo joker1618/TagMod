@@ -69,7 +69,7 @@ public class BytesScanner {
 	}
 	private byte[] getAllBytes(int start, int length, boolean unsynch) {
 		int idxStart = start + seekOffset;
-		byte[] bytes = unsynch ? getBytesUnsynch(start, length) : JkBytes.getBytes(this.bytes, idxStart, length);
+		byte[] bytes = unsynch ? getBytesUnsynch(idxStart, length) : JkBytes.getBytes(this.bytes, idxStart, length);
 		return bytes;
 	}
 	private byte[] getBytesUnsynch(int start, int length) {

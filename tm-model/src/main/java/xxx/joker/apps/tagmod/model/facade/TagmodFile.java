@@ -2,7 +2,6 @@ package xxx.joker.apps.tagmod.model.facade;
 
 import org.apache.commons.lang3.tuple.Pair;
 import xxx.joker.apps.tagmod.model.beans.FPos;
-import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
@@ -16,20 +15,20 @@ import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.apps.tagmod.model.mp3.MP3FileFactory;
 import xxx.joker.libs.javalibs.utils.JkConverter;
+import xxx.joker.libs.javalibs.utils.JkFiles;
 import xxx.joker.libs.javalibs.utils.JkStreams;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import static xxx.joker.apps.tagmod.model.mp3.MP3Attribute.*;
-import static xxx.joker.apps.tagmod.model.mp3.MP3Attribute.GENRE;
 
 public class TagmodFile {
 
@@ -75,27 +74,47 @@ public class TagmodFile {
             tagv1Bytes = createTAGv1(newAttribs).toBytes();
         }
 
-        try(RandomAccessFile rafRead = new RandomAccessFile(mp3File.getFilePath().toFile(), "r");
-            RandomAccessFile rafWrite = new RandomAccessFile(mp3File.getFilePath().toFile(), "rw");
-            FileChannel chRead = rafRead.getChannel();
-            FileChannel chWrite = rafWrite.getChannel()) {
+        Path appFile = JkFiles.computeSafelyPath(mp3File.getFilePath());
+
+        try (RandomAccessFile rafMain = new RandomAccessFile(mp3File.getFilePath().toFile(), "rw");
+             RandomAccessFile rafApp = new RandomAccessFile(appFile.toFile(), "rw");
+             FileChannel chMain = rafMain.getChannel();
+             FileChannel chApp = rafApp.getChannel()) {
+
+            // Fill app path
+            long appPos = 0L;
+            if (tagv2Bytes.length > 0) {
+                chApp.write(ByteBuffer.wrap(tagv2Bytes), 0);
+                appPos += tagv2Bytes.length;
+            }
 
             FPos spos = mp3File.getSongDataFPos();
             long startRead = spos.getBegin();
             long remaining = spos.getLength();
-            long startWrite = tagv2Bytes.length;
-            while(remaining > 0) {
-                chWrite.position(startWrite);
-                long numRead = chRead.transferTo(startRead, remaining, chWrite);
+            while (remaining > 0) {
+                long numRead = chMain.transferTo(startRead, remaining, chApp.position(appPos));
                 remaining -= numRead;
                 startRead += numRead;
-                startWrite += numRead;
+                appPos += numRead;
             }
 
-            if(tagv2Bytes.length > 0) {
-                chWrite.write(ByteBuffer.wrap(tagv2Bytes), 0);
-                chWrite.write(ByteBuffer.wrap(tagv1Bytes), tagv2Bytes.length + spos.getLength());
+            if (tagv1Bytes.length > 0) {
+                chApp.write(ByteBuffer.wrap(tagv1Bytes), appPos);
             }
+
+            // Reverse bytes from app to main
+            long posIndex = 0L;
+            long offset = chApp.size();
+            while (offset > 0) {
+                long numRead = chApp.transferTo(posIndex, offset, chMain.position(posIndex));
+                offset -= numRead;
+                posIndex += numRead;
+            }
+
+            chMain.truncate(chApp.size());
+
+        } finally {
+            Files.deleteIfExists(appFile);
         }
     }
 

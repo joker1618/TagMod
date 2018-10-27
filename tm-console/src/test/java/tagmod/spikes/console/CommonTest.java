@@ -28,11 +28,8 @@ public abstract class CommonTest {
         TmcConfig.loadConfigPath(configPath);
     }
 
-    protected TmcArgs parseArgs(String[] argsString) {
-        return null;
-    }
-    protected TmcArgs parseArgs(String argsString) {
-        String[] args = parseArgsString(argsString);
+    protected TmcArgs parseArgs(String argsString, boolean insFilePrefix) {
+        String[] args = parseArgsString(argsString, insFilePrefix);
         try {
             TmcArgs tmArgs = new TmcArgs();
             InputParserImpl parser = new InputParserImpl(tmArgs, TmcArgType.class, TmcCmd.class, JkFiles.getLauncherPath(TmcMain.class));
@@ -45,8 +42,12 @@ public abstract class CommonTest {
         }
     }
 
-    private String[] parseArgsString(String str) {
+    private String[] parseArgsString(String str, boolean insFilePrefix) {
         String[] elems = JkStrings.splitAllFields(str, ";", true);
+        if(!insFilePrefix) {
+            return elems;
+        }
+
         String[] toRet = new String[elems.length];
         boolean addPrefix = false;
         for(int i = 0; i < elems.length; i++) {

@@ -33,7 +33,14 @@ public class TmcConfig {
 	private static Map<ConfKey,Conf> confMap;
 
 	static {
-	    loadConfigPath(Paths.get("config/tagmod.config"));
+        Path launcherPath = JkFiles.getLauncherPath(TmcConfig.class);
+        Path configPath;
+        if(Files.isRegularFile(launcherPath) && JkFiles.getExtension(launcherPath).equals("jar")) {
+            configPath = JkFiles.getParent(launcherPath).resolve("config/tagmod.config");
+        } else {
+            configPath = Paths.get("config/tagmod.config");
+        }
+        loadConfigPath(configPath);
     }
 	public static void loadConfigPath(Path confPath) {
 	    CONF_PATH = confPath;

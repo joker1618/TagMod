@@ -22,7 +22,7 @@ public class TmcHelp {
             "tagmod;config",
           	"tagmod;export;(pics|lyrics)  files <MP3_FILES>",
 			"tagmod;edit;[EDIT OPTIONS] [OUTPUT_FORMAT]  files <MP3_FILES>",
-			"tagmod;test;outputFormats  [EDIT OPTIONS]  [padding NUMBER]  files <MP3_FILES>",
+			"tagmod;test;outputFormats  [EDIT OPTIONS]  [OUTPUT_FORMAT]  files <MP3_FILES>",
 //			"tagmod;delete;[DELETE OPTIONS...]  [OUTPUT_FORMAT]  files <MP3_FILES>",
 //			"tagmod  add  pic  <PIC_TYPE>;<DESCRIPTION>;<PICTURE_PATH>   [OUTPUT_FORMAT]  files <MP3_FILES>",
 //			"tagmod  add  lyrics  <DESCRIPTION>;<LYRICS_PATH>  [OUTPUT_FORMAT]  files <MP3_FILES>",

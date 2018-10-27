@@ -49,7 +49,7 @@ public class ShowTests extends CommonTest {
 
 
     private void doTest(String str) {
-        TmcArgs tmcArgs = super.parseArgs(str);
+        TmcArgs tmcArgs = super.parseArgs(str, true);
         TmcEngine.execute(tmcArgs);
         display("\n\nEND");
     }

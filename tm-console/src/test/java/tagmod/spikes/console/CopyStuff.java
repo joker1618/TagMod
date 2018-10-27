@@ -7,7 +7,6 @@ import xxx.joker.libs.javalibs.utils.JkStreams;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class CopyStuff {
     @Test
     public void copyOneForEachAlbum() {
         Path base = Paths.get("C:\\Users\\feder\\Desktop\\music");
-        Path outFolder = Paths.get("C:\\Users\\feder\\Desktop\\rtt");
+        Path outFolder = Paths.get("C:\\Users\\feder\\Desktop\\tagmod-one-each");
 
         List<Path> files = JkFiles.findFiles(base, true, TmFormat::isMP3File);
         files = JkStreams.map(files, p -> p.toAbsolutePath().normalize());

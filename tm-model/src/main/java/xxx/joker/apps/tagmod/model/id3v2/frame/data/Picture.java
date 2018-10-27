@@ -4,6 +4,8 @@ package xxx.joker.apps.tagmod.model.id3v2.frame.data;
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
 import xxx.joker.apps.tagmod.model.id3.enums.PictureType;
+import xxx.joker.libs.javalibs.media.analysis.JkMediaAnalyzer;
+import xxx.joker.libs.javalibs.media.analysis.JkPictureInfo;
 
 import java.util.Arrays;
 
@@ -18,6 +20,7 @@ public class Picture implements IFrameData {
 	private PictureType picType;
 	private String description = "";
 	private byte[] picData;
+	private JkPictureInfo picInfo;
 
 	public Picture() {
 	}
@@ -27,6 +30,7 @@ public class Picture implements IFrameData {
 		this.picType = picType;
 		this.description = description;
 		this.picData = picData;
+        this.picInfo = JkMediaAnalyzer.analyzePicture(picData);
 	}
 
 	public MimeType getMimeType() {
@@ -59,6 +63,7 @@ public class Picture implements IFrameData {
 
 	public void setPicData(byte[] picData) {
 		this.picData = picData;
+		this.picInfo = JkMediaAnalyzer.analyzePicture(picData);
 	}
 
 	@Override
@@ -82,12 +87,13 @@ public class Picture implements IFrameData {
 
 	@Override
 	public String toStringInline() {
-		return strf("%s, %s (%d), *%s*, size=%d",
+		return strf("%s, %s (%d), *%s*, size=%d, %dx%d",
 			mimeType.name(),
 			picType == null ? "null" : picType.normalizedName(),
 			picType == null ? -1 : picType.pictureNumber(),
 			description,
-			picData.length
+			picData.length,
+            picInfo.getWidth(), picInfo.getHeight()
 		);
 	}
 
