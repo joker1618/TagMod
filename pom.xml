@@ -10,6 +10,7 @@
     <modules>
         <module>tm-model</module>
         <module>tm-console</module>
+        <module>tm-lyrics-downloader</module>
     </modules>
 
     <packaging>pom</packaging>
