@@ -13,7 +13,7 @@ import java.util.List;
 
 public abstract class BaseCrawler {
 
-    protected static final Path HTML_FOLDER = Paths.get("C:\\Users\\feder\\IdeaProjects\\APPS\\tagmod\\tm-lyrics-downloader\\src\\test\\resources", "html");
+    protected static final Path HTML_FOLDER = Paths.get("C:\\Users", System.getProperty("user.name"), ".tempApps", "html");
 
     protected String getHtml(String url) {
         return JkStreams.join(getHtmlLines(url), "\n");
