@@ -101,4 +101,7 @@ public class ID3v2FrameFactory {
 
 		return bb.build();
 	}
+	public static byte[] createFrameBytes(ID3v2Frame frame) {
+	    return createFrameBytes(frame.getVersion(), frame.getFrameId(), frame.getEncoding(), frame.getFrameData(), frame.isUnsynch());
+	}
 }

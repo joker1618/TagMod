@@ -20,12 +20,13 @@ import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
 public abstract class CommonTest {
 
-    protected static final Path TAGMOD_FOLDER = Paths.get(System.getProperty("user.home")).resolve("IdeaProjects\\APPS\\tagmod");
+    protected static final Path HOME = Paths.get(System.getProperty("user.home"));
+    protected static final Path TAGMOD_FOLDER = HOME.resolve("IdeaProjects\\APPS\\tagmod");
     private static final Path configPath = TAGMOD_FOLDER.resolve("config\\tagmod.config");
 
     @Before
     public void init() {
-        TmcConfig.loadConfigPath(configPath);
+//        TmcConfig.loadConfigPath(configPath);
     }
 
     protected TmcArgs parseArgs(String argsString, boolean insFilePrefix) {

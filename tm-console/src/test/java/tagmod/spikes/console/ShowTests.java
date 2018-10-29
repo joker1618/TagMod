@@ -6,6 +6,7 @@ import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.main.TmcEngine;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public class ShowTests extends CommonTest {
 
@@ -16,7 +17,7 @@ public class ShowTests extends CommonTest {
 
     @Test
     public void describe() {
-        doTest("describe;files;Vasco");
+        doTest("describe;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
     }
 
     @Test
@@ -48,8 +49,8 @@ public class ShowTests extends CommonTest {
 
 
 
-    private void doTest(String str) {
-        TmcArgs tmcArgs = super.parseArgs(str, true);
+    private void doTest(String str, Object... params) {
+        TmcArgs tmcArgs = super.parseArgs(strf(str, params), true);
         TmcEngine.execute(tmcArgs);
         display("\n\nEND");
     }

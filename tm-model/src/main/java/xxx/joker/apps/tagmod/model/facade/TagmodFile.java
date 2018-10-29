@@ -1,7 +1,8 @@
 package xxx.joker.apps.tagmod.model.facade;
 
 import org.apache.commons.lang3.tuple.Pair;
-import xxx.joker.apps.tagmod.model.beans.FPos;
+import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
+import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
@@ -14,9 +15,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.TextInfo;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.apps.tagmod.model.mp3.MP3FileFactory;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.javalibs.utils.*;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -33,6 +32,9 @@ import static xxx.joker.apps.tagmod.model.mp3.MP3Attribute.*;
 public class TagmodFile {
 
 	private MP3File mp3File;
+
+	private TagmodSign tagmodSign;
+	private boolean tagmodSignValid;
 
 	private List<Pair<MP3Attribute,ID3v2Frame>> attributeFrames;
 	private List<ID3v2Frame> unmanagedFrames;   // frames not used in MP3Attribute and duplicated frames
@@ -57,21 +59,47 @@ public class TagmodFile {
         return mp3File;
     }
 
-    public void persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws IOException {
+    public TagmodSign getTagmodSign() {
+        return tagmodSign;
+    }
+
+    public boolean isTagmodSignValid() {
+        return tagmodSignValid;
+    }
+
+    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws Exception {
         Map<MP3Attribute, List<IFrameData>> attrMap = newAttribs.getAttributesDataMap();
 
         byte[] tagv2Bytes;
+        byte[] signBytes;
         byte[] tagv1Bytes;
+
         if(attrMap.isEmpty()) {
+            if(mp3File.getFileSize() == mp3File.getSongDataFPos().getLength()) {
+                // No changes found, skip persist phase
+                return false;
+            }
             tagv2Bytes = new byte[0];
+            signBytes = new byte[0];
             tagv1Bytes = new byte[0];
+
         } else {
             TAGv2Builder tb = new TAGv2Builder();
             attrMap.forEach((k, v) ->
                     v.forEach(val -> tb.addFrameData(k.getFrameName(version), val))
             );
+            tb.addFrameData(FrameName.COMM, TagmodSign.getID3v2FrameComment());
             tagv2Bytes = tb.buildBytes(version, encoding, unsynchronized, padding);
             tagv1Bytes = createTAGv1(newAttribs).toBytes();
+
+            byte[] tagsBytes = JkBytes.mergeArrays(tagv2Bytes, tagv1Bytes);
+            String newMD5 = JkEncryption.getMD5(tagsBytes);
+            if(isTagmodSignValid() && newMD5.equals(tagmodSign.getMd5hash())) {
+                // No changes found, skip persist phase
+                return false;
+            }
+            TagmodSign sign = TagmodSign.create(newMD5);
+            signBytes = sign.toTAGv2Bytes();
         }
 
         Path appFile = JkFiles.computeSafelyPath(mp3File.getFilePath());
@@ -81,13 +109,17 @@ public class TagmodFile {
              FileChannel chMain = rafMain.getChannel();
              FileChannel chApp = rafApp.getChannel()) {
 
-            // Fill app path
             long appPos = 0L;
-            if (tagv2Bytes.length > 0) {
-                chApp.write(ByteBuffer.wrap(tagv2Bytes), 0);
+            if (!attrMap.isEmpty()) {
+                // ID3v2 tag
+                chApp.write(ByteBuffer.wrap(tagv2Bytes), appPos);
                 appPos += tagv2Bytes.length;
+                // Signature ID3v2 tag
+                chApp.write(ByteBuffer.wrap(signBytes), appPos);
+                appPos += signBytes.length;
             }
 
+            // MP3 song data
             FPos spos = mp3File.getSongDataFPos();
             long startRead = spos.getBegin();
             long remaining = spos.getLength();
@@ -98,7 +130,8 @@ public class TagmodFile {
                 appPos += numRead;
             }
 
-            if (tagv1Bytes.length > 0) {
+            if (!attrMap.isEmpty()) {
+                // ID3v1 tag
                 chApp.write(ByteBuffer.wrap(tagv1Bytes), appPos);
             }
 
@@ -112,6 +145,7 @@ public class TagmodFile {
             }
 
             chMain.truncate(chApp.size());
+            return true;
 
         } finally {
             Files.deleteIfExists(appFile);
@@ -127,7 +161,7 @@ public class TagmodFile {
         tag.setArtist(getStringAttr(tmAttribs, ARTIST));
         tag.setAlbum(getStringAttr(tmAttribs, ALBUM));
         tag.setYear(getStringAttr(tmAttribs, YEAR));
-        tag.setComments("");
+        tag.setComments(TagmodSign.getID3TagmodComment());
         if(trackNum != null)    tag.setTrack(trackNum);
         if(genreNum != null)    tag.setGenre(genreNum);
         return tag;
@@ -154,20 +188,28 @@ public class TagmodFile {
     private void extractMP3Attributes() {
 	    for(int tagNum = 0; tagNum < mp3File.getTAGv2List().size(); tagNum++) {
             TAGv2 tagv2 = mp3File.getTAGv2List().get(tagNum);
-            for(ID3v2Frame frame : tagv2.getFrameList()) {
-                MP3Attribute attrib = MP3Attribute.getFromFrame(frame);
-                if(attrib == null) {
-                    unmanagedFrames.add(frame);
-                } else {
-                    List<Pair<MP3Attribute, ID3v2Frame>> pairs = JkStreams.filter(attributeFrames, p -> p.getKey() == attrib);
-                    if(!attrib.isMultiValue() && !pairs.isEmpty()) {
+            TagmodSign sign = TagmodSign.parse(tagv2);
+
+            if(sign != null) {
+                this.tagmodSign = sign;
+                this.tagmodSignValid = sign.isValidFor(mp3File);
+
+            } else {
+                for (ID3v2Frame frame : tagv2.getFrameList()) {
+                    MP3Attribute attrib = MP3Attribute.getFromFrame(frame);
+                    if (attrib == null) {
                         unmanagedFrames.add(frame);
                     } else {
-                        boolean dup = !JkStreams.filter(pairs, p -> p.getValue().isFrameDuplicated(frame)).isEmpty();
-                        if(dup) {
+                        List<Pair<MP3Attribute, ID3v2Frame>> pairs = JkStreams.filter(attributeFrames, p -> p.getKey() == attrib);
+                        if (!attrib.isMultiValue() && !pairs.isEmpty()) {
                             unmanagedFrames.add(frame);
                         } else {
-                            attributeFrames.add(Pair.of(attrib, frame));
+                            boolean dup = !JkStreams.filter(pairs, p -> p.getValue().isFrameDuplicated(frame)).isEmpty();
+                            if (dup) {
+                                unmanagedFrames.add(frame);
+                            } else {
+                                attributeFrames.add(Pair.of(attrib, frame));
+                            }
                         }
                     }
                 }

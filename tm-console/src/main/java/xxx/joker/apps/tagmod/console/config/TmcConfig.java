@@ -69,7 +69,7 @@ public class TmcConfig {
 		confMap.put(ConfKey.DEFAULT_OUTPUT_ENCODING, new Conf(
 			ConfKey.DEFAULT_OUTPUT_ENCODING,
 			"Default output encoding. Allowed values: " + JkStreams.map(Arrays.asList(TxtEncoding.values()), TxtEncoding::getLabel).toString(),
-			"iso",
+			"utf16",
 			s -> TxtEncoding.getFromLabel(s) != null
 		));
 		confMap.put(ConfKey.DEFAULT_OUTPUT_VERSION, new Conf(

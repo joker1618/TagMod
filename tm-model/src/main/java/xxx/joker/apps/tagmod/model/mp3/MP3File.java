@@ -1,6 +1,6 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
-import xxx.joker.apps.tagmod.model.beans.FPos;
+import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
 import xxx.joker.libs.javalibs.media.analysis.JkAudioInfo;
@@ -14,6 +14,7 @@ import java.util.List;
 public interface MP3File {
 
 	Path getFilePath();
+	long getFileSize();
 
 	JkAudioInfo getAudioInfo();
 	FPos getSongDataFPos();

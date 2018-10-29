@@ -3,6 +3,7 @@ package xxx.joker.apps.tagmod.model.id3v2;
 import org.apache.commons.lang3.tuple.Pair;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
+import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
 import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2FrameFactory;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
@@ -19,6 +20,19 @@ public class TAGv2Builder {
 
     public TAGv2Builder() {
         this.framePairs = new ArrayList<>();
+    }
+
+    public static byte[] toBytes(TAGv2 tag) {
+        ByteBuilder bb = new ByteBuilder();
+        for(ID3v2Frame frame : tag.getFrameList()) {
+            bb.add(ID3v2FrameFactory.createFrameBytes(frame));
+        }
+        if(tag.getPadding() > 0) {
+            bb.addZeroBytes(tag.getPadding());
+        }
+        byte[] headerBytes = createTAGv2Header(tag.getVersion(), 0, bb.length(), tag.isUnsynch());
+        bb.insertFirst(headerBytes);
+        return bb.build();
     }
 
     public TAGv2Builder addFrameData(FrameName frameName, IFrameData frameData) {

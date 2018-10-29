@@ -1,4 +1,4 @@
-package xxx.joker.apps.tagmod.model.beans;
+package xxx.joker.apps.tagmod.model.struct;
 
 /**
  * Created by f.barbano on 01/05/2018.

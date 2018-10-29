@@ -1,6 +1,6 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
-import xxx.joker.apps.tagmod.model.beans.FPos;
+import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1Impl;
@@ -29,13 +29,11 @@ public class MP3FileFactory {
         MP3FileImpl mp3File;
         try (RandomAccessFile raf = new RandomAccessFile(filePath.toFile(), "r")) {
 			mp3File = parseMP3File(raf);
+            if(mp3File == null)     return null;
+            mp3File.setFilePath(filePath);
+			mp3File.setFileSize(raf.length());
 		}
 
-		if(mp3File == null) {
-		    return null;
-        }
-
-        mp3File.setFilePath(filePath);
         JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
         mp3File.setAudioInfo(audioInfo);
         return mp3File;

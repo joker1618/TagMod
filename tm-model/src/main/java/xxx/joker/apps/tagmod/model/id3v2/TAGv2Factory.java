@@ -118,4 +118,5 @@ public class TAGv2Factory {
 
 		return wholeSize;
 	}
+
 }

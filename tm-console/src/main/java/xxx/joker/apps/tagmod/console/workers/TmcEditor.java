@@ -100,7 +100,7 @@ public class TmcEditor {
         this.lyrics = lyrics;
     }
 
-    public void editTagmodFile(TagmodFile tmFile, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws IOException {
+    public boolean editTagmodFile(TagmodFile tmFile, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws Exception {
         TagmodAttributes tmAttribs = new TagmodAttributes();
 
         // Input attributes
@@ -135,7 +135,7 @@ public class TmcEditor {
             tmAttribs.addAllAttributes(legacy);
         }
 
-        tmFile.persistChanges(tmAttribs, version, encoding, unsynchronized, padding);
+        return tmFile.persistChanges(tmAttribs, version, encoding, unsynchronized, padding);
     }
 
 

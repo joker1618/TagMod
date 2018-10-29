@@ -185,13 +185,13 @@ public class TmcEngine {
                             JkFiles.copyFile(filePath, outp, true, true);
 
                             TagmodFile newTmFile = new TagmodFile(outp);
-                            editor.editTagmodFile(newTmFile, ver, enc, unsync, padding);
-                            display("%d\tFile %s modified", counter++, outp);
+                            boolean changed = editor.editTagmodFile(newTmFile, ver, enc, unsync, padding);
+                            display("%d\tFile %s %s", counter++, outp, changed?"modified":"not changed");
                         }
                     }
                 }
 
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 display("%d\tERROR editing file %s", counter++, outp);
                 logger.error("ERROR editing file " + filePath, ex);
             }
@@ -211,9 +211,9 @@ public class TmcEngine {
         for(int i = 0; i < tagmodFiles.size(); i++) {
             TagmodFile tmFile = tagmodFiles.get(i);
             try {
-                editor.editTagmodFile(tmFile, version, encoding, unsync, padding);
-                display("%d\tFile %s modified", counter++, tmFile.getMp3File().getFilePath());
-            } catch (IOException ex) {
+                boolean changed = editor.editTagmodFile(tmFile, version, encoding, unsync, padding);
+                display("%d\tFile %s %s", counter++, tmFile.getMp3File().getFilePath(), changed?"modified":"not changed");
+            } catch (Exception ex) {
                 display("%d\tERROR editing file %s", counter++, tmFile.getMp3File().getFilePath());
                 logger.error("ERROR editing file " + tmFile.getMp3File().getFilePath(), ex);
             }

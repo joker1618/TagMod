@@ -5,6 +5,7 @@ import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.main.TmcEngine;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public class EditTests extends CommonTest {
 
@@ -15,11 +16,11 @@ public class EditTests extends CommonTest {
 
     @Test
     public void retry() {
-//        doTest("edit;title;_auto;track;_auto;lyrics;_auto;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
+        doTest("edit;title;maronna;genre;186;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("edit;album;ALBUM;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
 //        doTest("edit;artist;fe;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
 //        doTest("edit;artist;nome artista lungo per aumentare size tag;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
-        doTest("edit;cover;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\cov.jpg;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
+//        doTest("edit;cover;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\cov.jpg;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
     }
 
 
@@ -36,11 +37,11 @@ public class EditTests extends CommonTest {
 
     @Test
     public void testOutputFormats() {
-//        doTest("test;-of;" +
-//                "title;_auto;track;_auto;album;ALBIIIII;genre;87;year;1618;" +
-//                "files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of\\04 Toffee.mp3");
-        doTest("edit;album;ALBIIIII;genre;87;year;1618;title;titolo;track;2;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of");
-        doTest("edit;title;titolo;track;2;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of");
+        doTest("test;-of;" +
+                "title;_auto;track;_auto;album;ALBIIIII;genre;87;year;1618;" +
+                "files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+//        doTest("edit;album;ALBIIIII;genre;87;year;1618;title;titolo;track;2;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of");
+//        doTest("edit;title;titolo;track;2;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\of");
     }
 
 
@@ -48,8 +49,8 @@ public class EditTests extends CommonTest {
 
 
 
-    private void doTest(String str) {
-        TmcArgs tmcArgs = super.parseArgs(str, false);
+    private void doTest(String str, Object... params) {
+        TmcArgs tmcArgs = super.parseArgs(strf(str, params), false);
         TmcEngine.execute(tmcArgs);
         display("\n\nEND");
     }

@@ -4,6 +4,7 @@ import javafx.scene.text.TextAlignment;
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
 import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.TagmodSign;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
@@ -19,6 +20,7 @@ import xxx.joker.libs.javalibs.utils.JkFiles;
 import xxx.joker.libs.javalibs.utils.JkStreams;
 import xxx.joker.libs.javalibs.utils.JkStrings;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -31,6 +33,7 @@ public class TmcViewer {
 	public static final String LEFT_PAD_PREFIX = "  ";
 	public static final int COLUMNS_DISTANCE = 3;
 	public static final String NO_VALUE = "-";
+	public static final DateTimeFormatter DEFAULT_DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
 
 	public static String toStringMP3Attributes(TagmodFile tmFile) {
@@ -57,11 +60,25 @@ public class TmcViewer {
 
 	public static String describe(TagmodFile tmFile) {
 		List<String> lines = new ArrayList<>();
+		lines.add(toStringTagmodDetails(tmFile));
 		lines.add(toStringAudioDetails(tmFile));
 		lines.add(toStringSizeDetails(tmFile));
 		tmFile.getMp3File().getTAGv2List().forEach(tag -> lines.add(toStringTAGv2(tag)));
 		lines.add(toStringTAGv1(tmFile.getMp3File().getTAGv1()));
 		return JkStreams.join(lines, StringUtils.LF);
+	}
+
+	public static String toStringTagmodDetails(TagmodFile tmFile) {
+        TagmodSign sign = tmFile.getTagmodSign();
+
+        JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
+		outb.addLines(strf("TagMod sign;%s", sign == null ? "NO" : tmFile.isTagmodSignValid() ? "VALID" : "INVALID"));
+		outb.addLines(strf("Sign MD5 hash;%s", sign == null ? NO_VALUE : sign.getMd5hash()));
+		outb.addLines(strf("Tag creation;%s", sign == null ? NO_VALUE : DEFAULT_DTF.format(sign.getCreationTime())));
+		outb.insertPrefix(LEFT_PAD_PREFIX);
+		String audioDetails = outb.toString(";", COLUMNS_DISTANCE);
+
+		return "TAGMOD DETAILS\n" + audioDetails;
 	}
 
 	public static String toStringAudioDetails(TagmodFile tmFile) {
@@ -78,13 +95,12 @@ public class TmcViewer {
 		return "AUDIO DETAILS\n" + audioDetails;
 	}
 
-
 	public static String toStringSizeDetails(TagmodFile tmFile) {
 		MP3File mp3File = tmFile.getMp3File();
 		long counter = 0L;
 		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
 
-		long fsize = JkFiles.safeSize(mp3File.getFilePath());
+		long fsize = mp3File.getFileSize();
 		outb.addLines(strf("Size;%d;%s", fsize, JkOutputFmt.humanSize(fsize)));
 
 		if(mp3File.getTAGv2List().isEmpty()) {
