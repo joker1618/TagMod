@@ -25,11 +25,11 @@ public enum MP3Attribute {
 	YEAR            (FrameName.TYER, FrameName.TYER, FrameName.TDRC, 20),
 	TRACK			(FrameName.TRCK, 30),
 	GENRE           (FrameName.TCON, 40),
-	CD_POS			(FrameName.TPOS, 45),
+	CD_POS			(FrameName.TPOS, 45, false, false),
 	COVER			(FrameName.APIC, 50, false, f -> ((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR)),
-	PICTURE			(FrameName.APIC, 55, true, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
+	PICTURE			(FrameName.APIC, 55, true, false, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
 	LYRICS     		(FrameName.USLT, 60, false, f -> ((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
-	OTHER_LYRICS	(FrameName.USLT, 65, true, f -> !((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
+	OTHER_LYRICS	(FrameName.USLT, 65, true, false, f -> !((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
 
 	;
 
@@ -44,18 +44,24 @@ public enum MP3Attribute {
 		this(frameName, position, false);
 	}
 	MP3Attribute(FrameName frameName, int position, boolean multiValue) {
-		this(frameName, frameName, frameName, position, multiValue, f -> true);
+		this(frameName, frameName, frameName, position, multiValue, f -> true, true);
 	}
-	MP3Attribute(FrameName frameName, int position, boolean multiValue, Predicate<IFrameData> acceptCond) {
-		this(frameName, frameName, frameName, position, multiValue, acceptCond);
+	MP3Attribute(FrameName frameName, int position, boolean multiValue, boolean required) {
+		this(frameName, frameName, frameName, position, multiValue, f -> true, required);
 	}
+    MP3Attribute(FrameName frameName, int position, boolean multiValue, Predicate<IFrameData> acceptCond) {
+        this(frameName, frameName, frameName, position, multiValue, acceptCond, true);
+    }
+    MP3Attribute(FrameName frameName, int position, boolean multiValue, boolean required, Predicate<IFrameData> acceptCond) {
+        this(frameName, frameName, frameName, position, multiValue, acceptCond, required);
+    }
 	MP3Attribute(FrameName v2, FrameName v3, FrameName v4, int position) {
 		this(v2, v3, v4, position, false);
 	}
 	MP3Attribute(FrameName v2, FrameName v3, FrameName v4, int position, boolean multiValue) {
-		this(v2, v3, v4, position, multiValue, f -> true);
+		this(v2, v3, v4, position, multiValue, f -> true, true);
 	}
-	MP3Attribute(FrameName v2, FrameName v3, FrameName v4, int position, boolean multiValue, Predicate<IFrameData> acceptCond) {
+	MP3Attribute(FrameName v2, FrameName v3, FrameName v4, int position, boolean multiValue, Predicate<IFrameData> acceptCond, boolean required) {
 		this.v2 = v2;
 		this.v3 = v3;
 		this.v4 = v4;

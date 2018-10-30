@@ -18,8 +18,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 
 	@Opt(name = "show", aliases = {"-show"})
 	private Boolean show = false;
-	@Opt(name = "describe", aliases = {"descr", "-descr", "-describe"})
-	private Boolean describe = false;
 	@Opt(name = "diff", aliases = {"-diff"})
 	private Path[] diff;
 	@Opt(name = "info", aliases = {"-info"})
@@ -59,7 +57,22 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	@Opt(name = "clear", aliases = {"-clear"})
 	private Boolean clear = false;
 
-	@Opt(name = "outputFormats", aliases = {"-of", "of"})
+    @Opt(name = "attr", aliases = {"-attr"})
+    private Boolean attribute = false;
+    @Opt(name = "tm", aliases = {"-tm", "tagmod", "-tagmod"})
+    private Boolean tm = false;
+    @Opt(name = "size", aliases = {"-size"})
+    private Boolean size = false;
+    @Opt(name = "t2", aliases = {"-t2"})
+    private Boolean t2 = false;
+    @Opt(name = "t1", aliases = {"-t1"})
+    private Boolean t1 = false;
+    @Opt(name = "audio", aliases = {"-audio"})
+    private Boolean audio = false;
+    @Opt(name = "all", aliases = {"-all"})
+    private Boolean all = false;
+
+    @Opt(name = "outputFormats", aliases = {"-of", "of"})
 	private Boolean outputFormats = false;
 
 	@Opt(name = "enc", aliases = {"-enc", "encoding", "-encoding"})
@@ -137,6 +150,28 @@ public class TmcArgs extends InputOption<TmcCmd> {
     public boolean isClear() {
 		return clear;
 	}
+
+    public boolean isTagmod() {
+        return tm != null && tm;
+    }
+    public boolean isSize() {
+        return size != null && size;
+    }
+    public boolean isTAGv2() {
+        return t2 != null && t2;
+    }
+    public boolean isTAGv1() {
+        return t1 != null && t1;
+    }
+    public boolean isAudio() {
+        return audio != null && audio;
+    }
+    public boolean isAll() {
+        return all != null && all;
+    }
+    public boolean isAttribute() {
+        return attribute != null && attribute;
+    }
 
     public String getTitle() {
         return title instanceof String ? (String)title : null;

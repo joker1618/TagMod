@@ -93,14 +93,14 @@ public class TagmodSign {
         if(frame.getFrameName() != FrameName.TXXX)  return null;
         tinfo = frame.getFrameData();
         if(!TAG_VERSION_DESCR.equals(tinfo.getDescription()))   return null;
-        tagmodSign.version = JkConverter.stringToInteger(tinfo.getDescription());
+        tagmodSign.version = JkConverter.stringToInteger(tinfo.getInfo());
         if(tagmodSign.version == null)     return null;
 
         frame = tagv2.getFrameList().get(3);
         if(frame.getFrameName() != FrameName.TXXX)  return null;
         tinfo = frame.getFrameData();
         if(!TAG_ENCONDING_DESCR.equals(tinfo.getDescription()))   return null;
-        tagmodSign.encoding = TxtEncoding.fromLabel(tinfo.getDescription());
+        tagmodSign.encoding = TxtEncoding.fromLabel(tinfo.getInfo());
         if(tagmodSign.encoding == null)     return null;
 
         return tagmodSign;
@@ -127,6 +127,7 @@ public class TagmodSign {
 
     public static TagmodSign create(String md5hash, int version, TxtEncoding enc) {
         TagmodSign sign = new TagmodSign();
+        sign.valid = true;
         sign.md5hash = md5hash;
         sign.creationTime = LocalDateTime.now();
         sign.version = version;

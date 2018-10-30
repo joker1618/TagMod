@@ -8,8 +8,6 @@ public enum TmcArgType implements OptionName {
 	@OptName
 	SHOW("show"),
 	@OptName
-	DESCRIBE("describe"),
-	@OptName
 	DIFF("diff"),
 	@OptName
 	INFO("info"),
@@ -46,9 +44,21 @@ public enum TmcArgType implements OptionName {
 	@OptName
 	CD_POS("cdPos"),
 
-//	@OptName
-//	ALL("-all"),
-//
+	@OptName
+	ALL("all"),
+	@OptName
+	TAGMOD("tm"),
+	@OptName
+	TAGv1("t1"),
+	@OptName
+	TAGv2("t2"),
+	@OptName
+	SIZE("size"),
+	@OptName
+	AUDIO("audio"),
+	@OptName
+	ATTRIBUTE("attr"),
+
 	@OptName
 	CLEAR("clear"),
 

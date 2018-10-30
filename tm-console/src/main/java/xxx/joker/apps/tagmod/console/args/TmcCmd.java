@@ -18,7 +18,13 @@ public enum TmcCmd implements InputCommand {
 	@Cmd
 	CMD_SHOW(
 		new CmdParam(new CmdOption(SHOW)),
-		new CmdParam(false, new CmdOption(LYRICS, Boolean.class)),
+		new CmdParam(false, new CmdOption(ATTRIBUTE)),
+		new CmdParam(false, new CmdOption(AUDIO)),
+		new CmdParam(false, new CmdOption(TAGMOD)),
+		new CmdParam(false, new CmdOption(TAGv1)),
+		new CmdParam(false, new CmdOption(TAGv2)),
+		new CmdParam(false, new CmdOption(SIZE)),
+		new CmdParam(false, new CmdOption(ALL)),
 		new CmdParam(new CmdOption(FILES,
 			ArgsParse.windowsPathFormat(),
 			TmcArgFunction.expandPaths(),
@@ -27,8 +33,9 @@ public enum TmcCmd implements InputCommand {
 	),
 
 	@Cmd
-	CMD_DESCRIBE(
-		new CmdParam(new CmdOption(DESCRIBE)),
+	CMD_SHOW_LYRICS(
+		new CmdParam(new CmdOption(SHOW)),
+		new CmdParam(new CmdOption(LYRICS, Boolean.class)),
 		new CmdParam(new CmdOption(FILES,
 			ArgsParse.windowsPathFormat(),
 			TmcArgFunction.expandPaths(),

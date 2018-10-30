@@ -45,8 +45,8 @@ public class TmcEngine {
 			case CMD_SHOW:
 				manageShow(inputArgs);
 				break;
-			case CMD_DESCRIBE:
-				manageDescribe(inputArgs);
+            case CMD_SHOW_LYRICS:
+				manageShowLyrics(inputArgs);
 				break;
 			case CMD_DIFF:
 				manageDiff(inputArgs);
@@ -75,24 +75,35 @@ public class TmcEngine {
 		}
 	}
 
-    private static void manageShow(TmcArgs inputArgs) {
+    private static void manageShowLyrics(TmcArgs inputArgs) {
 		List<String> lines = new ArrayList<>();
 
 		for (TagmodFile tmFile : inputArgs.getTagmodFiles()) {
-			String str;
-			if(inputArgs.isLyrics())	str = JkStreams.join(TmcViewer.toStringLyrics(tmFile), "\n\n");
-			else 						str = TmcViewer.toStringMP3Attributes(tmFile);
-			lines.add(strf("File:  %s\n%s", tmFile.getMp3File().getFilePath(), str));
+            List<String> lyrList = TmcViewer.toStringLyrics(tmFile);
+            String str = lyrList.isEmpty() ? "No lyrics" : JkStreams.join(lyrList, "\n\n");
+			lines.add(strf("FILE:  %s\n%s", tmFile.getMp3File().getFilePath(), str));
 		}
 
 		display(JkStreams.join(lines, getLineSeparator(100)));
 	}
 
-	private static void manageDescribe(TmcArgs inputArgs) {
+    private static void manageShow(TmcArgs inputArgs) {
 		List<String> lines = new ArrayList<>();
+
 		for (TagmodFile tmFile : inputArgs.getTagmodFiles()) {
-			lines.add(strf("File:  %s\n%s", tmFile.getMp3File().getFilePath(), TmcViewer.describe(tmFile)));
+            List<String> tlines = new ArrayList<>();
+            if(inputArgs.isTagmod() || inputArgs.isAll())       tlines.add(TmcViewer.toStringTagmodDetails(tmFile));
+            if(inputArgs.isAudio() || inputArgs.isAll())        tlines.add(TmcViewer.toStringAudioDetails(tmFile));
+            if(inputArgs.isAttribute() || inputArgs.isAll())    tlines.add(TmcViewer.toStringMP3Attributes(tmFile));
+            if(inputArgs.isTAGv2() || inputArgs.isAll())        tlines.add(TmcViewer.toStringTAGv2(tmFile));
+            if(inputArgs.isTAGv1() || inputArgs.isAll())        tlines.add(TmcViewer.toStringTAGv1(tmFile));
+            if(inputArgs.isSize() || inputArgs.isAll())         tlines.add(TmcViewer.toStringSizeDetails(tmFile));
+            // Default
+            if(tlines.isEmpty())       tlines.add(TmcViewer.toStringMP3Attributes(tmFile));
+
+			lines.add(strf("FILE:  %s\n%s", tmFile.getMp3File().getFilePath(), JkStreams.join(tlines, StringUtils.LF)));
 		}
+
 		display(JkStreams.join(lines, getLineSeparator(100)));
 	}
 
@@ -109,7 +120,7 @@ public class TmcEngine {
 				String tmp = "..." + StringUtils.substring(fn, fn.length() - (TmcConfig.getMaxHalfDisplayWidth()-10));
 				fn = tmp;
 			}
-			sarr[i] = "File:  " + fn;
+			sarr[i] = "FILE:  " + fn;
 		}
 
 		List<Pair<String, String>> pairs = new ArrayList<>();

@@ -58,16 +58,6 @@ public class TmcViewer {
 		return "MP3 ATTRIBUTES\n" + attrString;
 	}
 
-	public static String describe(TagmodFile tmFile) {
-		List<String> lines = new ArrayList<>();
-		lines.add(toStringTagmodDetails(tmFile));
-		lines.add(toStringAudioDetails(tmFile));
-		lines.add(toStringSizeDetails(tmFile));
-		tmFile.getMp3File().getTAGv2List().forEach(tag -> lines.add(toStringTAGv2(tag)));
-		lines.add(toStringTAGv1(tmFile.getMp3File().getTAGv1()));
-		return JkStreams.join(lines, StringUtils.LF);
-	}
-
 	public static String toStringTagmodDetails(TagmodFile tmFile) {
         TagmodSign sign = tmFile.getTagmodSign();
 

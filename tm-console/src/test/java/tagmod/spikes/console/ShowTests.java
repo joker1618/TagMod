@@ -12,7 +12,10 @@ public class ShowTests extends CommonTest {
 
     @Test
     public void show() {
-        doTest("show;files;");
+        doTest("show;all;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+//        doTest("show;lyrics;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+//        doTest("show;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+//        doTest("show;lyrics;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\04 Toffee.mp3"));
     }
 
     @Test
@@ -44,6 +47,10 @@ public class ShowTests extends CommonTest {
     public void printHelp() {
         display(TmcHelp.HELP);
     }
+    @Test
+    public void printAlias() {
+        display(TmcHelp.ALIASES);
+    }
 
 
 
@@ -52,7 +59,7 @@ public class ShowTests extends CommonTest {
     private void doTest(String str, Object... params) {
         TmcArgs tmcArgs = super.parseArgs(strf(str, params), true);
         TmcEngine.execute(tmcArgs);
-        display("\n\nEND");
+        display("\nEND");
     }
 
 
