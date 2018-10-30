@@ -37,7 +37,7 @@ public class TmcHelp {
             "  [ver VERSION]",
             "  [unsync]",
             "  [padding NUMBER]",
-//            "  [sign|noSign]",
+            "  [noSign]",
 			"",
 			"EDIT OPTIONS:",
 			"  [clear]",

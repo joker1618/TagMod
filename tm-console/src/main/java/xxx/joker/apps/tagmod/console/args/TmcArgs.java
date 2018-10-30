@@ -67,11 +67,9 @@ public class TmcArgs extends InputOption<TmcCmd> {
     @Opt(name = "ver", aliases = {"-ver", "version", "-version"})
     private Integer version;
     @Opt(name = "unsync", aliases = {"-unsync"})
-    private Boolean unsynchronized = false;
+    private Boolean unsynchronized;
     @Opt(name = "padding", aliases = {"-pad", "pad", "--padding"})
     private Integer padding;
-	@Opt(name = "sign", aliases = {"-sign"})
-	private Boolean sign = false;
 	@Opt(name = "noSign", aliases = {"nosign", "-nosign", "-noSign"})
 	private Boolean noSign = false;
 
@@ -177,6 +175,9 @@ public class TmcArgs extends InputOption<TmcCmd> {
     public boolean isUnsynchronized() {
         return unsynchronized != null && unsynchronized;
     }
+    public Boolean getUnsynchronized() {
+        return unsynchronized;
+    }
 
     public boolean isOutputFormats() {
         return outputFormats != null && outputFormats;
@@ -184,9 +185,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 
     public Integer getPadding() {
         return padding;
-    }
-    public boolean isSign() {
-        return sign;
     }
     public boolean isNoSign() {
         return noSign;
@@ -206,7 +204,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 		});
 	}
 
-	// todo delete
+	// todo delete below
 	public static void main(String[] args) {
 		String[] strings = StringUtils.substringsBetween(getString(), "@Opt(name = \"", "\"");
 		Arrays.stream(strings).forEach(str -> {

@@ -27,7 +27,6 @@ import xxx.joker.libs.javalibs.language.JkLanguage;
 import xxx.joker.libs.javalibs.language.JkLanguageDetector;
 import xxx.joker.libs.javalibs.utils.*;
 
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -201,17 +200,12 @@ public class TmcEngine {
 	private static void manageEdit(TmcArgs args) {
         TmcEditor editor = createEditor(args);
 
-        TxtEncoding encoding = args.getEncoding() == null ? TmcConfig.getDefaultOutputEncoding() : args.getEncoding();
-        int version = args.getVersion() == null ? TmcConfig.getDefaultOutputVersion() : args.getVersion();
-        boolean unsync = args.isUnsynchronized();
-        int padding = args.getPadding() == null ? TmcConfig.getDefaultOutputPadding() : args.getPadding();
-
         int counter = 1;
         List<TagmodFile> tagmodFiles = args.getTagmodFiles();
         for(int i = 0; i < tagmodFiles.size(); i++) {
             TagmodFile tmFile = tagmodFiles.get(i);
             try {
-                boolean changed = editor.editTagmodFile(tmFile, version, encoding, unsync, padding);
+                boolean changed = editor.editTagmodFile(tmFile, args.getVersion(), args.getEncoding(), args.getUnsynchronized(), args.getPadding());
                 display("%d\tFile %s %s", counter++, tmFile.getMp3File().getFilePath(), changed?"modified":"not changed");
             } catch (Exception ex) {
                 display("%d\tERROR editing file %s", counter++, tmFile.getMp3File().getFilePath());
@@ -224,6 +218,7 @@ public class TmcEngine {
         TmcEditor editor = new TmcEditor();
 
         editor.setClear(args.isClear());
+        editor.setNoSign(args.isNoSign());
 
         if(TmcCmd.AUTO_VALUE.equals(args.getTitle())) {
             editor.setAutoTiTle(true);

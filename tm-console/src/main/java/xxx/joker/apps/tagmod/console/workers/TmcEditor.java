@@ -4,6 +4,7 @@ import xxx.joker.apps.tagmod.common.TagmodConst;
 import xxx.joker.apps.tagmod.console.config.TmcConfig;
 import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
 import xxx.joker.apps.tagmod.model.facade.TagmodFile;
+import xxx.joker.apps.tagmod.model.facade.TagmodSign;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
@@ -37,6 +38,8 @@ public class TmcEditor {
     // remove all frames before set new ones
     private boolean clear;
 
+    private boolean noSign;
+
     private boolean autoTiTle;
     private boolean autoTrack;
     private boolean autoLyrics;
@@ -60,6 +63,10 @@ public class TmcEditor {
 
     public void setClear(boolean clear) {
         this.clear = clear;
+    }
+
+    public void setNoSign(boolean noSign) {
+        this.noSign = noSign;
     }
 
     public void setAutoTiTle(boolean autoTiTle) {
@@ -100,7 +107,7 @@ public class TmcEditor {
         this.lyrics = lyrics;
     }
 
-    public boolean editTagmodFile(TagmodFile tmFile, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws Exception {
+    public boolean editTagmodFile(TagmodFile tmFile, Integer version, TxtEncoding encoding, Boolean unsynchronized, Integer padding) throws Exception {
         TagmodAttributes tmAttribs = new TagmodAttributes();
 
         // Input attributes
@@ -135,7 +142,14 @@ public class TmcEditor {
             tmAttribs.addAllAttributes(legacy);
         }
 
-        return tmFile.persistChanges(tmAttribs, version, encoding, unsynchronized, padding);
+        // Output formats
+        TagmodSign sign = tmFile.getTagmodSign();
+        TxtEncoding enc = encoding != null ? encoding : tmFile.isTagmodSignValid() ? sign.getEncoding() : TmcConfig.getDefaultOutputEncoding();
+        int ver = version != null ? version : tmFile.isTagmodSignValid() ? sign.getVersion() : TmcConfig.getDefaultOutputVersion();
+        int pad = padding != null ? padding : TmcConfig.getDefaultOutputPadding();
+        boolean unsync = unsynchronized != null ? unsynchronized : TmcConfig.getDefaultOutputUnsynchronisation();
+
+        return tmFile.persistChanges(tmAttribs, ver, enc, unsync, pad, !noSign);
     }
 
 

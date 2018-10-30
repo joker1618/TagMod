@@ -10,10 +10,12 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.libs.javalibs.language.JkLanguage;
 import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.javalibs.utils.JkConverter;
 import xxx.joker.libs.javalibs.utils.JkEncryption;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 /**
  * TagMod Signature structure
@@ -28,6 +30,8 @@ import java.time.format.DateTimeFormatter;
  * c. an ID3v2.4 tag, with the following TXXX frames:
  *      - MD5 HASH: md5 hash of [first ID3v2 tag + ID3v1 tag)
  *      - TAG CREATION: ISO datetime
+ *      - TAG SIGN_TAG_VERSION: [2,3,4]
+ *      - TAG ENCODING: [iso,utf16,utf16be,utf8]
  *
  * This class model the c. TAGv2
  */
@@ -37,17 +41,38 @@ public class TagmodSign {
 
     private static final String MD5_HASH_DESCR = "MD5 HASH";
     private static final String TAG_CREATION_DESCR = "TAG CREATION TIME";
+    private static final String TAG_VERSION_DESCR = "TAG VERSION";
+    private static final String TAG_ENCONDING_DESCR = "TAG ENCODING";
 
-    private static final int VERSION = 4;
+    private static final int SIGN_TAG_VERSION = 4;
 
+    private boolean valid;
+    private Integer tagNum;
     private String md5hash;
     private LocalDateTime creationTime;
+    private Integer version;
+    private TxtEncoding encoding;
 
     private TagmodSign() {}
 
-    public static TagmodSign parse(TAGv2 tagv2) {
-        if(tagv2.getVersion() != VERSION)   return null;
-        if(tagv2.getFrameList().size() != 2)    return null;
+    public static TagmodSign parse(MP3File mp3File) {
+        List<TAGv2> flist = mp3File.getTAGv2List();
+        TagmodSign sign = null;
+        int i;
+        for(i = 0; i < flist.size() && sign == null; i++) {
+            sign = parse(flist.get(i));
+        }
+
+        if(sign == null)    return null;
+
+        sign.tagNum = i;
+        sign.valid = checkValidity(mp3File, sign.md5hash);
+
+        return sign;
+    }
+    private static TagmodSign parse(TAGv2 tagv2) {
+        if(tagv2.getVersion() != SIGN_TAG_VERSION)   return null;
+        if(tagv2.getFrameList().size() != 4)    return null;
 
         TagmodSign tagmodSign = new TagmodSign();
 
@@ -64,24 +89,24 @@ public class TagmodSign {
         tagmodSign.creationTime = parseTagCreation(tinfo.getInfo());
         if(tagmodSign.creationTime == null)     return null;
 
+        frame = tagv2.getFrameList().get(2);
+        if(frame.getFrameName() != FrameName.TXXX)  return null;
+        tinfo = frame.getFrameData();
+        if(!TAG_VERSION_DESCR.equals(tinfo.getDescription()))   return null;
+        tagmodSign.version = JkConverter.stringToInteger(tinfo.getDescription());
+        if(tagmodSign.version == null)     return null;
+
+        frame = tagv2.getFrameList().get(3);
+        if(frame.getFrameName() != FrameName.TXXX)  return null;
+        tinfo = frame.getFrameData();
+        if(!TAG_ENCONDING_DESCR.equals(tinfo.getDescription()))   return null;
+        tagmodSign.encoding = TxtEncoding.fromLabel(tinfo.getDescription());
+        if(tagmodSign.encoding == null)     return null;
+
         return tagmodSign;
     }
 
-    public static TagmodSign create(String md5hash) {
-        TagmodSign sign = new TagmodSign();
-        sign.md5hash = md5hash;
-        sign.creationTime = LocalDateTime.now();
-        return sign;
-    }
-
-    public byte[] toTAGv2Bytes() {
-        TAGv2Builder builder = new TAGv2Builder();
-        builder.addFrameData(FrameName.TXXX, new UserTextInfo(MD5_HASH_DESCR, md5hash));
-        builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_CREATION_DESCR, creationTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        return builder.buildBytes(VERSION, TxtEncoding.ISO_8859_1, true, 0);
-    }
-
-    public boolean isValidFor(MP3File mp3File) {
+    private static boolean checkValidity(MP3File mp3File, String md5hash) {
         if(mp3File.getTAGv2List().size() != 2 || mp3File.getTAGv1() == null) {
             return false;
         }
@@ -98,6 +123,26 @@ public class TagmodSign {
         long sum = t2bytes.length + signLen + songLen + t1bytes.length;
 
         return mp3File.getFileSize() == sum;
+    }
+
+    public static TagmodSign create(String md5hash, int version, TxtEncoding enc) {
+        TagmodSign sign = new TagmodSign();
+        sign.md5hash = md5hash;
+        sign.creationTime = LocalDateTime.now();
+        sign.version = version;
+        sign.encoding = enc;
+        return sign;
+    }
+
+    public byte[] toTAGv2Bytes() {
+        TAGv2Builder builder = new TAGv2Builder();
+        builder.addFrameData(FrameName.TXXX, new UserTextInfo(MD5_HASH_DESCR, md5hash));
+        builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_CREATION_DESCR, creationTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
+        if(isValid()) {
+            builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_VERSION_DESCR, version + ""));
+            builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_ENCONDING_DESCR, encoding.getLabel()));
+        }
+        return builder.buildBytes(SIGN_TAG_VERSION, TxtEncoding.UTF_16, true, 0);
     }
 
     private static LocalDateTime parseTagCreation(String str) {
@@ -122,5 +167,21 @@ public class TagmodSign {
 
     public LocalDateTime getCreationTime() {
         return creationTime;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public TxtEncoding getEncoding() {
+        return encoding;
+    }
+
+    public Integer getTagNum() {
+        return tagNum;
     }
 }

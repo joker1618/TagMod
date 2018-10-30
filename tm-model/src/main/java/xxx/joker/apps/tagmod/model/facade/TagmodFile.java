@@ -34,7 +34,6 @@ public class TagmodFile {
 	private MP3File mp3File;
 
 	private TagmodSign tagmodSign;
-	private boolean tagmodSignValid;
 
 	private List<Pair<MP3Attribute,ID3v2Frame>> attributeFrames;
 	private List<ID3v2Frame> unmanagedFrames;   // frames not used in MP3Attribute and duplicated frames
@@ -64,10 +63,10 @@ public class TagmodFile {
     }
 
     public boolean isTagmodSignValid() {
-        return tagmodSignValid;
+        return tagmodSign != null && tagmodSign.isValid();
     }
 
-    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, int padding) throws Exception {
+    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, int padding, boolean signed) throws Exception {
         Map<MP3Attribute, List<IFrameData>> attrMap = newAttribs.getAttributesDataMap();
 
         byte[] tagv2Bytes;
@@ -92,14 +91,18 @@ public class TagmodFile {
             tagv2Bytes = tb.buildBytes(version, encoding, unsynchronized, padding);
             tagv1Bytes = createTAGv1(newAttribs).toBytes();
 
-            byte[] tagsBytes = JkBytes.mergeArrays(tagv2Bytes, tagv1Bytes);
-            String newMD5 = JkEncryption.getMD5(tagsBytes);
-            if(isTagmodSignValid() && newMD5.equals(tagmodSign.getMd5hash())) {
-                // No changes found, skip persist phase
-                return false;
+            if(signed) {
+                byte[] tagsBytes = JkBytes.mergeArrays(tagv2Bytes, tagv1Bytes);
+                String newMD5 = JkEncryption.getMD5(tagsBytes);
+                if (isTagmodSignValid() && newMD5.equals(tagmodSign.getMd5hash())) {
+                    // No changes found, skip persist phase
+                    return false;
+                }
+                TagmodSign sign = TagmodSign.create(newMD5, version, encoding);
+                signBytes = sign.toTAGv2Bytes();
+            } else {
+                signBytes = new byte[0];
             }
-            TagmodSign sign = TagmodSign.create(newMD5);
-            signBytes = sign.toTAGv2Bytes();
         }
 
         Path appFile = JkFiles.computeSafelyPath(mp3File.getFilePath());
@@ -110,11 +113,14 @@ public class TagmodFile {
              FileChannel chApp = rafApp.getChannel()) {
 
             long appPos = 0L;
-            if (!attrMap.isEmpty()) {
-                // ID3v2 tag
+            // ID3v2 tag
+            if (tagv2Bytes.length > 0) {
                 chApp.write(ByteBuffer.wrap(tagv2Bytes), appPos);
                 appPos += tagv2Bytes.length;
-                // Signature ID3v2 tag
+            }
+
+            // Signature ID3v2 tag
+            if (signBytes.length > 0) {
                 chApp.write(ByteBuffer.wrap(signBytes), appPos);
                 appPos += signBytes.length;
             }
@@ -130,9 +136,10 @@ public class TagmodFile {
                 appPos += numRead;
             }
 
-            if (!attrMap.isEmpty()) {
-                // ID3v1 tag
+            // ID3v1 tag
+            if (tagv1Bytes.length > 0) {
                 chApp.write(ByteBuffer.wrap(tagv1Bytes), appPos);
+                appPos += tagv1Bytes.length;
             }
 
             // Reverse bytes from app to main
@@ -186,15 +193,12 @@ public class TagmodFile {
     }
 
     private void extractMP3Attributes() {
+        tagmodSign = TagmodSign.parse(mp3File);
+
 	    for(int tagNum = 0; tagNum < mp3File.getTAGv2List().size(); tagNum++) {
             TAGv2 tagv2 = mp3File.getTAGv2List().get(tagNum);
-            TagmodSign sign = TagmodSign.parse(tagv2);
 
-            if(sign != null) {
-                this.tagmodSign = sign;
-                this.tagmodSignValid = sign.isValidFor(mp3File);
-
-            } else {
+            if(tagmodSign != null && tagmodSign.getTagNum() != tagNum) {
                 for (ID3v2Frame frame : tagv2.getFrameList()) {
                     MP3Attribute attrib = MP3Attribute.getFromFrame(frame);
                     if (attrib == null) {

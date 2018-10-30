@@ -26,6 +26,7 @@ public class TmcConfig {
 		DEFAULT_OUTPUT_ENCODING,
 		DEFAULT_OUTPUT_VERSION,
         DEFAULT_OUTPUT_PADDING,
+        DEFAULT_OUTPUT_UNSYNCHRONISATION,
 	}
 
 	private static Path CONF_PATH;
@@ -84,6 +85,12 @@ public class TmcConfig {
             "0",
             s -> JkConverter.stringToInteger(s, -1) >= 0
         ));
+        confMap.put(ConfKey.DEFAULT_OUTPUT_UNSYNCHRONISATION, new Conf(
+            ConfKey.DEFAULT_OUTPUT_UNSYNCHRONISATION,
+            "Default output unsynchronisation",
+            "false",
+            s -> true
+        ));
 	}
 	private static void readConfigFile(Path confPath) throws IOException {
 		boolean persist = false;
@@ -119,6 +126,9 @@ public class TmcConfig {
     public static int getDefaultOutputPadding() {
         return JkConverter.stringToInteger(confMap.get(ConfKey.DEFAULT_OUTPUT_PADDING).value, 0);
     }
+    public static boolean getDefaultOutputUnsynchronisation() {
+        return JkConverter.stringToBoolean(confMap.get(ConfKey.DEFAULT_OUTPUT_UNSYNCHRONISATION).value, false);
+    }
 
 	public static String toStringConfigurations() {
 		return JkStreams.join(confMap.values(), "\n\n", c -> strf("###  %s ###\n%s = %s", c.description, c.confKey.name(), c.value));
@@ -135,9 +145,6 @@ public class TmcConfig {
 		private String value;
 		private Predicate<String> valueCheck;
 
-		private Conf(ConfKey confKey, String description, String value) {
-			this(confKey, description, value, s -> true);
-		}
 		private Conf(ConfKey confKey, String description, String value, Predicate<String> valueCheck) {
 			this.confKey = confKey;
 			this.description = description;

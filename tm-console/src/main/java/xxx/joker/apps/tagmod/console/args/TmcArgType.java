@@ -64,8 +64,6 @@ public enum TmcArgType implements OptionName {
 	@OptName
 	PADDING("padding"),
 	@OptName
-	SIGN("sign"),
-	@OptName
 	NO_SIGN("noSign"),
 
 	@OptName
