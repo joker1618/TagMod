@@ -176,7 +176,6 @@ public class TmcEngine {
 	private static void manageTestOutputFormats(TmcArgs args) {
         TmcEditor editor = createEditor(args);
 
-        int padding = args.getPadding() == null ? TmcConfig.getDefaultOutputPadding() : args.getPadding();
         Path outp = null;
         int counter = 1;
 
@@ -199,7 +198,7 @@ public class TmcEngine {
                             JkFiles.copyFile(filePath, outp, true, true);
 
                             TagmodFile newTmFile = new TagmodFile(outp);
-                            boolean changed = editor.editTagmodFile(newTmFile, ver, enc, unsync, padding);
+                            boolean changed = editor.editTagmodFile(newTmFile, ver, enc, unsync, args.getPadding());
                             display("%d\tFile %s %s", counter++, outp, changed?"modified":"not changed");
                         }
                     }

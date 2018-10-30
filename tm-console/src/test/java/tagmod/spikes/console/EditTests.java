@@ -16,8 +16,8 @@ public class EditTests extends CommonTest {
 
     @Test
     public void retry() {
-//        doTest("edit;title;maronna;genre;186;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
-        doTest("delete;title;track;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+        doTest("edit;title;fio;genre;186;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+//        doTest("delete;title;track;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("edit;album;ALBUM;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
 //        doTest("edit;artist;fe;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");
 //        doTest("edit;artist;nome artista lungo per aumentare size tag;files;C:\\Users\\feder\\Desktop\\tmtests\\1985 Cosa succede in città\\04 Toffee.mp3");

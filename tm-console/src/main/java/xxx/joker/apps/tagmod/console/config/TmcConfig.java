@@ -25,7 +25,6 @@ public class TmcConfig {
 		MAX_HALF_DISPLAY_WIDTH,
 		DEFAULT_OUTPUT_ENCODING,
 		DEFAULT_OUTPUT_VERSION,
-        DEFAULT_OUTPUT_PADDING,
         DEFAULT_OUTPUT_UNSYNCHRONISATION,
 	}
 
@@ -79,12 +78,6 @@ public class TmcConfig {
 			"4",
 			s -> ID3Specs.ID3v2_SUPPORTED_VERSIONS.contains(JkConverter.stringToInteger(s, -1))
 		));
-        confMap.put(ConfKey.DEFAULT_OUTPUT_PADDING, new Conf(
-            ConfKey.DEFAULT_OUTPUT_PADDING,
-            "Default output padding",
-            "0",
-            s -> JkConverter.stringToInteger(s, -1) >= 0
-        ));
         confMap.put(ConfKey.DEFAULT_OUTPUT_UNSYNCHRONISATION, new Conf(
             ConfKey.DEFAULT_OUTPUT_UNSYNCHRONISATION,
             "Default output unsynchronisation",
@@ -123,9 +116,6 @@ public class TmcConfig {
 	public static Integer getDefaultOutputVersion() {
 		return JkConverter.stringToInteger(confMap.get(ConfKey.DEFAULT_OUTPUT_VERSION).value);
 	}
-    public static int getDefaultOutputPadding() {
-        return JkConverter.stringToInteger(confMap.get(ConfKey.DEFAULT_OUTPUT_PADDING).value, 0);
-    }
     public static boolean getDefaultOutputUnsynchronisation() {
         return JkConverter.stringToBoolean(confMap.get(ConfKey.DEFAULT_OUTPUT_UNSYNCHRONISATION).value, false);
     }

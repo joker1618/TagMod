@@ -66,7 +66,7 @@ public class TagmodFile {
         return tagmodSign != null && tagmodSign.isValid();
     }
 
-    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, int padding, boolean signed) throws Exception {
+    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, Integer padding, boolean signed) throws Exception {
         Map<MP3Attribute, List<IFrameData>> attrMap = newAttribs.getAttributesDataMap();
 
         byte[] tagv2Bytes;

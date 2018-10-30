@@ -32,11 +32,6 @@ public class TmcEditor {
 
     private static final String AUTO_LYRICS_EXT = "lyrics";
 
-    private TxtEncoding encoding;
-    private Integer version;
-    private boolean unsynchronized;
-    private int padding;
-
     // remove all frames before set new ones
     private boolean clear;
 
@@ -59,10 +54,7 @@ public class TmcEditor {
     private Set<MP3Attribute> toDeletes = new HashSet<>();
 
     public TmcEditor() {
-        this.encoding = TmcConfig.getDefaultOutputEncoding();
-        this.version = TmcConfig.getDefaultOutputVersion();
-        this.unsynchronized = false;
-        this.padding = TmcConfig.getDefaultOutputPadding();
+
     }
 
     public void setClear(boolean clear) {
@@ -198,10 +190,9 @@ public class TmcEditor {
         TagmodSign sign = tmFile.getTagmodSign();
         TxtEncoding enc = encoding != null ? encoding : tmFile.isTagmodSignValid() ? sign.getEncoding() : TmcConfig.getDefaultOutputEncoding();
         int ver = version != null ? version : tmFile.isTagmodSignValid() ? sign.getVersion() : TmcConfig.getDefaultOutputVersion();
-        int pad = padding != null ? padding : TmcConfig.getDefaultOutputPadding();
         boolean unsync = unsynchronized != null ? unsynchronized : TmcConfig.getDefaultOutputUnsynchronisation();
 
-        return tmFile.persistChanges(tmAttribs, ver, enc, unsync, pad, !noSign);
+        return tmFile.persistChanges(tmAttribs, ver, enc, unsync, padding, !noSign);
     }
 
 

@@ -143,7 +143,7 @@ public class TagmodSign {
             builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_VERSION_DESCR, version + ""));
             builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_ENCONDING_DESCR, encoding.getLabel()));
         }
-        return builder.buildBytes(SIGN_TAG_VERSION, TxtEncoding.UTF_16, true, 0);
+        return builder.buildBytes(SIGN_TAG_VERSION, TxtEncoding.UTF_16, true, null);
     }
 
     private static LocalDateTime parseTagCreation(String str) {

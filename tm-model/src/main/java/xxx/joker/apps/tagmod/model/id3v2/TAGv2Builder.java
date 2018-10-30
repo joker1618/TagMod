@@ -40,7 +40,7 @@ public class TAGv2Builder {
         return this;
     }
 
-    public byte[] buildBytes(int version, TxtEncoding encoding, boolean unsynchronized, int padding) {
+    public byte[] buildBytes(int version, TxtEncoding encoding, boolean unsynchronized, Integer padding) {
         if(framePairs.isEmpty()) {
             return new byte[0];
         }
@@ -49,14 +49,33 @@ public class TAGv2Builder {
 
         framePairs.forEach(p -> bb.add(ID3v2FrameFactory.createFrameBytes(version, p.getKey(), encoding, p.getValue(), unsynchronized)));
 
-        if(padding > 0) {
-            bb.addZeroBytes(padding);
-        }
+        int pad = padding == null ? computePaddingSize(bb.length()) : padding;
+        bb.addZeroBytes(pad);
 
         byte[] headerBytes = createTAGv2Header(version, 0, bb.length(), unsynchronized);
         bb.insertFirst(headerBytes);
 
         return bb.build();
+    }
+
+    /**
+     * ID2v2 tag size <= 1MB, padding is computed so that tag size will be a power of 2
+     * ID2v2 tag size >  1MB, padding is 1618
+     */
+    public static int computePaddingSize(long tagSize) {
+        int mb = 1024 * 1024;
+
+        if(tagSize > mb)    return 1618;
+
+        for(int exp = 1; exp <= 20; exp++) {
+            double r = Math.pow(2, exp);
+            if(tagSize <= r) {
+                int pad = (int)(r - tagSize);
+                return pad - 10; // Subtract header size
+            }
+        }
+
+        return 0;
     }
 
     private static byte[] createTAGv2Header(int version, int revision, int size, boolean unsynch) {
