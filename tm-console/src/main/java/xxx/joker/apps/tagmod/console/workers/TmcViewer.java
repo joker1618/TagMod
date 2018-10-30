@@ -21,9 +21,7 @@ import xxx.joker.libs.javalibs.utils.JkStreams;
 import xxx.joker.libs.javalibs.utils.JkStrings;
 
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
@@ -35,6 +33,58 @@ public class TmcViewer {
 	public static final String NO_VALUE = "-";
 	public static final DateTimeFormatter DEFAULT_DTF = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
 
+
+	public static String toStringSummary(List<TagmodFile> tmFiles) {
+        Map<MP3Attribute, Set<String>> mapAttr = new HashMap<>();
+        Map<Boolean, Integer> mapSign = new HashMap<>();
+        long sumLen = 0L;
+        long sumSize = 0L;
+
+        for(TagmodFile tmFile : tmFiles) {
+            sumSize += tmFile.getMp3File().getFileSize();
+            sumLen += tmFile.getMp3File().getAudioInfo().getDuration();
+
+            Boolean signStatus = tmFile.getTagmodSign() == null ? null : tmFile.getTagmodSign().isValid();
+            mapSign.put(signStatus, mapSign.getOrDefault(signStatus, 0) + 1);
+
+            TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
+            for(MP3Attribute attr : MP3Attribute.orderedValues()) {
+                mapAttr.putIfAbsent(attr, new TreeSet<>());
+                if(attr.isMultiValue()) {
+                    List<IFrameData> framesData = tmAttribs.getFramesData(attr);
+                    framesData.forEach(frameData -> mapAttr.get(attr).add(frameData.toStringInline()));
+                } else {
+                    IFrameData frameData = tmAttribs.getFrameData(attr);
+                    mapAttr.get(attr).add(strf("%s", frameData == null ? NO_VALUE : frameData.toStringInline()));
+                }
+            }
+        }
+
+        List<String> strSign = new ArrayList<>();
+        if(mapSign.containsKey(true))   strSign.add(strf("%d (VALID)", mapSign.get(true)));
+        if(mapSign.containsKey(false))  strSign.add(strf("%d (INVALID)", mapSign.get(false)));
+        if(mapSign.containsKey(null))   strSign.add(strf("%d (NO)", mapSign.get(null)));
+
+        List<String> lines = new ArrayList<>();
+        lines.add(strf("NUM FILES:;%d", tmFiles.size()));
+        lines.add(strf("TOT SIZE:;%s", JkOutputFmt.humanSize(sumSize)));
+        lines.add(strf("TOT LEN:;%s", JkTime.of(sumLen).toStringElapsed(false)));
+        lines.add(strf("SIGNED:;%s", JkStreams.join(strSign, ", ")));
+        lines.add("");
+
+        for(MP3Attribute attr : MP3Attribute.orderedValues()) {
+            String[] values = mapAttr.getOrDefault(attr, Collections.emptySet()).toArray(new String[0]);
+            String val = values.length == 0 ? NO_VALUE : values.length == 1 ? values[0] : strf("<%d values>", values.length);
+            lines.add(strf("%s:;%s", attr, val));
+		}
+
+		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
+		outb.addLines(lines);
+		outb.insertPrefix(LEFT_PAD_PREFIX);
+		String summaryString = outb.toString(";", COLUMNS_DISTANCE);
+
+		return "SUMMARY\n" + summaryString;
+	}
 
 	public static String toStringMP3Attributes(TagmodFile tmFile) {
 		List<String> lines = new ArrayList<>();
@@ -169,17 +219,21 @@ public class TmcViewer {
 		ID3Genre genre = ID3Genre.getByNumber(tag.getGenre());
 
 		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
-		outb.addLines(strf("Title:;%s", tag.getTitle()));
-		outb.addLines(strf("Artist:;%s", tag.getArtist()));
-		outb.addLines(strf("Album:;%s", tag.getAlbum()));
-		outb.addLines(strf("Year:;%s", tag.getYear()));
-		outb.addLines(strf("Comments:;%s", tag.getComments()));
+		outb.addLines(strf("Title:;%s", noValueParse(tag.getTitle())));
+		outb.addLines(strf("Artist:;%s", noValueParse(tag.getArtist())));
+		outb.addLines(strf("Album:;%s", noValueParse(tag.getAlbum())));
+		outb.addLines(strf("Year:;%s", noValueParse(tag.getYear())));
+		outb.addLines(strf("Comments:;%s", noValueParse(tag.getComments())));
 		outb.addLines(strf("Track:;%s", tag.getRevision() == 1 ? String.valueOf(tag.getTrack()) : NO_VALUE));
 		outb.addLines(strf("Genre:;%s", genre == null ? NO_VALUE : strf("%s (%d)", genre.name(), genre.getGenreNum())));
 		outb.insertPrefix(LEFT_PAD_PREFIX);
 
 		return strf("TAGv1.%d\n%s", tag.getRevision(), outb.toString(";", COLUMNS_DISTANCE));
 	}
+
+	private static String noValueParse(String str) {
+	    return StringUtils.isBlank(str) ? NO_VALUE : str;
+    }
 
 	public static List<String> toStringLyrics(TagmodFile tmFile) {
 		List<Lyrics> lyricsList = new ArrayList<>();

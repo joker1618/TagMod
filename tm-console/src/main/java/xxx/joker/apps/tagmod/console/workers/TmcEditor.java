@@ -22,7 +22,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
@@ -54,6 +56,8 @@ public class TmcEditor {
     private Picture cover;
     private Lyrics lyrics;
 
+    private Set<MP3Attribute> toDeletes = new HashSet<>();
+
     public TmcEditor() {
         this.encoding = TmcConfig.getDefaultOutputEncoding();
         this.version = TmcConfig.getDefaultOutputVersion();
@@ -72,39 +76,84 @@ public class TmcEditor {
     public void setAutoTiTle(boolean autoTiTle) {
         this.autoTiTle = autoTiTle;
     }
-	public void setAutoTrack(boolean autoTrack) {
+    public void setAutoTrack(boolean autoTrack) {
         this.autoTrack = autoTrack;
     }
-	public void setAutoLyrics(boolean autoLyrics) {
+    public void setAutoLyrics(boolean autoLyrics) {
         this.autoLyrics = autoLyrics;
     }
 
     public void setTitle(String title) {
         this.title = title;
     }
-	public void setArtist(String artist) {
+    public void setArtist(String artist) {
         this.artist = artist;
     }
-	public void setAlbum(String album) {
+    public void setAlbum(String album) {
         this.album = album;
     }
-	public void setYear(Integer year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
-	public void setTrack(ID3SetPos track) {
+    public void setTrack(ID3SetPos track) {
         this.track = track;
     }
-	public void setGenre(ID3Genre genre) {
+    public void setGenre(ID3Genre genre) {
         this.genre = genre;
     }
-	public void setCdPos(ID3SetPos cdPos) {
+    public void setCdPos(ID3SetPos cdPos) {
         this.cdPos = cdPos;
     }
-	public void setCover(Picture cover) {
+    public void setCover(Picture cover) {
         this.cover = cover;
     }
-	public void setLyrics(Lyrics lyrics) {
+    public void setLyrics(Lyrics lyrics) {
         this.lyrics = lyrics;
+    }
+
+    public void deleteTitle(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.TITLE);
+        else        toDeletes.remove(MP3Attribute.TITLE);
+    }
+    public void deleteArtist(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.ARTIST);
+        else        toDeletes.remove(MP3Attribute.ARTIST);
+    }
+    public void deleteAlbum(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.ALBUM);
+        else        toDeletes.remove(MP3Attribute.ALBUM);
+    }
+    public void deleteYear(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.YEAR);
+        else        toDeletes.remove(MP3Attribute.YEAR);
+    }
+    public void deleteTrack(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.TRACK);
+        else        toDeletes.remove(MP3Attribute.TRACK);
+    }
+    public void deleteGenre(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.GENRE);
+        else        toDeletes.remove(MP3Attribute.GENRE);
+    }
+    public void deleteCdPos(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.CD_POS);
+        else        toDeletes.remove(MP3Attribute.CD_POS);
+    }
+    public void deleteCover(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.COVER);
+        else        toDeletes.remove(MP3Attribute.COVER);
+    }
+    public void deleteLyrics(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.LYRICS);
+        else        toDeletes.remove(MP3Attribute.LYRICS);
+    }
+    public void deletePictures(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.PICTURE);
+        else        toDeletes.remove(MP3Attribute.PICTURE);
+    }
+    public void deleteOtherLyrics(boolean delete) {
+        if(delete)  toDeletes.add(MP3Attribute.OTHER_LYRICS);
+        else        toDeletes.remove(MP3Attribute.OTHER_LYRICS);
     }
 
     public boolean editTagmodFile(TagmodFile tmFile, Integer version, TxtEncoding encoding, Boolean unsynchronized, Integer padding) throws Exception {
@@ -141,6 +190,9 @@ public class TmcEditor {
             TagmodAttributes legacy = tmFile.getTagmodAttributes();
             tmAttribs.addAllAttributes(legacy);
         }
+
+        // Remove attributes to delete
+        toDeletes.forEach(tmAttribs::removeAttribute);
 
         // Output formats
         TagmodSign sign = tmFile.getTagmodSign();

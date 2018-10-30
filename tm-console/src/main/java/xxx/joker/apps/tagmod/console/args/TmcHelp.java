@@ -23,14 +23,14 @@ public class TmcHelp {
 		List<String> helpLines = Arrays.asList(
             "tagmod;show;[attr] [t1] [t2] [audio] [tm] [size] [all]  files <MP3_FILES>",
             "tagmod;show;lyrics  files <MP3_FILES>",
-            "tagmod;summary;lyrics  files <MP3_FILES>",
+            "tagmod;summary;files <MP3_FILES>",
             "tagmod;diff;<MP3_FILE_1> <MP3_FILE_2>",
             "tagmod;info;(picType|genre)",
             "tagmod;config",
           	"tagmod;export;(pics|lyrics)  files <MP3_FILES>",
 			"tagmod;edit;[EDIT OPTIONS] [OUTPUT_FORMAT]  files <MP3_FILES>",
 			"tagmod;test;outputFormats  [EDIT OPTIONS]  [OUTPUT_FORMAT]  files <MP3_FILES>",
-//			"tagmod;delete;[DELETE OPTIONS...]  [OUTPUT_FORMAT]  files <MP3_FILES>",
+			"tagmod;delete;[DELETE OPTIONS...]  files <MP3_FILES>",
             "tagmod;[help]"
 		);
         helpLines = new JkColumnFmtBuilder().addLines(helpLines).toLines(";", 2);
@@ -55,10 +55,10 @@ public class TmcHelp {
 			"  [cdPos  X[/Y]]",
 			"  [cover  COVER_PATH]",
 			"  [lyrics LYRICS_PATH|_auto]",
-//			"",
-//			"DELETE OPTIONS:",
-//			"  [title]  [artist]  [album]   [year]  [track]  [genre]",
-//			"  [cdPos]  [cover]   [lyrics]  [pics]  [otherLyrics]",
+			"",
+			"DELETE OPTIONS:",
+			"  [title]  [artist]  [album]   [year]  [track]  [genre]",
+			"  [cdPos]  [cover]   [lyrics]  [pics]  [otherLyrics]",
 			""
 		);
 

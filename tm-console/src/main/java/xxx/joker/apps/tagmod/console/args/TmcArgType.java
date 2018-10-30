@@ -19,6 +19,10 @@ public enum TmcArgType implements OptionName {
 	EDIT("edit"),
 	@OptName
 	TEST("test"),
+	@OptName
+	DELETE("delete"),
+	@OptName
+	SUMMARY("summary"),
 
 	@OptName
 	PIC_TYPE("picType"),
@@ -30,6 +34,8 @@ public enum TmcArgType implements OptionName {
 	COVER("cover"),
 	@OptName
 	PICTURES("pics"),
+	@OptName
+	OTHER_LYRICS("otherLyrics"),
 
 	@OptName
 	TITLE("title"),

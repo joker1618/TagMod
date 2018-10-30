@@ -30,11 +30,18 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	private Boolean edit = false;
 	@Opt(name = "test", aliases = {"-test"})
 	private Boolean test = false;
+	@Opt(name = "delete", aliases = {"-delete", "del", "-del"})
+	private Boolean delete = false;
+	@Opt(name = "summary", aliases = {"-summary", "sum", "-sum"})
+	private Boolean summary = false;
 
 	@Opt(name = "picType", aliases = {"-pt", "-picType", "pictype", "-pictype"})
 	private Boolean picType = false;
 	@Opt(name = "pics", aliases = {"-pics", "picture", "-pictures"})
 	private Boolean pictures = false;
+	@Opt(name = "otherLyrics", aliases = {"-ol", "ol", "-otherLyrics"})
+	private Boolean otherLyrics = false;
+
 	@Opt(name = "title", aliases = {"-title"}, classes = {Boolean.class, String.class})
 	private Object title;
 	@Opt(name = "artist", aliases = {"-artist"}, classes = {Boolean.class, String.class})
@@ -112,11 +119,14 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	}
 
 	public boolean isPicType() {
-		return picType;
+		return picType != null && picType;
 	}
 
 	public boolean isPictures() {
-		return pictures;
+		return pictures != null && pictures;
+	}
+	public boolean isOtherLyrics() {
+		return otherLyrics != null && otherLyrics;
 	}
 
 	public boolean isTitle() {
@@ -148,7 +158,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	}
 
     public boolean isClear() {
-		return clear;
+		return clear != null && clear;
 	}
 
     public boolean isTagmod() {
@@ -222,7 +232,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
         return padding;
     }
     public boolean isNoSign() {
-        return noSign;
+        return noSign != null && noSign;
     }
 
 	private List<TagmodFile> toTagmodFiles(Path[] pathArr) {
@@ -239,46 +249,4 @@ public class TmcArgs extends InputOption<TmcCmd> {
 		});
 	}
 
-	// todo delete below
-	public static void main(String[] args) {
-		String[] strings = StringUtils.substringsBetween(getString(), "@Opt(name = \"", "\"");
-		Arrays.stream(strings).forEach(str -> {
-			display("@OptName");
-			display("%s(\"%s\")", str.toUpperCase(), str);
-		});
-
-	}
-	private static String getString() {
-		return "@Opt(name = \"show\", aliases = {\"-show\"})\n" +
-				   "\tprivate Boolean show = false;\n" +
-				   "\t@Opt(name = \"describe\", aliases = {\"descr\", \"-descr\", \"-describe\"})\n" +
-				   "\tprivate Boolean describe = false;\n" +
-				   "\t@Opt(name = \"diff\", aliases = {\"-diff\"})\n" +
-				   "\tprivate Path[] diff;\n" +
-				   "\t@Opt(name = \"info\", aliases = {\"-info\"})\n" +
-				   "\tprivate Boolean info = false;\n" +
-				   "\t@Opt(name = \"export\", aliases = {\"-export\"})\n" +
-				   "\tprivate Boolean export = false;\n" +
-				   "\n" +
-				   "\n" +
-				   "\t@Opt(name = \"picType\", aliases = {\"-pt\", \"-picType\", \"pictype\", \"-pictype\"})\n" +
-				   "\tprivate Boolean picType = false;\n" +
-				   "\t@Opt(name = \"genre\", aliases = {\"-genre\"})\n" +
-				   "\tprivate Boolean genre = false;\n" +
-				   "\t@Opt(name = \"cover\", aliases = {\"-cover\"})\n" +
-				   "\tprivate Boolean cover = false;\n" +
-				   "\t@Opt(name = \"pics\", aliases = {\"-pics\"})\n" +
-				   "\tprivate Boolean pics = false;\n" +
-				   "\t@Opt(name = \"lyrics\", aliases = {\"-l\", \"-lyrics\"})\n" +
-				   "\tprivate Boolean lyrics = false;\n" +
-				   "\n" +
-				   "\t@Opt(name = \"-r\", aliases = {\"recursive\"})\n" +
-				   "\tprivate Boolean recursive = false;\n" +
-				   "\n" +
-				   "\t@Opt(name = \"files\", aliases = {\"-f\", \"-files\"})\n" +
-				   "\tprivate Path[] paths;\n" +
-				   "\n" +
-				   "\t@Opt(name = \"help\", aliases = {\"-h\", \"--help\"})\n" +
-				   "\tprivate Boolean help = false;";
-	}
 }

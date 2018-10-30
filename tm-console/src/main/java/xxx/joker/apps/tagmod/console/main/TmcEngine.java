@@ -61,7 +61,11 @@ public class TmcEngine {
 				manageExport(inputArgs);
 				break;
             case CMD_EDIT:
+            case CMD_DELETE:
 				manageEdit(inputArgs);
+				break;
+            case CMD_SUMMARY:
+				manageSummary(inputArgs);
 				break;
             case CMD_TEST_OUTPUT_FORMATS:
 				manageTestOutputFormats(inputArgs);
@@ -225,12 +229,18 @@ public class TmcEngine {
         }
     }
 
+    private static void manageSummary(TmcArgs args) {
+        display(TmcViewer.toStringSummary(args.getTagmodFiles()));
+    }
+
     private static TmcEditor createEditor(TmcArgs args) {
         TmcEditor editor = new TmcEditor();
 
+        // Clear and sign
         editor.setClear(args.isClear());
         editor.setNoSign(args.isNoSign());
 
+        // MP3 attributes
         if(TmcCmd.AUTO_VALUE.equals(args.getTitle())) {
             editor.setAutoTiTle(true);
         } else {
@@ -283,6 +293,19 @@ public class TmcEngine {
             logger.error("ERROR parsing lyrics", ex);
             throw new JkRuntimeException(ex, "ERROR parsing lyrics %s", args.getLyrics());
         }
+
+        // Attributes to delete
+        editor.deleteTitle(args.isTitle());
+        editor.deleteArtist(args.isArtist());
+        editor.deleteAlbum(args.isAlbum());
+        editor.deleteYear(args.isYear());
+        editor.deleteTrack(args.isTrack());
+        editor.deleteGenre(args.isGenre());
+        editor.deleteCdPos(args.isCdPos());
+        editor.deleteCover(args.isConfig());
+        editor.deleteLyrics(args.isLyrics());
+        editor.deletePictures(args.isPictures());
+        editor.deleteOtherLyrics(args.isOtherLyrics());
 
         return editor;
     }

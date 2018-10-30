@@ -89,7 +89,7 @@ public class TagmodFile {
             );
             tb.addFrameData(FrameName.COMM, TagmodSign.getID3v2FrameComment());
             tagv2Bytes = tb.buildBytes(version, encoding, unsynchronized, padding);
-            tagv1Bytes = createTAGv1(newAttribs).toBytes();
+            tagv1Bytes = createTAGv1(newAttribs, signed).toBytes();
 
             if(signed) {
                 byte[] tagsBytes = JkBytes.mergeArrays(tagv2Bytes, tagv1Bytes);
@@ -159,7 +159,7 @@ public class TagmodFile {
         }
     }
 
-    private TAGv1 createTAGv1(TagmodAttributes tmAttribs) {
+    private TAGv1 createTAGv1(TagmodAttributes tmAttribs, boolean insertSign) {
         Integer trackNum = getIntAttr(tmAttribs, TRACK);
         Integer genreNum = getIntAttr(tmAttribs, GENRE);
         TAGv1 tag = new TAGv1Impl();
@@ -168,7 +168,7 @@ public class TagmodFile {
         tag.setArtist(getStringAttr(tmAttribs, ARTIST));
         tag.setAlbum(getStringAttr(tmAttribs, ALBUM));
         tag.setYear(getStringAttr(tmAttribs, YEAR));
-        tag.setComments(TagmodSign.getID3TagmodComment());
+        tag.setComments(insertSign ? TagmodSign.getID3TagmodComment() : "");
         if(trackNum != null)    tag.setTrack(trackNum);
         if(genreNum != null)    tag.setGenre(genreNum);
         return tag;

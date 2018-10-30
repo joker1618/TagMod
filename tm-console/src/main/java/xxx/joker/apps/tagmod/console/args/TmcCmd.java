@@ -44,6 +44,16 @@ public enum TmcCmd implements InputCommand {
 	),
 
 	@Cmd
+	CMD_SUMMARY(
+		new CmdParam(new CmdOption(SUMMARY)),
+		new CmdParam(new CmdOption(FILES,
+			ArgsParse.windowsPathFormat(),
+			TmcArgFunction.expandPaths(),
+			TmcArgFunction.validatePaths())
+		)
+	),
+
+	@Cmd
 	CMD_DIFF(
 		new CmdParam(new CmdOption(DIFF,
 			ArgsParse.windowsPathFormat(),
@@ -131,28 +141,26 @@ public enum TmcCmd implements InputCommand {
 		))
 	),
 
-//	@Cmd
-//	CMD_DELETE(
-//		new CmdParam(new CmdOption(DELETE)),
-//		new CmdParam(false, new CmdOption(TITLE, Boolean.class)),
-//		new CmdParam(false, new CmdOption(ARTIST, Boolean.class)),
-//		new CmdParam(false, new CmdOption(ALBUM, Boolean.class)),
-//		new CmdParam(false, new CmdOption(YEAR, Boolean.class)),
-//		new CmdParam(false, new CmdOption(TRACK, Boolean.class)),
-//		new CmdParam(false, new CmdOption(GENRE, Boolean.class)),
-//		new CmdParam(false, new CmdOption(CD_POS, Boolean.class)),
-//		new CmdParam(false, new CmdOption(COVER, Boolean.class)),
-//		new CmdParam(false, new CmdOption(PICTURES)),
-//		new CmdParam(false, new CmdOption(LYRICS, Boolean.class)),
-//		new CmdParam(false, new CmdOption(LYRICS_TRANSLATION, Boolean.class)),
-//		new CmdParam(false, new CmdOption(ALL)),
-//		new CmdParam(false, new CmdOption(ENCODING, getEncodingChecker())),
-//		new CmdParam(false, new CmdOption(VERSION, getVersionChecker())),
-//		new CmdParam(new CmdOption(FILES,
-//			ArgsParse.windowsPathFormat(),
-//			TmcArgFunction.validateDistinctCoverPaths()
-//		))
-//	),
+	@Cmd
+	CMD_DELETE(
+		new CmdParam(new CmdOption(DELETE)),
+		new CmdParam(false, new CmdOption(TITLE, Boolean.class)),
+		new CmdParam(false, new CmdOption(ARTIST, Boolean.class)),
+		new CmdParam(false, new CmdOption(ALBUM, Boolean.class)),
+		new CmdParam(false, new CmdOption(YEAR, Boolean.class)),
+		new CmdParam(false, new CmdOption(TRACK, Boolean.class)),
+		new CmdParam(false, new CmdOption(GENRE, Boolean.class)),
+		new CmdParam(false, new CmdOption(CD_POS, Boolean.class)),
+		new CmdParam(false, new CmdOption(COVER, Boolean.class)),
+		new CmdParam(false, new CmdOption(PICTURES)),
+		new CmdParam(false, new CmdOption(LYRICS, Boolean.class)),
+		new CmdParam(false, new CmdOption(OTHER_LYRICS)),
+		new CmdParam(new CmdOption(FILES,
+                ArgsParse.windowsPathFormat(),
+                TmcArgFunction.expandPaths(),
+                TmcArgFunction.validatePaths(
+		)))
+	),
 
 	@Cmd
 	CMD_HELP(
