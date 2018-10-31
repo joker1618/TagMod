@@ -198,7 +198,7 @@ public class TagmodFile {
 	    for(int tagNum = 0; tagNum < mp3File.getTAGv2List().size(); tagNum++) {
             TAGv2 tagv2 = mp3File.getTAGv2List().get(tagNum);
 
-            if(tagmodSign != null && tagmodSign.getTagNum() != tagNum) {
+            if(tagmodSign == null || tagmodSign.getTagNum() != tagNum) {
                 for (ID3v2Frame frame : tagv2.getFrameList()) {
                     MP3Attribute attrib = MP3Attribute.getFromFrame(frame);
                     if (attrib == null) {
