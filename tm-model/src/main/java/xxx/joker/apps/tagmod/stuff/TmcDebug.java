@@ -32,7 +32,7 @@ public class TmcDebug {
         }
     }
 
-    public static void showRecap(long totalElapsed) {
+    public static String toStringRecap(long totalElapsed) {
         JkColumnFmtBuilder b = new JkColumnFmtBuilder();
         b.addLines(strf("Total:|%s|%d", JkTime.of(totalElapsed).toStringElapsed(true), totalElapsed));
         Map<String, List<Long>> eventMap = JkStreams.toMap(pairs, Pair::getKey, Pair::getValue);
@@ -41,6 +41,6 @@ public class TmcDebug {
             double perc = (double)sum/totalElapsed;
             b.addLines(strf("%s:|%s|%d|%.2f%s", k, JkTime.of(sum).toStringElapsed(true), sum, perc, "%"));
         });
-        display("%s", b.toString("|", 2));
+        return strf("%s", b.toString("|", 2));
     }
 }

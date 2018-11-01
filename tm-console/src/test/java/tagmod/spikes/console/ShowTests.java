@@ -65,9 +65,7 @@ public class ShowTests extends CommonTest {
         TmcArgs tmcArgs = super.parseArgs(strf(str, params), true);
         TmcEngine.execute(tmcArgs);
         long elapsed = System.currentTimeMillis() - start;
-
-        display("");
-        TmcDebug.showRecap(elapsed);
+        display("\n%s", TmcDebug.toStringRecap(elapsed));
     }
 
 

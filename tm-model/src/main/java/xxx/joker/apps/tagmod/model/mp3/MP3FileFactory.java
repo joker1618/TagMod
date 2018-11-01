@@ -7,7 +7,6 @@ import xxx.joker.apps.tagmod.model.id3v1.TAGv1Impl;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2Factory;
 import xxx.joker.apps.tagmod.model.struct.FPos;
-import xxx.joker.apps.tagmod.stuff.TmcDebug;
 import xxx.joker.apps.tagmod.util.BytesScanner;
 import xxx.joker.apps.tagmod.util.TmFormat;
 import xxx.joker.libs.javalibs.utils.JkBytes;
@@ -33,11 +32,6 @@ public class MP3FileFactory {
             mp3File.setFilePath(filePath);
 			mp3File.setFileSize(raf.length());
 		}
-        TmcDebug.addTime("A");
-
-//        JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
-//        mp3File.setAudioInfo(audioInfo);
-//        TmcDebug.addTime("B");
 
         return mp3File;
 	}
