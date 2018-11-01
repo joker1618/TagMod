@@ -42,7 +42,9 @@ class FrameComments implements FrameAdapter {
 
 		Comments comm = new Comments();
 		String strLanguage = scanner.nextString(3);
-		comm.setLanguage(JkLanguage.getByLabel(strLanguage));
+        JkLanguage lan = JkLanguage.getByLabel(strLanguage);
+        lan = lan == null ? JkLanguage.ENGLISH : lan;
+        comm.setLanguage(lan);
 		comm.setDescription(scanner.nextSeparatedString(encoding));
 		scanner.skip(encoding);
 		comm.setText(scanner.asString(encoding));

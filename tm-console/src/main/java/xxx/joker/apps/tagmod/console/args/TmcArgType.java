@@ -64,6 +64,8 @@ public enum TmcArgType implements OptionName {
 	AUDIO("audio"),
 	@OptName
 	ATTRIBUTE("attr"),
+	@OptName
+	TABLE("table"),
 
 	@OptName
 	CLEAR("clear"),

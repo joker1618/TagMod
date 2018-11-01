@@ -32,8 +32,8 @@ public class Tests extends CommonTest {
 //        }
 //        display(colb.toString("|", 3));
 
-        display(""+(2.5%1));
-        display(""+(2%1));
+        display("*ciao*".replaceAll("^\\*", "").replaceAll("\\*$", ""));
+        display("**ciao**".replaceAll("^\\*", "").replaceAll("\\*$", ""));
 
 	}
 	@Test

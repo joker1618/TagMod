@@ -140,8 +140,8 @@ public class TmcEditor {
         else        toDeletes.remove(MP3Attribute.LYRICS);
     }
     public void deletePictures(boolean delete) {
-        if(delete)  toDeletes.add(MP3Attribute.PICTURE);
-        else        toDeletes.remove(MP3Attribute.PICTURE);
+        if(delete)  toDeletes.add(MP3Attribute.PICTURES);
+        else        toDeletes.remove(MP3Attribute.PICTURES);
     }
     public void deleteOtherLyrics(boolean delete) {
         if(delete)  toDeletes.add(MP3Attribute.OTHER_LYRICS);
@@ -188,14 +188,12 @@ public class TmcEditor {
 
         // Output formats
         TagmodSign sign = tmFile.getTagmodSign();
-        TxtEncoding enc = encoding != null ? encoding : tmFile.isTagmodSignValid() ? sign.getEncoding() : TmcConfig.getDefaultOutputEncoding();
-        int ver = version != null ? version : tmFile.isTagmodSignValid() ? sign.getVersion() : TmcConfig.getDefaultOutputVersion();
-        boolean unsync = unsynchronized != null ? unsynchronized : TmcConfig.getDefaultOutputUnsynchronisation();
+        TxtEncoding enc = encoding != null ? encoding : tmFile.isTagmodSignValid() ? sign.getEncoding() : TmcConfig.DEFAULT_OUTPUT_ENCODING;
+        int ver = version != null ? version : tmFile.isTagmodSignValid() ? sign.getVersion() : TmcConfig.DEFAULT_OUTPUT_VERSION;
+        boolean unsync = unsynchronized != null ? unsynchronized : TmcConfig.DEFAULT_OUTPUT_UNSYNCHRONISATION;
 
         return tmFile.persistChanges(tmAttribs, ver, enc, unsync, padding, !noSign);
     }
-
-
 
     private Lyrics parseLyrics(Path lyricsPath) throws IOException {
         if(!Files.exists(lyricsPath))    return null;

@@ -9,10 +9,7 @@ import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.args.TmcCmd;
 import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.config.TmcConfig;
-import xxx.joker.apps.tagmod.console.workers.TmcEditor;
-import xxx.joker.apps.tagmod.console.workers.TmcExporter;
-import xxx.joker.apps.tagmod.console.workers.TmcInfo;
-import xxx.joker.apps.tagmod.console.workers.TmcViewer;
+import xxx.joker.apps.tagmod.console.workers.*;
 import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
@@ -120,8 +117,8 @@ public class TmcEngine {
 		String[] sarr = new String[2];
 		for(int i = 0; i < 2; i++) {
 			String fn = diff[i].getMp3File().getFilePath().toString();
-			if(fn.length() > TmcConfig.getMaxHalfDisplayWidth()-7) {
-				String tmp = "..." + StringUtils.substring(fn, fn.length() - (TmcConfig.getMaxHalfDisplayWidth()-10));
+			if(fn.length() > TmcConfig.MAX_HALF_DISPLAY_WIDTH-7) {
+				String tmp = "..." + StringUtils.substring(fn, fn.length() - (TmcConfig.MAX_HALF_DISPLAY_WIDTH-10));
 				fn = tmp;
 			}
 			sarr[i] = "FILE:  " + fn;
@@ -142,7 +139,7 @@ public class TmcEngine {
 	}
 
 	private static void manageConfig() {
-        display("TAGMOD CONFIGURATIONS  (%s)\n\n%s", TmcConfig.getConfPath().toAbsolutePath().normalize(), TmcConfig.toStringConfigurations());
+        display("TAGMOD CONFIGURATIONS\n\n%s", JkStrings.leftPadLines(TmcConfig.toStringConfigurations(), " ", 3));
 	}
 
 	private static void manageExport(TmcArgs inputArgs) {
@@ -229,7 +226,10 @@ public class TmcEngine {
     }
 
     private static void manageSummary(TmcArgs args) {
-        display(TmcViewer.toStringSummary(args.getTagmodFiles()));
+	    String str;
+	    if(args.isTable())  str = TmcSummary.toStringSummaryTable(args.getTagmodFiles());
+	    else                str = TmcSummary.toStringSummaryAttributes(args.getTagmodFiles());
+        display(str);
     }
 
     private static TmcEditor createEditor(TmcArgs args) {

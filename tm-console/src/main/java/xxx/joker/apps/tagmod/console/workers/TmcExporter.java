@@ -19,7 +19,7 @@ public class TmcExporter {
 	public static List<Path> exportPictures(TagmodFile tmFile) {
 
         TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
-        List<Picture> pics = new ArrayList<>(tmAttribs.getFramesDataCasted(MP3Attribute.PICTURE));
+        List<Picture> pics = new ArrayList<>(tmAttribs.getFramesDataCasted(MP3Attribute.PICTURES));
         Picture cover = tmAttribs.getFrameDataCasted(MP3Attribute.COVER);
 		if(cover != null) {
 			pics.add(0, cover);

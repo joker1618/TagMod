@@ -27,7 +27,7 @@ public enum MP3Attribute {
 	GENRE           (FrameName.TCON, 40),
 	CD_POS			(FrameName.TPOS, 45, false, false),
 	COVER			(FrameName.APIC, 50, false, f -> ((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR)),
-	PICTURE			(FrameName.APIC, 55, true, false, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
+	PICTURES(FrameName.APIC, 55, true, false, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
 	LYRICS     		(FrameName.USLT, 60, false, f -> ((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
 	OTHER_LYRICS	(FrameName.USLT, 65, true, false, f -> !((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
 

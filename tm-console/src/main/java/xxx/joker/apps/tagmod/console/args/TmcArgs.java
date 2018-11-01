@@ -76,6 +76,8 @@ public class TmcArgs extends InputOption<TmcCmd> {
     private Boolean audio = false;
     @Opt(name = "all", aliases = {"-all"})
     private Boolean all = false;
+    @Opt(name = "table", aliases = {"-table"})
+    private Boolean table = false;
 
     @Opt(name = "outputFormats", aliases = {"-of", "of"})
 	private Boolean outputFormats = false;
@@ -179,6 +181,9 @@ public class TmcArgs extends InputOption<TmcCmd> {
     }
     public boolean isAttribute() {
         return attribute != null && attribute;
+    }
+    public boolean isTable() {
+        return table != null && table;
     }
 
     public String getTitle() {

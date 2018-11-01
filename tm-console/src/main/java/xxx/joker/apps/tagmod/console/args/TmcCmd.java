@@ -46,6 +46,7 @@ public enum TmcCmd implements InputCommand {
 	@Cmd
 	CMD_SUMMARY(
 		new CmdParam(new CmdOption(SUMMARY)),
+		new CmdParam(false, new CmdOption(TABLE)),
 		new CmdParam(new CmdOption(FILES,
 			ArgsParse.windowsPathFormat(),
 			TmcArgFunction.expandPaths(),
