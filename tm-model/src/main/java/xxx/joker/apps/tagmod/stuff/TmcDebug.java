@@ -21,6 +21,7 @@ public class TmcDebug {
     public static void addTime(String eventName) {
         addTime(eventName, false);
     }
+
     public static void addTime(String eventName, boolean display) {
         long ms = System.currentTimeMillis();
         long elapsed = previous == null ? 0L : ms-previous;
@@ -37,9 +38,11 @@ public class TmcDebug {
         b.addLines(strf("Total:|%s|%d", JkTime.of(totalElapsed).toStringElapsed(true), totalElapsed));
         Map<String, List<Long>> eventMap = JkStreams.toMap(pairs, Pair::getKey, Pair::getValue);
         eventMap.forEach((k,v) -> {
-            long sum = v.stream().mapToLong(l -> l).sum();
-            double perc = (double)sum/totalElapsed;
-            b.addLines(strf("%s:|%s|%d|%.2f%s", k, JkTime.of(sum).toStringElapsed(true), sum, perc, "%"));
+            JkTime tot = JkTime.of(v.stream().mapToLong(l -> l).sum());
+            double totPerc = (double)tot.getTotalMillis()/totalElapsed;
+            JkTime one = JkTime.of((long)((double)tot.getTotalMillis() / v.size()));
+            double onePerc = (double)one.getTotalMillis()/totalElapsed;
+            b.addLines(strf("%s:|%s|%.2f%s|-|%s (%d)|%.2f%s", k, tot.toStringElapsed(true), totPerc, "%", one.toStringElapsed(true), v.size(), onePerc, "%"));
         });
         return strf("%s", b.toString("|", 2));
     }
