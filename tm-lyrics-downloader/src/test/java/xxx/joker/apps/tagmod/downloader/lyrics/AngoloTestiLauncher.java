@@ -3,14 +3,9 @@ package xxx.joker.apps.tagmod.downloader.lyrics;
 import org.junit.Test;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.LyricsModel;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.WebLyrics;
-import xxx.joker.libs.javalibs.utils.JkStreams;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.stream.Collectors;
-
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
 public class AngoloTestiLauncher {
 

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 //	AAAAAAAA AAABBCCD EEEEFFGH IIJJKLMM
 //</editor-fold>
 
-class MP3FrameHeader {
+public class MP3FrameHeader {
 
 	// 11111111 111 				// AAAAAAAA AAA
 	private double mpegVersion;    	// BB
@@ -90,7 +90,7 @@ class MP3FrameHeader {
 		emphasis = MM;
 	}
 
-	static MP3FrameHeader parseMP3FrameHeader(byte[] data) {
+	public static MP3FrameHeader parseMP3FrameHeader(byte[] data) {
 		return !isValidFrame(data) ? null : new MP3FrameHeader(data);
 	}
 
@@ -173,4 +173,20 @@ class MP3FrameHeader {
 		int expected = 0x01 << bit;
 		return (b & (0x01 << bit)) == expected;
 	}
+
+    public double getMpegVersion() {
+        return mpegVersion;
+    }
+
+    public int getLayer() {
+        return layer;
+    }
+
+    public int getBitRate() {
+        return bitRate;
+    }
+
+    public int getSamplingRate() {
+        return samplingRate;
+    }
 }

@@ -4,7 +4,7 @@ import org.junit.Test;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.main.TmcEngine;
-import xxx.joker.libs.javalibs.datetime.JkTime;
+import xxx.joker.apps.tagmod.stuff.TmcDebug;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
@@ -13,9 +13,10 @@ public class ShowTests extends CommonTest {
 
     @Test
     public void show() {
-//        doTest("show;all;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
-//        doTest("sum;files;%s", HOME.resolve("Desktop\\tmtests\\04 Toffee.mp3"));
-        doTest("sum;files;%s", HOME.resolve("Desktop\\tmtests\\1985 Cosa succede in città"));
+//        doTest("show;audio;files;%s", HOME.resolve("Desktop\\tmtests"));
+//        doTest("sum;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
+        doTest("show;audio;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\04 Toffee.mp3"));
+//        doTest("sum;files;%s", HOME.resolve("Desktop\\tmtests\\1985 Cosa succede in città"));
 //        doTest("show;lyrics;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("show;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("show;lyrics;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\04 Toffee.mp3"));
@@ -63,7 +64,10 @@ public class ShowTests extends CommonTest {
         long start = System.currentTimeMillis();
         TmcArgs tmcArgs = super.parseArgs(strf(str, params), true);
         TmcEngine.execute(tmcArgs);
-        display("\nEND in %s", JkTime.of(System.currentTimeMillis()-start).toStringElapsed(true));
+        long elapsed = System.currentTimeMillis() - start;
+
+        display("");
+        TmcDebug.showRecap(elapsed);
     }
 
 

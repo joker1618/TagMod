@@ -5,7 +5,6 @@ import org.junit.Before;
 import xxx.joker.apps.tagmod.console.args.TmcArgType;
 import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.args.TmcCmd;
-import xxx.joker.apps.tagmod.console.config.TmcConfig;
 import xxx.joker.apps.tagmod.console.main.TmcMain;
 import xxx.joker.libs.argsparser.InputParserImpl;
 import xxx.joker.libs.argsparser.exception.InputParserException;

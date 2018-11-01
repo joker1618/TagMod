@@ -1,18 +1,16 @@
 package xxx.joker.apps.tagmod.console.args;
 
-import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.libs.argsparser.design.annotation.Opt;
 import xxx.joker.libs.argsparser.design.classType.InputOption;
+import xxx.joker.libs.javalibs.exception.JkRuntimeException;
 import xxx.joker.libs.javalibs.utils.JkStreams;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
 
 public class TmcArgs extends InputOption<TmcCmd> {
 
@@ -244,7 +242,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 			try {
 				return new TagmodFile(p);
 			} catch (Exception e) {
-				throw new RuntimeException("Unable to create TagmodFile from "+p);
+				throw new JkRuntimeException(e, "Unable to create TagmodFile from "+p);
 			}
 		});
 	}

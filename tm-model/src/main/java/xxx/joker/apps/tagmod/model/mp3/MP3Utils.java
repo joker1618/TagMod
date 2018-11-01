@@ -1,5 +1,8 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
+import org.apache.commons.lang3.tuple.Pair;
+import xxx.joker.libs.javalibs.exception.JkRuntimeException;
+
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.file.Path;
@@ -17,20 +20,20 @@ public class MP3Utils {
 	private static final int CONSECUTIVE_HEADER_NUMBER = 10;
 
 
-	public static int findFirstFramePosition(Path filePath, int startIndex) {
+	public static Pair<Long, MP3FrameHeader> findFirstFrame(Path filePath, int startIndex) {
 		try (RandomAccessFile raf = new RandomAccessFile(filePath.toFile(), "r")) {
-			return findFirstFramePosition(raf, startIndex);
+			return findFirstFrame(raf, startIndex);
 		} catch(IOException ex) {
-			return -1;
+            throw new JkRuntimeException(ex, "Unable to find first MP3 frame");
 		}
 	}
 
-	public static int findFirstFramePosition(RandomAccessFile raf, int startIndex) {
+	public static Pair<Long, MP3FrameHeader> findFirstFrame(RandomAccessFile raf, int startIndex) {
 		try {
 
-			int mainStart = startIndex;
-			int secondStart = startIndex;
-			int mp3Size = (int) raf.length();
+			long mainStart = startIndex;
+			long secondStart = startIndex;
+			long mp3Size = raf.length();
 
 			int count = 0;
 			int first = -1;
@@ -49,13 +52,13 @@ public class MP3Utils {
 					raf.seek(secondStart);
 					byte[] data = new byte[4];
 					raf.read(data);
-					MP3FrameHeader mp3FrameHeader = MP3FrameHeader.parseMP3FrameHeader(data);
-					if (mp3FrameHeader != null) {
+					MP3FrameHeader frameHeader = MP3FrameHeader.parseMP3FrameHeader(data);
+					if (frameHeader != null) {
 						count++;
 						if (count == CONSECUTIVE_HEADER_NUMBER) {
-							return mainStart;
+							return Pair.of(mainStart, frameHeader);
 						}
-						secondStart += mp3FrameHeader.frameSize();
+						secondStart += frameHeader.frameSize();
 						found = true;
 					}
 				}
@@ -67,10 +70,10 @@ public class MP3Utils {
 				}
 			}
 
-			return -1;
+			return null;
 
 		} catch(IOException ex) {
-			return -1;
+			throw new JkRuntimeException(ex, "Unable to find first MP3 frame");
 		}
 	}
 

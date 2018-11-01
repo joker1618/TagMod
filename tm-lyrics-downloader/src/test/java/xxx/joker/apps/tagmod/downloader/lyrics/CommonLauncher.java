@@ -6,7 +6,6 @@ import xxx.joker.apps.tagmod.downloader.lyrics.model.WebLyrics;
 import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
 import xxx.joker.libs.javalibs.utils.JkStreams;
 
-import java.util.Arrays;
 import java.util.TreeSet;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;

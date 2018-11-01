@@ -1,10 +1,9 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
 
-import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
-import xxx.joker.libs.javalibs.media.analysis.JkAudioInfo;
+import xxx.joker.apps.tagmod.model.struct.FPos;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -19,7 +18,7 @@ class MP3FileImpl implements MP3File {
 	private long fileSize;
 	private List<TAGv2> tagv2List;
 	private TAGv1 tagv1;
-	private JkAudioInfo audioInfo;
+	private MP3AudioInfo audioInfo;
 	private FPos songDataFPos;
 	private FPos dirtyBytes;
 
@@ -39,7 +38,7 @@ class MP3FileImpl implements MP3File {
     }
 
     @Override
-	public JkAudioInfo getAudioInfo() {
+	public MP3AudioInfo getAudioInfo() {
 		return audioInfo;
 	}
 
@@ -73,7 +72,7 @@ class MP3FileImpl implements MP3File {
 	protected void setTAGv1(TAGv1 tagv1) {
 		this.tagv1 = tagv1;
 	}
-	protected void setAudioInfo(JkAudioInfo audioInfo) {
+	protected void setAudioInfo(MP3AudioInfo audioInfo) {
 		this.audioInfo = audioInfo;
 	}
 	protected void setSongDataFPos(FPos songDataFPos) {

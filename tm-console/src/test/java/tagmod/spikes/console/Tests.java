@@ -4,8 +4,6 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.Test;
 import xxx.joker.libs.javalibs.datetime.JkTime;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.format.JkOutputFmt;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,22 +16,25 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 import static xxx.joker.libs.javalibs.utils.JkConsole.display;
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
 
 public class Tests extends CommonTest {
 
 	@Test
 	public void test() throws IOException {
-	    long gb = 1024L * 1024 * 1024;
-	    int exp = 0;
-	    double value = 0d;
-        JkColumnFmtBuilder colb = new JkColumnFmtBuilder();
-        while(value < gb) {
-            value = Math.pow(2, exp);
-            colb.addLines(strf("%d|%s", exp, JkOutputFmt.humanSize(value)));
-            exp++;
-        }
-        display(colb.toString("|", 3));
+//	    long gb = 1024L * 1024 * 1024;
+//	    int exp = 0;
+//	    double value = 0d;
+//        JkColumnFmtBuilder colb = new JkColumnFmtBuilder();
+//        while(value < gb) {
+//            value = Math.pow(2, exp);
+//            colb.addLines(strf("%d|%s", exp, JkOutputFmt.humanSize(value)));
+//            exp++;
+//        }
+//        display(colb.toString("|", 3));
+
+        display(""+(2.5%1));
+        display(""+(2%1));
+
 	}
 	@Test
 	public void aatest() throws IOException {

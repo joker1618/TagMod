@@ -1,15 +1,15 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
-import xxx.joker.apps.tagmod.model.struct.FPos;
+import org.apache.commons.lang3.tuple.Pair;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1Impl;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2;
 import xxx.joker.apps.tagmod.model.id3v2.TAGv2Factory;
+import xxx.joker.apps.tagmod.model.struct.FPos;
+import xxx.joker.apps.tagmod.stuff.TmcDebug;
 import xxx.joker.apps.tagmod.util.BytesScanner;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.media.analysis.JkAudioInfo;
-import xxx.joker.libs.javalibs.media.analysis.JkMediaAnalyzer;
 import xxx.joker.libs.javalibs.utils.JkBytes;
 
 import java.io.IOException;
@@ -33,9 +33,12 @@ public class MP3FileFactory {
             mp3File.setFilePath(filePath);
 			mp3File.setFileSize(raf.length());
 		}
+        TmcDebug.addTime("A");
 
-        JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
-        mp3File.setAudioInfo(audioInfo);
+//        JkAudioInfo audioInfo = JkMediaAnalyzer.analyzeMP3(filePath);
+//        mp3File.setAudioInfo(audioInfo);
+//        TmcDebug.addTime("B");
+
         return mp3File;
 	}
 
@@ -51,13 +54,13 @@ public class MP3FileFactory {
 		}
 
 		// Find song start
-		long songStart = MP3Utils.findFirstFramePosition(raf, tagv2Size);
-		if(songStart < 0L) {
+        Pair<Long, MP3FrameHeader> startFrame = MP3Utils.findFirstFrame(raf, tagv2Size);
+        if(startFrame == null) {
 		    return null;
         }
 
-		// Find for others TAGv2
-		long dirtyBytes = songStart - tagv2Size;
+        // Find for others TAGv2
+		long dirtyBytes = startFrame.getKey() - tagv2Size;
 		if(dirtyBytes > 0) {
 			BytesScanner dirtyScanner = BytesScanner.getScanner(raf, tagv2Size, (int)dirtyBytes);
 			while (dirtyBytes > 0) {
@@ -71,9 +74,9 @@ public class MP3FileFactory {
 				}
 			}
 		}
-		mp3File.setDirtyBytes(new FPos(songStart-dirtyBytes, songStart));
+		mp3File.setDirtyBytes(new FPos(startFrame.getKey()-dirtyBytes, startFrame.getKey()));
 
-		// Find TAGv1
+        // Find TAGv1
 		byte[] tagv1Bytes = JkBytes.getBytes(raf, (int) raf.length() - ID3Specs.ID3v1_TAG_LENGTH, ID3Specs.ID3v1_TAG_LENGTH);
 		TAGv1 tagv1 = TAGv1Impl.createFromBytes(tagv1Bytes);
 		long songEnd;
@@ -85,9 +88,12 @@ public class MP3FileFactory {
 		}
 
 		// Set song end
-		mp3File.setSongDataFPos(new FPos(songStart, songEnd));
+        FPos songFPos = new FPos(startFrame.getKey(), songEnd);
+        mp3File.setSongDataFPos(songFPos);
 
-		return mp3File;
+        // Set song length
+        mp3File.setAudioInfo(new MP3AudioInfo(songFPos.getLength(), startFrame.getValue()));
+        return mp3File;
 	}
 
 

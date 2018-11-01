@@ -1,8 +1,6 @@
 package xxx.joker.apps.tagmod.model.facade;
 
 import org.apache.commons.lang3.tuple.Pair;
-import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
-import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3v1.TAGv1;
@@ -12,9 +10,11 @@ import xxx.joker.apps.tagmod.model.id3v2.TAGv2Builder;
 import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.TextInfo;
+import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.apps.tagmod.model.mp3.MP3FileFactory;
+import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.libs.javalibs.utils.*;
 
 import java.io.IOException;

@@ -13,8 +13,6 @@ import xxx.joker.libs.javalibs.utils.JkTests;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
-
 public class RockItCrawler extends BaseCrawler {
 
     private static final Logger logger = LoggerFactory.getLogger(RockItCrawler.class);

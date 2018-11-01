@@ -12,11 +12,11 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2Frame;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
+import xxx.joker.apps.tagmod.model.mp3.MP3AudioInfo;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.libs.javalibs.datetime.JkTime;
 import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
 import xxx.joker.libs.javalibs.format.JkOutputFmt;
-import xxx.joker.libs.javalibs.utils.JkFiles;
 import xxx.joker.libs.javalibs.utils.JkStreams;
 import xxx.joker.libs.javalibs.utils.JkStrings;
 
@@ -42,7 +42,7 @@ public class TmcViewer {
 
         for(TagmodFile tmFile : tmFiles) {
             sumSize += tmFile.getMp3File().getFileSize();
-            sumLen += tmFile.getMp3File().getAudioInfo().getDuration();
+            sumLen += tmFile.getMp3File().getAudioInfo().getDurationMs();
 
             Boolean signStatus = tmFile.getTagmodSign() == null ? null : tmFile.getTagmodSign().isValid();
             mapSign.put(signStatus, mapSign.getOrDefault(signStatus, 0) + 1);
@@ -124,11 +124,18 @@ public class TmcViewer {
 	public static String toStringAudioDetails(TagmodFile tmFile) {
 		MP3File mp3File = tmFile.getMp3File();
 
-		JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
-		outb.addLines(strf("Length;%s", JkTime.of(mp3File.getAudioInfo().getDuration()).toStringElapsed(false)));
-		outb.addLines(strf("Content-Type;%s", mp3File.getAudioInfo().getContentType()));
-		outb.addLines(strf("Version;%s", mp3File.getAudioInfo().getVersionLabel()));
-		outb.addLines(strf("Sample rate;%d", mp3File.getAudioInfo().getSampleRate()));
+        MP3AudioInfo audioInfo = mp3File.getAudioInfo();
+
+        JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
+		outb.addLines(strf("Length;%s", JkTime.of(audioInfo.getDurationMs()).toStringElapsed(false)));
+
+		String strLayer = StringUtils.repeat('I', audioInfo.getMpegLayer());
+        double remainder = audioInfo.getMpegVersion() % 1;
+        String strVersion = remainder == 0d ? ""+((int)audioInfo.getMpegVersion()) : strf("%.1f", audioInfo.getMpegVersion());
+        outb.addLines(strf("Version;MPEG 3 Layer %s Version %s", strLayer, strVersion));
+
+        outb.addLines(strf("Bit rate;%d kb/s", audioInfo.getBitRate()));
+		outb.addLines(strf("Sample rate;%d Hz", audioInfo.getSamplingRate()));
 		outb.insertPrefix(LEFT_PAD_PREFIX);
 		String audioDetails = outb.toString(";", COLUMNS_DISTANCE);
 
