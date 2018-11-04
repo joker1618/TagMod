@@ -1,8 +1,8 @@
 package xxx.joker.apps.tagmod.model.id3.standard;
 
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkStrings;
+import xxx.joker.libs.core.utils.JkConverter;
+import xxx.joker.libs.core.utils.JkStrings;
 
 /**
  * Created by f.barbano on 09/05/2018.

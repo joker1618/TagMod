@@ -6,7 +6,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.ID3v2FrameFactory;
 import xxx.joker.apps.tagmod.stuff.TmcDebug;
 import xxx.joker.apps.tagmod.util.BytesScanner;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkBytes;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

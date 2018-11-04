@@ -1,6 +1,6 @@
 package xxx.joker.apps.tagmod.downloader.lyrics.model;
 
-import xxx.joker.libs.javalibs.repository.JkDataModel;
+import xxx.joker.libs.core.repository.JkDataModel;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

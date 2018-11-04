@@ -5,7 +5,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.Comments;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.util.ByteBuilder;
 import xxx.joker.apps.tagmod.util.BytesScanner;
-import xxx.joker.libs.javalibs.language.JkLanguage;
+import xxx.joker.libs.language.JkLanguage;
 
 /**
  * Created by f.barbano on 27/02/2018.

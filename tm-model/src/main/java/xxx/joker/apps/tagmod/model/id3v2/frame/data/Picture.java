@@ -4,12 +4,12 @@ package xxx.joker.apps.tagmod.model.id3v2.frame.data;
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
 import xxx.joker.apps.tagmod.model.id3.enums.PictureType;
-import xxx.joker.libs.javalibs.media.analysis.JkMediaAnalyzer;
-import xxx.joker.libs.javalibs.media.analysis.JkPictureInfo;
+import xxx.joker.libs.media.JkMediaAnalyzer;
+import xxx.joker.libs.media.JkPictureInfo;
 
 import java.util.Arrays;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 /**
  * Created by f.barbano on 26/02/2018.

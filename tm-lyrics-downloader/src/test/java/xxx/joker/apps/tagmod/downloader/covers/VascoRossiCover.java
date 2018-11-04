@@ -3,17 +3,17 @@ package xxx.joker.apps.tagmod.downloader.covers;
 import common.TestUtil;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
-import xxx.joker.libs.javalibs.html.JkTextScanner;
-import xxx.joker.libs.javalibs.html.JkTextScannerImpl;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkWeb;
+import xxx.joker.libs.core.html.JkTextScanner;
+import xxx.joker.libs.core.html.JkTextScannerImpl;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkWeb;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public class VascoRossiCover {
 

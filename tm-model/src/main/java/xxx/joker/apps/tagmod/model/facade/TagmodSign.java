@@ -8,10 +8,10 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.Comments;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.UserTextInfo;
 import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
-import xxx.joker.libs.javalibs.language.JkLanguage;
-import xxx.joker.libs.javalibs.utils.JkBytes;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkEncryption;
+import xxx.joker.libs.language.JkLanguage;
+import xxx.joker.libs.core.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkConverter;
+import xxx.joker.libs.core.utils.JkEncryption;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

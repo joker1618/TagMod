@@ -4,8 +4,8 @@ import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.libs.argsparser.design.annotation.Opt;
 import xxx.joker.libs.argsparser.design.classType.InputOption;
-import xxx.joker.libs.javalibs.exception.JkRuntimeException;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.exception.JkRuntimeException;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.nio.file.Path;
 import java.util.ArrayList;

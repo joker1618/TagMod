@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.TextInfo;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.*;
 

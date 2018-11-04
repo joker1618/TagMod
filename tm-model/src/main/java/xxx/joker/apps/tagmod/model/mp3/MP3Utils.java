@@ -1,7 +1,7 @@
 package xxx.joker.apps.tagmod.model.mp3;
 
 import org.apache.commons.lang3.tuple.Pair;
-import xxx.joker.libs.javalibs.exception.JkRuntimeException;
+import xxx.joker.libs.core.exception.JkRuntimeException;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

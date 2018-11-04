@@ -3,13 +3,13 @@ package xxx.joker.apps.tagmod.downloader.lyrics;
 import org.junit.Test;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.LyricsModel;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.WebLyrics;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.TreeSet;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class CommonLauncher {
 

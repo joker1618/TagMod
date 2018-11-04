@@ -2,13 +2,13 @@ package stuff;
 
 import common.TestUtil;
 import org.junit.Test;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkWeb;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkWeb;
 
 import java.io.IOException;
 import java.nio.file.Path;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public class UtilLaunchers {
 

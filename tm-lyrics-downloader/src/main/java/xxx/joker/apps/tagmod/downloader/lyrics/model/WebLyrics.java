@@ -1,8 +1,8 @@
 package xxx.joker.apps.tagmod.downloader.lyrics.model;
 
-import xxx.joker.libs.javalibs.repository.entity.JkDefaultEntity;
-import xxx.joker.libs.javalibs.repository.entity.JkEntityField;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.repository.entity.JkDefaultEntity;
+import xxx.joker.libs.core.repository.entity.JkEntityField;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.Arrays;
 

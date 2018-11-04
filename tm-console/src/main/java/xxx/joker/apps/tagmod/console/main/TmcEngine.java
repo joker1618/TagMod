@@ -18,11 +18,11 @@ import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
-import xxx.joker.libs.javalibs.exception.JkRuntimeException;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.language.JkLanguage;
-import xxx.joker.libs.javalibs.language.JkLanguageDetector;
-import xxx.joker.libs.javalibs.utils.*;
+import xxx.joker.libs.core.exception.JkRuntimeException;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.language.JkLanguage;
+import xxx.joker.libs.language.JkLanguageDetector;
+import xxx.joker.libs.core.utils.*;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -31,8 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcEngine {
     private static final Logger logger = LoggerFactory.getLogger(TmcEngine.class);

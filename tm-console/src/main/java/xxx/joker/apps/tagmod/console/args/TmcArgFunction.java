@@ -6,9 +6,9 @@ import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.utils.JkConverter;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,7 +20,7 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 class TmcArgFunction {
 

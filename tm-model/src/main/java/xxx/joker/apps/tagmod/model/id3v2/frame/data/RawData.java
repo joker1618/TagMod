@@ -2,7 +2,7 @@ package xxx.joker.apps.tagmod.model.id3v2.frame.data;
 
 import java.util.Arrays;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 /**
  * Created by f.barbano on 26/02/2018.

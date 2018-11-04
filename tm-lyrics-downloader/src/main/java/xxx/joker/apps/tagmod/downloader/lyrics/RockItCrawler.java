@@ -4,11 +4,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.LyricsModel;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.WebLyrics;
-import xxx.joker.libs.javalibs.html.JkTextScanner;
-import xxx.joker.libs.javalibs.html.JkTextScannerImpl;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkStrings;
-import xxx.joker.libs.javalibs.utils.JkTests;
+import xxx.joker.libs.core.html.JkTextScanner;
+import xxx.joker.libs.core.html.JkTextScannerImpl;
+import xxx.joker.libs.core.utils.JkConverter;
+import xxx.joker.libs.core.utils.JkStrings;
+import xxx.joker.libs.core.utils.JkTests;
 
 import java.util.ArrayList;
 import java.util.List;

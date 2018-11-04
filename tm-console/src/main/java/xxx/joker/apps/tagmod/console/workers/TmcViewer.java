@@ -14,17 +14,17 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3AudioInfo;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
-import xxx.joker.libs.javalibs.datetime.JkTime;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.format.JkOutputFmt;
-import xxx.joker.libs.javalibs.utils.JkStreams;
-import xxx.joker.libs.javalibs.utils.JkStrings;
+import xxx.joker.libs.core.datetime.JkTime;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.core.format.JkOutputFmt;
+import xxx.joker.libs.core.utils.JkStreams;
+import xxx.joker.libs.core.utils.JkStrings;
 
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcViewer {
 

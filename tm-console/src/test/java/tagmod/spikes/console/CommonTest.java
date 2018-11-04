@@ -9,13 +9,13 @@ import xxx.joker.apps.tagmod.console.main.TmcMain;
 import xxx.joker.libs.argsparser.InputParserImpl;
 import xxx.joker.libs.argsparser.exception.InputParserException;
 import xxx.joker.libs.argsparser.exception.InputValueException;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStrings;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStrings;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public abstract class CommonTest {
 

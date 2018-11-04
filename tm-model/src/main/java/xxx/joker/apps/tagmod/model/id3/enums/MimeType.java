@@ -1,8 +1,8 @@
 package xxx.joker.apps.tagmod.model.id3.enums;
 
 
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.nio.file.Path;
 import java.util.Arrays;

@@ -4,7 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.exceptions.InvalidArgError;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
-import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkBytes;
 
 import java.nio.charset.Charset;
 import java.nio.file.Files;

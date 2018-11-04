@@ -10,7 +10,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameType;
 import xxx.joker.apps.tagmod.util.ByteBuilder;
 import xxx.joker.apps.tagmod.util.BytesScanner;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkBytes;
 
 /**
  * Created by f.barbano on 26/02/2018.

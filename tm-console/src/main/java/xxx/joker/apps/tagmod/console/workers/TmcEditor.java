@@ -12,11 +12,11 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.language.JkLanguage;
-import xxx.joker.libs.javalibs.language.JkLanguageDetector;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.language.JkLanguage;
+import xxx.joker.libs.language.JkLanguageDetector;
+import xxx.joker.libs.core.utils.JkConverter;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcEditor {
 

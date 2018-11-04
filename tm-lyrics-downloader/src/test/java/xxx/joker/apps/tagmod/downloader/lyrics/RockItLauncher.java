@@ -2,7 +2,7 @@ package xxx.joker.apps.tagmod.downloader.lyrics;
 
 import org.junit.Test;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public class RockItLauncher {
 

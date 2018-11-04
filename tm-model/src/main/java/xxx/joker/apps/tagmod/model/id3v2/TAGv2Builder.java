@@ -9,7 +9,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.IFrameData;
 import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
 import xxx.joker.apps.tagmod.util.ByteBuilder;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkBytes;
 
 import java.util.ArrayList;
 import java.util.List;

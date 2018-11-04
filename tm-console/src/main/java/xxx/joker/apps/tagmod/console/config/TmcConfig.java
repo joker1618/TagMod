@@ -2,11 +2,11 @@ package xxx.joker.apps.tagmod.console.config;
 
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
-import xxx.joker.libs.javalibs.exception.JkRuntimeException;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.utils.JkConverter;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.exception.JkRuntimeException;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.core.utils.JkConverter;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcConfig {
 

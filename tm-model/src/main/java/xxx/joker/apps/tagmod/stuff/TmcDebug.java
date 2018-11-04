@@ -1,16 +1,16 @@
 package xxx.joker.apps.tagmod.stuff;
 
 import org.apache.commons.lang3.tuple.Pair;
-import xxx.joker.libs.javalibs.datetime.JkTime;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.datetime.JkTime;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcDebug {
 

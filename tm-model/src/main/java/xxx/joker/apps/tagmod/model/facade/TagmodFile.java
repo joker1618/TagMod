@@ -15,7 +15,7 @@ import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.apps.tagmod.model.mp3.MP3FileFactory;
 import xxx.joker.apps.tagmod.model.struct.FPos;
-import xxx.joker.libs.javalibs.utils.*;
+import xxx.joker.libs.core.utils.*;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

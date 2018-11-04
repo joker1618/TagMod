@@ -1,9 +1,9 @@
 package xxx.joker.apps.tagmod.model.id3v2.frame.data;
 
 import org.apache.commons.lang3.StringUtils;
-import xxx.joker.libs.javalibs.language.JkLanguage;
+import xxx.joker.libs.language.JkLanguage;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 /**
  * Created by f.barbano on 26/02/2018.

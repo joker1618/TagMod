@@ -6,13 +6,13 @@ import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
-import xxx.joker.libs.javalibs.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkFiles;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcExporter {
 

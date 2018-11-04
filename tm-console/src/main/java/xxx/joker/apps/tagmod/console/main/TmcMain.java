@@ -5,14 +5,14 @@ import xxx.joker.apps.tagmod.console.args.TmcArgs;
 import xxx.joker.apps.tagmod.console.args.TmcCmd;
 import xxx.joker.apps.tagmod.stuff.TmcDebug;
 import xxx.joker.libs.argsparser.InputParserImpl;
-import xxx.joker.libs.javalibs.datetime.JkTime;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.datetime.JkTime;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public class TmcMain {
 

@@ -2,14 +2,14 @@ package xxx.joker.apps.tagmod.console.workers;
 
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
 import xxx.joker.apps.tagmod.model.id3.enums.PictureType;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.utils.JkStreams;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcInfo {
 

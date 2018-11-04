@@ -2,10 +2,10 @@ package xxx.joker.apps.tagmod.console.args;
 
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.libs.argsparser.design.annotation.Opt;
-import xxx.joker.libs.javalibs.format.JkColumnFmtBuilder;
-import xxx.joker.libs.javalibs.utils.JkReflection;
-import xxx.joker.libs.javalibs.utils.JkStreams;
-import xxx.joker.libs.javalibs.utils.JkStrings;
+import xxx.joker.libs.core.format.JkColumnFmtBuilder;
+import xxx.joker.libs.core.utils.JkReflection;
+import xxx.joker.libs.core.utils.JkStreams;
+import xxx.joker.libs.core.utils.JkStrings;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcHelp {
 

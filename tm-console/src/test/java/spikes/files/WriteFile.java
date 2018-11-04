@@ -2,8 +2,8 @@ package spikes.files;
 
 import org.junit.Test;
 import tagmod.spikes.console.CommonTest;
-import xxx.joker.libs.javalibs.datetime.JkTime;
-import xxx.joker.libs.javalibs.utils.JkFiles;
+import xxx.joker.libs.core.datetime.JkTime;
+import xxx.joker.libs.core.utils.JkFiles;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -15,7 +15,7 @@ import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
 import java.time.format.DateTimeFormatter;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public class WriteFile extends CommonTest  {
 

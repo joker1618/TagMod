@@ -6,8 +6,8 @@ import xxx.joker.apps.tagmod.console.args.TmcHelp;
 import xxx.joker.apps.tagmod.console.main.TmcEngine;
 import xxx.joker.apps.tagmod.stuff.TmcDebug;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
-import static xxx.joker.libs.javalibs.utils.JkStrings.strf;
+import static xxx.joker.libs.core.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class ShowTests extends CommonTest {
 

@@ -3,7 +3,7 @@ package tagmod.spikes.console;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 import org.junit.Test;
-import xxx.joker.libs.javalibs.datetime.JkTime;
+import xxx.joker.libs.core.datetime.JkTime;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-import static xxx.joker.libs.javalibs.utils.JkConsole.display;
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 public class Tests extends CommonTest {
 

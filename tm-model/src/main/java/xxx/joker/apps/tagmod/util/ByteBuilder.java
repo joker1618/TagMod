@@ -2,7 +2,7 @@ package xxx.joker.apps.tagmod.util;
 
 import org.apache.commons.lang3.StringUtils;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
-import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkBytes;
 
 import java.util.ArrayList;
 import java.util.Arrays;

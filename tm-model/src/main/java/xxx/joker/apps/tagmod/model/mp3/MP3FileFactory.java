@@ -9,7 +9,7 @@ import xxx.joker.apps.tagmod.model.id3v2.TAGv2Factory;
 import xxx.joker.apps.tagmod.model.struct.FPos;
 import xxx.joker.apps.tagmod.util.BytesScanner;
 import xxx.joker.apps.tagmod.util.TmFormat;
-import xxx.joker.libs.javalibs.utils.JkBytes;
+import xxx.joker.libs.core.utils.JkBytes;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;

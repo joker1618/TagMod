@@ -1,9 +1,9 @@
 package xxx.joker.apps.tagmod.downloader.lyrics;
 
-import xxx.joker.libs.javalibs.exception.JkRuntimeException;
-import xxx.joker.libs.javalibs.utils.JkFiles;
-import xxx.joker.libs.javalibs.utils.JkStreams;
-import xxx.joker.libs.javalibs.utils.JkWeb;
+import xxx.joker.libs.core.exception.JkRuntimeException;
+import xxx.joker.libs.core.utils.JkFiles;
+import xxx.joker.libs.core.utils.JkStreams;
+import xxx.joker.libs.core.utils.JkWeb;
 
 import java.io.IOException;
 import java.nio.file.Files;
