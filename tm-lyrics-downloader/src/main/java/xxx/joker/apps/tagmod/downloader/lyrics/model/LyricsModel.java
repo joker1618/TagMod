@@ -9,7 +9,7 @@ import java.util.TreeSet;
 
 public class LyricsModel extends JkDataModel {
 
-    private static final Path DB_FOLDER = Paths.get("C:\\Users\\feder\\IdeaProjects\\APPS\\tagmod\\tm-lyrics-downloader\\src\\test\\resources", "db");
+    private static final Path DB_FOLDER = Paths.get(System.getProperty("user.home")).resolve("IdeaProjects\\APPS\\tagmod\\tm-lyrics-downloader\\src\\test\\resources\\db");
     private static final String DB_NAME= "TagModLyricsDB";
     private static final String PKG_TO_SCAN = "xxx.joker.apps.tagmod.downloader.lyrics.model";
 

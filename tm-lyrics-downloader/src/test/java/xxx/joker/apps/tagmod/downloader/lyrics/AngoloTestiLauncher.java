@@ -21,12 +21,13 @@ public class AngoloTestiLauncher {
             {"Iron Maiden", "/I/testi_canzoni_iron_maiden_155/"},
             {"Litfiba", "/L/testi_canzoni_litfiba_3512/"},
             {"Red Hot Chili Peppers", "/R/testi_canzoni_red_hot_chili_peppers_1444/"},
+            {"Bob Marley", "/B/testi_canzoni_bob_marley_55/"},
             {"AC DC", "/A/testi_canzoni_ac_dc_1789/"}
     };
 
     @Test
     public void getArtist() {
-        String artist = "Oasis";
+        String artist = "Bob Marley";
         for(String[] arr : urls) {
             if(artist.equalsIgnoreCase(arr[0])) {
                 AngoloTestiCrawler crawler = new AngoloTestiCrawler();
