@@ -32,6 +32,8 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	private Boolean delete = false;
 	@Opt(name = "summary", aliases = {"-summary", "sum", "-sum"})
 	private Boolean summary = false;
+	@Opt(name = "check", aliases = {"-check"})
+	private Boolean check = false;
 
 	@Opt(name = "picType", aliases = {"-pt", "-picType", "pictype", "-pictype"})
 	private Boolean picType = false;

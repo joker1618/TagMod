@@ -20,7 +20,7 @@ public class TmcExporter {
 
         TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
         List<Picture> pics = new ArrayList<>(tmAttribs.getFramesDataCasted(MP3Attribute.PICTURES));
-        Picture cover = tmAttribs.getFrameDataCasted(MP3Attribute.COVER);
+        Picture cover = tmAttribs.getFrameData(MP3Attribute.COVER);
 		if(cover != null) {
 			pics.add(0, cover);
 		}
@@ -42,7 +42,7 @@ public class TmcExporter {
 	public static List<Path> exportLyrics(TagmodFile tmFile) {
         TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
         List<Lyrics> lyricsList = new ArrayList<>(tmAttribs.getFramesDataCasted(MP3Attribute.OTHER_LYRICS));
-        Lyrics lyr = tmAttribs.getFrameDataCasted(MP3Attribute.LYRICS);
+        Lyrics lyr = tmAttribs.getFrameData(MP3Attribute.LYRICS);
         if(lyr != null) {
             lyricsList.add(0, lyr);
         }

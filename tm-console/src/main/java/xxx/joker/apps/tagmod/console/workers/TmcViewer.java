@@ -195,9 +195,9 @@ public class TmcViewer {
 
         TagmodAttributes tmAttribs = tmFile.getTagmodAttributes();
 
-        IFrameData lyr = tmAttribs.getFrameData(MP3Attribute.LYRICS);
+        Lyrics lyr = tmAttribs.getFrameData(MP3Attribute.LYRICS);
         if(lyr != null) {
-		    lyricsList.add((Lyrics)lyr);
+		    lyricsList.add(lyr);
         }
 
         List<IFrameData> lyrList = tmAttribs.getFramesData(MP3Attribute.OTHER_LYRICS);

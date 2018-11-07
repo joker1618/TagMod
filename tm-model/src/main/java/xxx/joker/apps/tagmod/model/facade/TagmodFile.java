@@ -15,6 +15,7 @@ import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
 import xxx.joker.apps.tagmod.model.mp3.MP3FileFactory;
 import xxx.joker.apps.tagmod.model.struct.FPos;
+import xxx.joker.libs.core.exception.JkRuntimeException;
 import xxx.joker.libs.core.utils.*;
 
 import java.io.IOException;
@@ -38,11 +39,15 @@ public class TagmodFile {
 	private List<Pair<MP3Attribute,ID3v2Frame>> attributeFrames;
 	private List<ID3v2Frame> unmanagedFrames;   // frames not used in MP3Attribute and duplicated frames
 
-	public TagmodFile(Path mp3FilePath) throws IOException {
-	    mp3File = MP3FileFactory.parse(mp3FilePath);
-        attributeFrames = new ArrayList<>();
-        unmanagedFrames = new ArrayList<>();
-        extractMP3Attributes();
+	public TagmodFile(Path mp3FilePath) throws JkRuntimeException {
+	    try {
+            mp3File = MP3FileFactory.parse(mp3FilePath);
+            attributeFrames = new ArrayList<>();
+            unmanagedFrames = new ArrayList<>();
+            extractMP3Attributes();
+        } catch(IOException ex) {
+	        throw new JkRuntimeException(ex, "Error parsing file %s", mp3FilePath);
+        }
 	}
 
     public TagmodAttributes getTagmodAttributes() {
@@ -174,11 +179,11 @@ public class TagmodFile {
         return tag;
     }
     private String getStringAttr(TagmodAttributes tmAttribs, MP3Attribute attr) {
-        TextInfo textInfo = tmAttribs.getFrameDataCasted(attr);
+        TextInfo textInfo = tmAttribs.getFrameData(attr);
         return textInfo == null ? "" : textInfo.getInfo();
     }
     private Integer getIntAttr(TagmodAttributes tmAttribs, MP3Attribute attr) {
-        TextInfo textInfo = tmAttribs.getFrameDataCasted(attr);
+        TextInfo textInfo = tmAttribs.getFrameData(attr);
         if(textInfo != null) {
             if(attr == TRACK) {
                 String s = textInfo.getInfo().replaceAll("/.*", "");

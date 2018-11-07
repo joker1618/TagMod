@@ -42,6 +42,9 @@ public class TmcEngine {
 			case CMD_SHOW:
 				manageShow(inputArgs);
 				break;
+			case CMD_CHECK:
+				manageCheck(inputArgs);
+				break;
             case CMD_SHOW_LYRICS:
 				manageShowLyrics(inputArgs);
 				break;
@@ -106,6 +109,10 @@ public class TmcEngine {
 		}
 
 		display(JkStreams.join(lines, getLineSeparator(100)));
+	}
+
+    private static void manageCheck(TmcArgs inputArgs) {
+		display("%s", TmcChecker.toStringCheckStatus(inputArgs.getTagmodFiles()));
 	}
 
 	private static void manageDiff(TmcArgs inputArgs) {

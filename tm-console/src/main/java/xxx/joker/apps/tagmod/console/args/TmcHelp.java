@@ -23,6 +23,7 @@ public class TmcHelp {
 		List<String> helpLines = Arrays.asList(
             "tagmod;show;[attr] [t1] [t2] [audio] [tm] [size] [all]  files <MP3_FILES>",
             "tagmod;show;lyrics  files <MP3_FILES>",
+            "tagmod;check;files <MP3_FILES>",
             "tagmod;summary;[table]  files <MP3_FILES>",
             "tagmod;diff;<MP3_FILE_1> <MP3_FILE_2>",
             "tagmod;info;(picType|genre)",

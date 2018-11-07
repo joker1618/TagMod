@@ -70,16 +70,7 @@ public class TagmodAttributes {
         return flist == null ? Collections.emptyList() : JkStreams.map(flist, fd -> (T)fd);
     }
 
-    public IFrameData getFrameData(MP3Attribute attribute) {
-        if(attribute.isMultiValue() || !dataMap.containsKey(attribute)) {
-            return null;
-        }
-        List<IFrameData> flist = dataMap.get(attribute);
-        return flist.size() == 1 ? flist.get(0) : null;
-
-    }
-
-    public <T extends IFrameData> T getFrameDataCasted(MP3Attribute attribute) {
+    public <T extends IFrameData> T getFrameData(MP3Attribute attribute) {
         if(attribute.isMultiValue() || !dataMap.containsKey(attribute)) {
             return null;
         }

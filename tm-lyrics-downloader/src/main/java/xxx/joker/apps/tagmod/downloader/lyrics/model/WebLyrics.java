@@ -74,4 +74,9 @@ public class WebLyrics extends JkDefaultEntity {
     public void setLyricsText(String lyricsText) {
         this.lyricsText = lyricsText;
     }
+
+    @Override
+    public String toString() {
+        return getPrimaryKey();
+    }
 }

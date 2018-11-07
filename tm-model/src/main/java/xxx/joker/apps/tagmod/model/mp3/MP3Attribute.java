@@ -26,9 +26,9 @@ public enum MP3Attribute {
 	TRACK			(FrameName.TRCK, 30),
 	GENRE           (FrameName.TCON, 40),
 	CD_POS			(FrameName.TPOS, 45, false, false),
-	COVER			(FrameName.APIC, 50, false, f -> ((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR)),
-	PICTURES(FrameName.APIC, 55, true, false, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
-	LYRICS     		(FrameName.USLT, 60, false, f -> ((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
+	COVER			(FrameName.APIC, 50, false, true, f -> ((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR)),
+	PICTURES		(FrameName.APIC, 55, true, false, f -> !(((Picture)f).getPicType() == TagmodConst.COVER_TYPE && ((Picture)f).getDescription().equals(TagmodConst.COVER_DESCR))),
+	LYRICS     		(FrameName.USLT, 60, false, true, f -> ((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
 	OTHER_LYRICS	(FrameName.USLT, 65, true, false, f -> !((Lyrics)f).getDescription().equals(TagmodConst.LYRICS_DESCR)),
 
 	;
@@ -38,6 +38,7 @@ public enum MP3Attribute {
 	private FrameName v4;
 	private int position;
 	private boolean multiValue;
+	private boolean required;
 	private Predicate<IFrameData> acceptCond;
 
 	MP3Attribute(FrameName frameName, int position) {
@@ -49,9 +50,6 @@ public enum MP3Attribute {
 	MP3Attribute(FrameName frameName, int position, boolean multiValue, boolean required) {
 		this(frameName, frameName, frameName, position, multiValue, f -> true, required);
 	}
-    MP3Attribute(FrameName frameName, int position, boolean multiValue, Predicate<IFrameData> acceptCond) {
-        this(frameName, frameName, frameName, position, multiValue, acceptCond, true);
-    }
     MP3Attribute(FrameName frameName, int position, boolean multiValue, boolean required, Predicate<IFrameData> acceptCond) {
         this(frameName, frameName, frameName, position, multiValue, acceptCond, required);
     }
@@ -68,6 +66,7 @@ public enum MP3Attribute {
 		this.position = position;
 		this.multiValue = multiValue;
 		this.acceptCond = acceptCond;
+		this.required = required;
 	}
 
 	public static List<MP3Attribute> orderedValues() {
@@ -91,6 +90,10 @@ public enum MP3Attribute {
 
 	public boolean isMultiValue() {
 		return multiValue;
+	}
+
+	public boolean isRequired() {
+		return required;
 	}
 
 	public static MP3Attribute getFromFrame(ID3v2Frame frame) {

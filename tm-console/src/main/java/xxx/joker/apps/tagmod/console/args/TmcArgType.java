@@ -22,6 +22,8 @@ public enum TmcArgType implements OptionName {
 	@OptName
 	DELETE("delete"),
 	@OptName
+	CHECK("check"),
+	@OptName
 	SUMMARY("summary"),
 
 	@OptName

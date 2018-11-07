@@ -24,6 +24,11 @@ public class ShowTests extends CommonTest {
     }
 
     @Test
+    public void check() {
+        doTest("check;files;%s", HOME.resolve("Desktop\\ttttt"));
+    }
+
+    @Test
     public void describe() {
         doTest("describe;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
     }
