@@ -140,10 +140,8 @@ public class TagmodSign {
         TAGv2Builder builder = new TAGv2Builder();
         builder.addFrameData(FrameName.TXXX, new UserTextInfo(MD5_HASH_DESCR, md5hash));
         builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_CREATION_DESCR, creationTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)));
-        if(isValid()) {
-            builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_VERSION_DESCR, version + ""));
-            builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_ENCONDING_DESCR, encoding.getLabel()));
-        }
+        builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_VERSION_DESCR, version + ""));
+        builder.addFrameData(FrameName.TXXX, new UserTextInfo(TAG_ENCONDING_DESCR, encoding.getLabel()));
         return builder.buildBytes(SIGN_TAG_VERSION, TxtEncoding.UTF_16, null);
     }
 
