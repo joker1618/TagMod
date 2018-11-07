@@ -44,6 +44,16 @@ public enum TmcCmd implements InputCommand {
 	),
 
 	@Cmd
+	CMD_RECOVER(
+		new CmdParam(new CmdOption(RECOVER)),
+		new CmdParam(new CmdOption(FILES,
+			ArgsParse.windowsPathFormat(),
+			TmcArgFunction.expandPaths(),
+			TmcArgFunction.validatePaths())
+		)
+	),
+
+	@Cmd
 	CMD_CHECK(
 		new CmdParam(new CmdOption(CHECK)),
 		new CmdParam(new CmdOption(FILES,
@@ -111,7 +121,6 @@ public enum TmcCmd implements InputCommand {
         )),
 		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
 		new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
-		new CmdParam(false, new CmdOption(UNSYNCHRONIZED)),
 		new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
 		new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
 		new CmdParam(false, new CmdOption(NO_SIGN)),
@@ -141,7 +150,6 @@ public enum TmcCmd implements InputCommand {
         )),
 		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
         new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
-        new CmdParam(false, new CmdOption(UNSYNCHRONIZED)),
         new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
         new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
         new CmdParam(false, new CmdOption(NO_SIGN)),

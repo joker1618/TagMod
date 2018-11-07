@@ -18,12 +18,18 @@ import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3Specs;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
+import xxx.joker.apps.tagmod.model.mp3.MP3FrameHeader;
+import xxx.joker.apps.tagmod.model.mp3.MP3Utils;
 import xxx.joker.libs.core.exception.JkRuntimeException;
 import xxx.joker.libs.core.format.JkColumnFmtBuilder;
 import xxx.joker.libs.language.JkLanguage;
 import xxx.joker.libs.language.JkLanguageDetector;
 import xxx.joker.libs.core.utils.*;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -63,6 +69,9 @@ public class TmcEngine {
             case CMD_EDIT:
             case CMD_DELETE:
 				manageEdit(inputArgs);
+				break;
+            case CMD_RECOVER:
+				manageRecover(inputArgs);
 				break;
             case CMD_SUMMARY:
 				manageSummary(inputArgs);
@@ -186,20 +195,17 @@ public class TmcEngine {
                 for(TxtEncoding enc : encs) {
                     List<Integer> vers = args.getVersion() == null ? ID3Specs.ID3v2_SUPPORTED_VERSIONS : Arrays.asList(args.getVersion());
                     for(int ver : vers) {
-                        for(boolean unsync : Arrays.asList(true, false)) {
-                            String fn = strf("%s-v%d-%s%s.%s",
-                                    JkFiles.getFileName(filePath),
-                                    ver, enc.getLabel(),
-                                    unsync ? "-unsync" : "",
-                                    JkFiles.getExtension(filePath)
-                            );
-                            outp = JkFiles.getParent(filePath).resolve(fn);
-                            JkFiles.copyFile(filePath, outp, true, true);
+                        String fn = strf("%s-v%d-%s.%s",
+                                JkFiles.getFileName(filePath),
+                                ver, enc.getLabel(),
+                                JkFiles.getExtension(filePath)
+                        );
+                        outp = JkFiles.getParent(filePath).resolve(fn);
+                        JkFiles.copyFile(filePath, outp, true, true);
 
-                            TagmodFile newTmFile = new TagmodFile(outp);
-                            boolean changed = editor.editTagmodFile(newTmFile, ver, enc, unsync, args.getPadding());
-                            display("%d\tFile %s %s", counter++, outp, changed?"modified":"not changed");
-                        }
+                        TagmodFile newTmFile = new TagmodFile(outp);
+                        boolean changed = editor.editTagmodFile(newTmFile, ver, enc, args.getPadding());
+                        display("%d\tFile %s %s", counter++, outp, changed?"modified":"not changed");
                     }
                 }
 
@@ -218,12 +224,67 @@ public class TmcEngine {
         for(int i = 0; i < tagmodFiles.size(); i++) {
             TagmodFile tmFile = tagmodFiles.get(i);
             try {
-                boolean changed = editor.editTagmodFile(tmFile, args.getVersion(), args.getEncoding(), args.getUnsynchronized(), args.getPadding());
+                boolean changed = editor.editTagmodFile(tmFile, args.getVersion(), args.getEncoding(), args.getPadding());
                 display("%d\tFile %s %s", counter++, tmFile.getMp3File().getFilePath(), changed?"modified":"not changed");
             } catch (Exception ex) {
                 display("%d\tERROR editing file %s", counter++, tmFile.getMp3File().getFilePath());
                 logger.error("ERROR editing file " + tmFile.getMp3File().getFilePath(), ex);
             }
+        }
+    }
+
+    private static void manageRecover(TmcArgs args) {
+	    try {
+            for (Path fpath : args.getFilePaths()) {
+                Pair<Long, MP3FrameHeader> idx = MP3Utils.findFirstFrame(fpath, 0);
+                if (idx == null) {
+                    display("Unable to recover file %s", fpath);
+                } else {
+                    Path appFile = JkFiles.computeSafelyPath(fpath);
+
+                    try (RandomAccessFile rafMain = new RandomAccessFile(fpath.toFile(), "rw");
+                         RandomAccessFile rafApp = new RandomAccessFile(appFile.toFile(), "rw");
+                         FileChannel chMain = rafMain.getChannel();
+                         FileChannel chApp = rafApp.getChannel()) {
+
+                        byte[] arr = new byte[3];
+                        long startv1 = rafMain.length() - 128;
+                        rafMain.seek(rafMain.length() - 128);
+                        rafMain.read(arr);
+                        rafMain.seek(0);
+                        long end = new String(arr).equals("TAG") ? startv1 : rafMain.length();
+
+                        long startRead = idx.getKey();
+                        long remaining = end - startRead;
+                        long appPos = 0L;
+                        while (remaining > 0) {
+                            long numRead = chMain.transferTo(startRead, remaining, chApp.position(appPos));
+                            remaining -= numRead;
+                            startRead += numRead;
+                            appPos += numRead;
+                        }
+
+                        // Reverse bytes from app to main
+                        long posIndex = 0L;
+                        long offset = chApp.size();
+                        while (offset > 0) {
+                            long numRead = chApp.transferTo(posIndex, offset, chMain.position(posIndex));
+                            offset -= numRead;
+                            posIndex += numRead;
+                        }
+
+                        chMain.truncate(chApp.size());
+
+                        display("Recovered file %s", fpath);
+
+                    } finally {
+                        Files.deleteIfExists(appFile);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            throw new JkRuntimeException(e);
         }
     }
 

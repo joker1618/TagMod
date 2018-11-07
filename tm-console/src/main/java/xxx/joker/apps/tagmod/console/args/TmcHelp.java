@@ -32,6 +32,7 @@ public class TmcHelp {
 			"tagmod;edit;[EDIT OPTIONS] [OUTPUT_FORMAT]  files <MP3_FILES>",
 			"tagmod;test;outputFormats  [EDIT OPTIONS]  [OUTPUT_FORMAT]  files <MP3_FILES>",
 			"tagmod;delete;[DELETE OPTIONS...]  files <MP3_FILES>",
+			"tagmod;recover;files <MP3_FILES>",
             "tagmod;[help]"
 		);
         helpLines = new JkColumnFmtBuilder().addLines(helpLines).toLines(";", 2);
@@ -41,7 +42,6 @@ public class TmcHelp {
 			"OUTPUT FORMATS:",
 			"  [enc ENCODING]",
             "  [ver VERSION]",
-            "  [unsync]",
             "  [padding NUMBER]",
             "  [noSign]",
 			"",

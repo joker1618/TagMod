@@ -25,9 +25,6 @@ public class BytesScanner {
 	public static BytesScanner getScanner(byte[] bytes) {
 		return new BytesScanner(bytes);
 	}
-//	public static BytesScanner getScanner(RandomAccessFile raf, int length) throws IOException {
-//		return getScanner(raf, 0, length);
-//	}
 	public static BytesScanner getScanner(RandomAccessFile raf, int start, int length) throws IOException {
 		byte[] bytes = JkBytes.getBytes(raf, start, length);
 		return new BytesScanner(bytes);
@@ -61,11 +58,7 @@ public class BytesScanner {
 		return TmFormat.toInt(getByte(offset));
 	}
 	public byte[] getBytes(int start, int length) {
-		return getBytes(start, length, false);
-	}
-	public byte[] getBytes(int start, int length, boolean unsynch) {
-		byte[] bytes = getAllBytes(start, length, unsynch);
-		return TmFormat.removeUnsynchronisation(bytes);
+		return getAllBytes(start, length, false);
 	}
 	private byte[] getAllBytes(int start, int length, boolean unsynch) {
 		int idxStart = start + seekOffset;

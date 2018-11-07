@@ -148,7 +148,7 @@ public class TmcEditor {
         else        toDeletes.remove(MP3Attribute.OTHER_LYRICS);
     }
 
-    public boolean editTagmodFile(TagmodFile tmFile, Integer version, TxtEncoding encoding, Boolean unsynchronized, Integer padding) throws Exception {
+    public boolean editTagmodFile(TagmodFile tmFile, Integer version, TxtEncoding encoding, Integer padding) throws Exception {
         TagmodAttributes tmAttribs = new TagmodAttributes();
 
         // Input attributes
@@ -190,9 +190,8 @@ public class TmcEditor {
         TagmodSign sign = tmFile.getTagmodSign();
         TxtEncoding enc = encoding != null ? encoding : tmFile.isTagmodSignValid() ? sign.getEncoding() : TmcConfig.DEFAULT_OUTPUT_ENCODING;
         int ver = version != null ? version : tmFile.isTagmodSignValid() ? sign.getVersion() : TmcConfig.DEFAULT_OUTPUT_VERSION;
-        boolean unsync = unsynchronized != null ? unsynchronized : TmcConfig.DEFAULT_OUTPUT_UNSYNCHRONISATION;
 
-        return tmFile.persistChanges(tmAttribs, ver, enc, unsync, padding, !noSign);
+        return tmFile.persistChanges(tmAttribs, ver, enc, padding, !noSign);
     }
 
     private Lyrics parseLyrics(Path lyricsPath) throws IOException {

@@ -34,6 +34,8 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	private Boolean summary = false;
 	@Opt(name = "check", aliases = {"-check"})
 	private Boolean check = false;
+	@Opt(name = "recover", aliases = {"-recover"})
+	private Boolean recover = false;
 
 	@Opt(name = "picType", aliases = {"-pt", "-picType", "pictype", "-pictype"})
 	private Boolean picType = false;
@@ -88,8 +90,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	private String encoding;
     @Opt(name = "ver", aliases = {"-ver", "version", "-version"})
     private Integer version;
-    @Opt(name = "unsync", aliases = {"-unsync"})
-    private Boolean unsynchronized;
     @Opt(name = "padding", aliases = {"-pad", "pad", "--padding"})
     private Integer padding;
 	@Opt(name = "noSign", aliases = {"nosign", "-nosign", "-noSign"})
@@ -222,13 +222,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	public Integer getVersion() {
 		return version;
 	}
-    public boolean isUnsynchronized() {
-        return unsynchronized != null && unsynchronized;
-    }
-    public Boolean getUnsynchronized() {
-        return unsynchronized;
-    }
-
     public boolean isOutputFormats() {
         return outputFormats != null && outputFormats;
     }

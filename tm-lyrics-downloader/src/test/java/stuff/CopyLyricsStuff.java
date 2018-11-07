@@ -31,8 +31,8 @@ public class CopyLyricsStuff {
 
     @Test
     public void copyLyrics() {
-        final Path root = TestUtil.HOME.resolve("Desktop\\ttttt");
-        final boolean doCopy = false;
+        final Path root = TestUtil.HOME.resolve("Desktop\\jk music\\Vasco Rossi\\final\\1978 ...Ma cosa vuoi che sia una canzone");
+        final boolean doCopy = true;
 
         List<Path> files = JkFiles.findFiles(root, true, TmFormat::isMP3File);
         List<TagmodFile> tmFiles = JkStreams.map(files, TagmodFile::new);

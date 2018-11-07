@@ -12,9 +12,25 @@ import static xxx.joker.libs.core.utils.JkConsole.display;
 public class ModelChanges {
 
     @Test
+    public void seeAlbum() {
+        LyricsModel model = LyricsModel.getInstance();
+        List<WebLyrics> wlList = JkStreams.filter(model.getWebLyrics(),
+                wl -> wl.getArtist().startsWith("Vasco") && Integer.parseInt(wl.getYear()) == 1978
+        );
+        display("");
+        wlList.forEach(wl -> display("%s", wl));
+        display("");
+        wlList.forEach(wl -> display("%s", wl.getTitle()));
+    }
+
+    @Test
     public void change() {
         LyricsModel model = LyricsModel.getInstance();
-        List<WebLyrics> wlList = JkStreams.filter(model.getWebLyrics(), wl -> wl.getArtist().startsWith("Vasco") && Integer.parseInt(wl.getYear()) == 1982);
+        List<WebLyrics> wlList = JkStreams.filter(model.getWebLyrics(),
+                wl -> wl.getArtist().startsWith("Vasco") && wl.getAlbum().equals("Ma Cosa Vuoi Che Sia Una Canzone")
+        );
+        wlList.forEach(wl -> wl.setAlbum("...Ma cosa vuoi che sia una canzone"));
+        model.commit();
         wlList.forEach(wl -> display("%s", wl));
     }
 }

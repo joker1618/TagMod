@@ -30,7 +30,7 @@ public class TAGv2Factory {
 
 		if(tag.isCompressed())  return tag;
 
-		BytesScanner dataScanner = scanner.nextSubScanner(tag.getSize(), false);
+		BytesScanner dataScanner = scanner.nextSubScanner(tag.getSize(), tag.isUnsynch());
 		parseTAGv2(tag, dataScanner);
 
 		return tag;

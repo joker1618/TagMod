@@ -25,6 +25,8 @@ public enum TmcArgType implements OptionName {
 	CHECK("check"),
 	@OptName
 	SUMMARY("summary"),
+	@OptName
+	RECOVER("recover"),
 
 	@OptName
 	PIC_TYPE("picType"),
@@ -79,8 +81,6 @@ public enum TmcArgType implements OptionName {
 	ENCODING("enc"),
 	@OptName
 	VERSION("ver"),
-	@OptName
-	UNSYNCHRONIZED("unsync"),
 	@OptName
 	PADDING("padding"),
 	@OptName

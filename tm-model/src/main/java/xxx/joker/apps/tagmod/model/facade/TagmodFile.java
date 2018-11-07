@@ -71,7 +71,7 @@ public class TagmodFile {
         return tagmodSign != null && tagmodSign.isValid();
     }
 
-    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, boolean unsynchronized, Integer padding, boolean signed) throws Exception {
+    public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, Integer padding, boolean signed) throws Exception {
         Map<MP3Attribute, List<IFrameData>> attrMap = newAttribs.getAttributesDataMap();
 
         byte[] tagv2Bytes;
@@ -93,7 +93,7 @@ public class TagmodFile {
                     v.forEach(val -> tb.addFrameData(k.getFrameName(version), val))
             );
             tb.addFrameData(FrameName.COMM, TagmodSign.getID3v2FrameComment());
-            tagv2Bytes = tb.buildBytes(version, encoding, unsynchronized, padding);
+            tagv2Bytes = tb.buildBytes(version, encoding, padding);
             tagv1Bytes = createTAGv1(newAttribs, signed).toBytes();
 
             if(signed) {

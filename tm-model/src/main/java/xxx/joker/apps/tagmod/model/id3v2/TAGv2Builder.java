@@ -40,19 +40,19 @@ public class TAGv2Builder {
         return this;
     }
 
-    public byte[] buildBytes(int version, TxtEncoding encoding, boolean unsynchronized, Integer padding) {
+    public byte[] buildBytes(int version, TxtEncoding encoding, Integer padding) {
         if(framePairs.isEmpty()) {
             return new byte[0];
         }
 
         ByteBuilder bb = new ByteBuilder();
 
-        framePairs.forEach(p -> bb.add(ID3v2FrameFactory.createFrameBytes(version, p.getKey(), encoding, p.getValue(), unsynchronized)));
+        framePairs.forEach(p -> bb.add(ID3v2FrameFactory.createFrameBytes(version, p.getKey(), encoding, p.getValue(), false)));
 
         int pad = padding == null ? computePaddingSize(bb.length()) : padding;
         bb.addZeroBytes(pad);
 
-        byte[] headerBytes = createTAGv2Header(version, 0, bb.length(), unsynchronized);
+        byte[] headerBytes = createTAGv2Header(version, 0, bb.length(), false);
         bb.insertFirst(headerBytes);
 
         return bb.build();
