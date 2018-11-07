@@ -58,14 +58,15 @@ public class TagmodSign {
     public static TagmodSign parse(MP3File mp3File) {
         List<TAGv2> flist = mp3File.getTAGv2List();
         TagmodSign sign = null;
-        int i;
-        for(i = 0; i < flist.size() && sign == null; i++) {
+        int pos = -1;
+        for(int i = 0; i < flist.size() && sign == null; i++) {
             sign = parse(flist.get(i));
+            if(sign != null)    pos = i;
         }
 
         if(sign == null)    return null;
 
-        sign.tagNum = i;
+        sign.tagNum = pos;
         sign.valid = checkValidity(mp3File, sign.md5hash);
 
         return sign;

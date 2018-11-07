@@ -1,5 +1,6 @@
 package stuff;
 
+import common.TestUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import xxx.joker.apps.tagmod.common.TagmodConst;
@@ -30,7 +31,7 @@ public class CopyLyricsStuff {
 
     @Test
     public void copyLyrics() {
-        final Path root = Paths.get("C:\\Users\\f.barbano\\Desktop\\jk music");
+        final Path root = TestUtil.HOME.resolve("Desktop\\ttttt");
         final boolean doCopy = false;
 
         List<Path> files = JkFiles.findFiles(root, true, TmFormat::isMP3File);

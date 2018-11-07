@@ -62,20 +62,21 @@ public class TAGv2Builder {
      * ID2v2 tag size <= 1MB, padding is computed so that tag size will be a power of 2
      * ID2v2 tag size >  1MB, padding is 1618
      */
-    public static int computePaddingSize(long tagSize) {
+    private static int computePaddingSize(long tagFramesSize) {
         int mb = 1024 * 1024;
+        long tagSize = tagFramesSize + ID3Specs.ID3v2_HEADER_LENGTH;
 
-        if(tagSize > mb)    return 1618;
-
-        for(int exp = 1; exp <= 20; exp++) {
-            double r = Math.pow(2, exp);
-            if(tagSize <= r) {
-                int pad = (int)(r - tagSize);
-                return pad - 10; // Subtract header size
+        if(tagSize < mb) {
+            for (int exp = 1; exp <= 20; exp++) {
+                double r = Math.pow(2, exp);
+                if (tagSize <= r) {
+                    int pad = (int) (r - tagSize);
+                    return pad; // Subtract header size
+                }
             }
         }
 
-        return 0;
+        return 1618;
     }
 
     private static byte[] createTAGv2Header(int version, int revision, int size, boolean unsynch) {
