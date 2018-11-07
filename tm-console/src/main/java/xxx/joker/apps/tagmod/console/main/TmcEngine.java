@@ -150,23 +150,18 @@ public class TmcEngine {
 	}
 
 	private static void manageExport(TmcArgs inputArgs) {
-        for (TagmodFile tmFile : inputArgs.getTagmodFiles()) {
-            Path tmFilePath = tmFile.getMp3File().getFilePath();
+        List<TagmodFile> tagmodFiles = inputArgs.getTagmodFiles();
 
-            try {
-                if (inputArgs.isLyrics()) {
-                    List<Path> paths = TmcExporter.exportLyrics(tmFile);
-                    if (paths.isEmpty()) display("%s\t--> no lyrics", tmFilePath);
-                    else paths.forEach(p -> display("%s --> %s", tmFilePath, p));
+        if(inputArgs.isPictures()) {
+	        int numPics = TmcExporter.exportPictures(tagmodFiles);
+            display("%d covers exported from %d MP3 files", numPics, tagmodFiles.size());
 
-                } else if (inputArgs.isPictures()) {
-                    List<Path> paths = TmcExporter.exportPictures(tmFile);
-                    if (paths.isEmpty()) display("%s\t--> no pictures", tmFilePath);
-                    else paths.forEach(p -> display("%s --> %s", tmFilePath, p));
-                }
-            } catch (Exception ex) {
-                logger.error("Error exporting from " + tmFilePath, ex);
+        } else if(inputArgs.isLyrics()) {
+	        int numLyrics = 0;
+            for (TagmodFile tmFile : tagmodFiles) {
+                numLyrics += TmcExporter.exportLyrics(tmFile);
             }
+            display("%d lyrics exported from %d MP3 files", numLyrics, tagmodFiles.size());
         }
 	}
 
