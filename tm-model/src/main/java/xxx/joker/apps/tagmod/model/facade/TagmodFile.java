@@ -24,6 +24,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,8 +68,8 @@ public class TagmodFile {
         return tagmodSign;
     }
 
-    public boolean isTagmodSignValid() {
-        return tagmodSign != null && tagmodSign.isValid();
+    public boolean hasTagmodSign() {
+        return tagmodSign != null;
     }
 
     public boolean persistChanges(TagmodAttributes newAttribs, int version, TxtEncoding encoding, Integer padding, boolean signed) throws Exception {
@@ -99,7 +100,7 @@ public class TagmodFile {
             if(signed) {
                 byte[] tagsBytes = JkBytes.mergeArrays(tagv2Bytes, tagv1Bytes);
                 String newMD5 = JkEncryption.getMD5(tagsBytes);
-                if (isTagmodSignValid() && newMD5.equals(tagmodSign.getMd5hash())) {
+                if (hasTagmodSign() && tagmodSign.isValid() && newMD5.equals(tagmodSign.getMd5hash())) {
                     // No changes found, skip persist phase
                     return false;
                 }

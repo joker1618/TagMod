@@ -108,16 +108,16 @@ public class TAGv1Impl implements TAGv1 {
 	public byte[] toBytes() {
 		ByteBuilder bb = new ByteBuilder();
 		bb.add(ID3Specs.ID3v1_HEADING);
-		bb.add(title, 30);
-		bb.add(artist, 30);
-		bb.add(album, 30);
+		bb.addLastFix(title, 30);
+		bb.addLastFix(artist, 30);
+		bb.addLastFix(album, 30);
 		bb.add(year, 4);
 		if (revision == 1) {
-			bb.add(String.format("%-28s", comments), 28);
+			bb.addLastFix(String.format("%-28s", comments), 28);
 			bb.add(0x00);
 			bb.add(track);
 		} else {
-			bb.add(String.format("%-30s", comments), 30);
+			bb.addLastFix(String.format("%-30s", comments), 30);
 		}
 		bb.add(genre);
 		return bb.build();

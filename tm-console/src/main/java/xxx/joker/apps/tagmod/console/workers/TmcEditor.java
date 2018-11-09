@@ -188,8 +188,8 @@ public class TmcEditor {
 
         // Output formats
         TagmodSign sign = tmFile.getTagmodSign();
-        TxtEncoding enc = encoding != null ? encoding : tmFile.isTagmodSignValid() ? sign.getEncoding() : TmcConfig.DEFAULT_OUTPUT_ENCODING;
-        int ver = version != null ? version : tmFile.isTagmodSignValid() ? sign.getVersion() : TmcConfig.DEFAULT_OUTPUT_VERSION;
+        TxtEncoding enc = encoding != null ? encoding : (sign != null && sign.isValid() ? sign.getEncoding() : TmcConfig.DEFAULT_OUTPUT_ENCODING);
+        int ver = version != null ? version : (sign != null && sign.isValid() ? sign.getVersion() : TmcConfig.DEFAULT_OUTPUT_VERSION);
 
         return tmFile.persistChanges(tmAttribs, ver, enc, padding, !noSign);
     }
@@ -222,7 +222,7 @@ public class TmcEditor {
                 if(trackNum == null) {
                     title = fileName;
                 } else {
-                    title = fileName.substring(idxSpace);
+                    title = fileName.substring(idxSpace).trim();
                     Integer tot = null;
                     if(setTrackTotal) {
                         tot = trackTotalMap.get(fileParent);

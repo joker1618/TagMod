@@ -65,6 +65,23 @@ public class ByteBuilder {
 		}
 		return add(res);
 	}
+	public ByteBuilder addLastFix(String str, int fixedLength) {
+		byte[] res;
+		if(StringUtils.isEmpty(str)) {
+			res = new byte[fixedLength];
+		} else {
+			byte[] bytes = TmFormat.toBytes(str);
+			res = JkBytes.getBytes(bytes, 0, fixedLength);
+			for(int i = res.length-1; i >= 0; i--) {
+			    if(res[i] == ' ') {
+                    res[i] = 0;
+                } else {
+			        break;
+                }
+            }
+		}
+		return add(res);
+	}
 
 	public ByteBuilder add(int num) {
 		return add((byte)num);

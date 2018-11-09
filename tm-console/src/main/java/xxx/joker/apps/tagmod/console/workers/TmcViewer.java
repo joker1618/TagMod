@@ -60,7 +60,7 @@ public class TmcViewer {
         TagmodSign sign = tmFile.getTagmodSign();
 
         JkColumnFmtBuilder outb = new JkColumnFmtBuilder();
-		outb.addLines(strf("TagMod sign;%s", sign == null ? "NO" : tmFile.isTagmodSignValid() ? "VALID" : "INVALID"));
+		outb.addLines(strf("TagMod sign;%s", sign == null ? "NO" : sign.isValid() ? "VALID" : "INVALID"));
 		outb.addLines(strf("Sign MD5 hash;%s", sign == null ? NO_VALUE : sign.getMd5hash()));
 		outb.addLines(strf("Tag creation;%s", sign == null ? NO_VALUE : DEFAULT_DTF.format(sign.getCreationTime())));
 		outb.insertPrefix(LEFT_PAD_PREFIX);

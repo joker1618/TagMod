@@ -8,14 +8,18 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.Comments;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.UserTextInfo;
 import xxx.joker.apps.tagmod.model.id3v2.frame.enums.FrameName;
 import xxx.joker.apps.tagmod.model.mp3.MP3File;
+import xxx.joker.libs.core.utils.JkFiles;
 import xxx.joker.libs.language.JkLanguage;
 import xxx.joker.libs.core.utils.JkBytes;
 import xxx.joker.libs.core.utils.JkConverter;
 import xxx.joker.libs.core.utils.JkEncryption;
 
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static xxx.joker.libs.core.utils.JkConsole.display;
 
 /**
  * TagMod Signature structure
@@ -116,7 +120,9 @@ public class TagmodSign {
         byte[] t2bytes = TAGv2Builder.toBytes(mp3File.getTAGv2List().get(0));
         byte[] bytes = JkBytes.mergeArrays(t2bytes, t1bytes);
         String md5 = JkEncryption.getMD5(bytes);
-        if(!md5.equals(md5hash))       return false;
+        if(!md5.equals(md5hash)) {
+            return false;
+        }
 
         int signLen = mp3File.getTAGv2List().get(1).getTagLength();
         long songLen = mp3File.getSongDataFPos().getLength();

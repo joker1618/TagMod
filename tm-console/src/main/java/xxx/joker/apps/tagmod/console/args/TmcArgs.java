@@ -101,13 +101,6 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	@Opt(name = "help", aliases = {"-h", "--help"})
 	private Boolean help = false;
 
-	public boolean isShow() {
-		return show;
-	}
-	public boolean isConfig() {
-		return config;
-	}
-
 	public List<TagmodFile> getTagmodFiles() {
 		return toTagmodFiles(paths);
 	}

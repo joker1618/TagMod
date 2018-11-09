@@ -109,7 +109,7 @@ public class TmcSummary {
                 }
             }
             row.add(JkTime.of(tmFile.getMp3File().getAudioInfo().getDurationMs()).toStringElapsed(false));
-            row.add(!tmFile.isTagmodSignValid() ? "NO" : tmFile.getTagmodSign().isValid() ? "VALID" : "INVALID");
+            row.add(tmFile.getTagmodSign() == null ? "NO" : tmFile.getTagmodSign().isValid() ? "VALID" : "INVALID");
             b.addLines(JkStreams.join(row, "|"));
         }
 

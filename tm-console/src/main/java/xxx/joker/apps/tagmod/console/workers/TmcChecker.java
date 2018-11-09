@@ -53,7 +53,7 @@ public class TmcChecker {
 				strSign = tagmodSign.isValid() ? DEFAULT_DTF.format(tagmodSign.getCreationTime()) : "INVALID";
 			}
 
-			String strStatus = missings.isEmpty() && tmfile.isTagmodSignValid() ? "OK" : "WRONG";
+			String strStatus = missings.isEmpty() && tmfile.hasTagmodSign() && tmfile.getTagmodSign().isValid() ? "OK" : "WRONG";
 			String strPath = tmfile.getMp3File().getFilePath().getFileName().toString();
 
 			lines.add(strf("%s|%s|%s|%s", strPath, strStatus, strSign, strMissing));

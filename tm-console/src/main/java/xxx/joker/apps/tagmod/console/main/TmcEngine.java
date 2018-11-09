@@ -364,7 +364,7 @@ public class TmcEngine {
         editor.deleteTrack(args.isTrack());
         editor.deleteGenre(args.isGenre());
         editor.deleteCdPos(args.isCdPos());
-        editor.deleteCover(args.isConfig());
+        editor.deleteCover(args.isCover());
         editor.deleteLyrics(args.isLyrics());
         editor.deletePictures(args.isPictures());
         editor.deleteOtherLyrics(args.isOtherLyrics());

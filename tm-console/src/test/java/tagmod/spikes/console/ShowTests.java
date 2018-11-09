@@ -13,11 +13,11 @@ public class ShowTests extends CommonTest {
 
     @Test
     public void show() {
-//        doTest("show;all;files;%s", HOME.resolve("Desktop\\tmtests"));
+        doTest("show;all;files;%s", HOME.resolve("Desktop\\jk music\\Vasco Rossi\\2tagmod\\common\\casoX.mp3"));
 //        doTest("sum;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("show;audio;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\04 Toffee.mp3"));
 //        doTest("sum;table;files;%s", HOME.resolve("Desktop\\tmtests\\2000 - Hybrid Theory"));
-        doTest("sum;files;%s", HOME.resolve("Desktop\\ttttt"));
+//        doTest("sum;files;%s", HOME.resolve("Desktop\\ttttt"));
 //        doTest("show;lyrics;files;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("show;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"));
 //        doTest("show;lyrics;files;%s;%s", HOME.resolve("Desktop\\tmtests\\01 Bollicine.mp3"), HOME.resolve("Desktop\\tmtests\\04 Toffee.mp3"));
