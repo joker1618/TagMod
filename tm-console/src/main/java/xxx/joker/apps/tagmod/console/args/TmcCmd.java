@@ -105,30 +105,50 @@ public enum TmcCmd implements InputCommand {
 
 	@Cmd
 	CMD_EDIT(
-		new CmdParam(new CmdOption(EDIT)),
-		new CmdParam(false, new CmdOption(CLEAR)),
-		new CmdParam(false, new CmdOption(TITLE, String.class)),
-		new CmdParam(false, new CmdOption(ARTIST, String.class)),
-		new CmdParam(false, new CmdOption(ALBUM, String.class)),
-		new CmdParam(false, new CmdOption(YEAR, String.class, TmcArgFunction.validateYear())),
-		new CmdParam(false, new CmdOption(TRACK, String.class, TmcArgFunction.validateSetPos(true))),
-		new CmdParam(false, new CmdOption(GENRE, String.class, null, TmcArgFunction.fixGenreName(), TmcArgFunction.validateGenre())),
-		new CmdParam(false, new CmdOption(CD_POS, String.class, TmcArgFunction.validateSetPos(false))),
-		new CmdParam(false, new CmdOption(COVER, Path.class,
-                ArgsParse.windowsPathFormat(),
-                ArgsCheck.pathIsFile(),
-                TmcArgFunction.validateCoverPath()
-        )),
-		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
-		new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
-		new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
-		new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
-		new CmdParam(false, new CmdOption(NO_SIGN)),
-		new CmdParam(new CmdOption(FILES,
-                ArgsParse.windowsPathFormat(),
-                TmcArgFunction.expandPaths(),
-                TmcArgFunction.validatePaths()
-		))
+			new CmdParam(new CmdOption(EDIT)),
+			new CmdParam(false, new CmdOption(CLEAR)),
+			new CmdParam(false, new CmdOption(TITLE, String.class)),
+			new CmdParam(false, new CmdOption(ARTIST, String.class)),
+			new CmdParam(false, new CmdOption(ALBUM, String.class)),
+			new CmdParam(false, new CmdOption(YEAR, String.class, TmcArgFunction.validateYear())),
+			new CmdParam(false, new CmdOption(TRACK, String.class, TmcArgFunction.validateSetPos(true))),
+			new CmdParam(false, new CmdOption(GENRE, String.class, null, TmcArgFunction.fixGenreName(), TmcArgFunction.validateGenre())),
+			new CmdParam(false, new CmdOption(CD_POS, String.class, TmcArgFunction.validateSetPos(false))),
+			new CmdParam(false, new CmdOption(COVER, String.class,
+					ArgsParse.windowsPathFormat(),
+					TmcArgFunction.validateCoverPath()
+			)),
+			new CmdParam(false, new CmdOption(LYRICS, String.class,
+					ArgsParse.windowsPathFormat(),
+					TmcArgFunction.validateLyricsPath())
+			),
+			new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
+			new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
+			new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
+			new CmdParam(false, new CmdOption(NO_SIGN)),
+			new CmdParam(new CmdOption(FILES,
+					ArgsParse.windowsPathFormat(),
+					TmcArgFunction.expandPaths(),
+					TmcArgFunction.validatePaths()
+			))
+	),
+
+	@Cmd
+	CMD_EDIT_AUTO_ALL(
+			new CmdParam(new CmdOption(EDIT)),
+			new CmdParam(new CmdOption(AUTO_ALL)),
+			new CmdParam(false, new CmdOption(CLEAR)),
+			new CmdParam(false, new CmdOption(ARTIST, String.class)),
+			new CmdParam(false, new CmdOption(GENRE, String.class, null, TmcArgFunction.fixGenreName(), TmcArgFunction.validateGenre())),
+			new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
+			new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
+			new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),
+			new CmdParam(false, new CmdOption(NO_SIGN)),
+			new CmdParam(new CmdOption(FILES,
+					ArgsParse.windowsPathFormat(),
+					TmcArgFunction.expandPaths(),
+					TmcArgFunction.validatePaths()
+			))
 	),
 
 	@Cmd
@@ -143,12 +163,14 @@ public enum TmcCmd implements InputCommand {
 		new CmdParam(false, new CmdOption(TRACK, String.class, TmcArgFunction.validateSetPos(true))),
 		new CmdParam(false, new CmdOption(GENRE, String.class, null, TmcArgFunction.fixGenreName(), TmcArgFunction.validateGenre())),
 		new CmdParam(false, new CmdOption(CD_POS, String.class, TmcArgFunction.validateSetPos(false))),
-		new CmdParam(false, new CmdOption(COVER, Path.class,
+		new CmdParam(false, new CmdOption(COVER, String.class,
                 ArgsParse.windowsPathFormat(),
-                ArgsCheck.pathIsFile(),
                 TmcArgFunction.validateCoverPath()
         )),
-		new CmdParam(false, new CmdOption(LYRICS, String.class, TmcArgFunction.validateLyricsPath())),
+		new CmdParam(false, new CmdOption(LYRICS, String.class,
+				ArgsParse.windowsPathFormat(),
+				TmcArgFunction.validateLyricsPath()
+		)),
         new CmdParam(false, new CmdOption(ENCODING, TmcArgFunction.validateEncoding())),
         new CmdParam(false, new CmdOption(PADDING, ArgsCheck.intGE(0))),
         new CmdParam(false, new CmdOption(VERSION, TmcArgFunction.validateVersion())),

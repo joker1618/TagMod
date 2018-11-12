@@ -26,8 +26,6 @@ import xxx.joker.libs.language.JkLanguage;
 import xxx.joker.libs.language.JkLanguageDetector;
 import xxx.joker.libs.core.utils.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
 import java.nio.file.Files;
@@ -68,6 +66,7 @@ public class TmcEngine {
 				break;
             case CMD_EDIT:
             case CMD_DELETE:
+            case CMD_EDIT_AUTO_ALL:
 				manageEdit(inputArgs);
 				break;
             case CMD_RECOVER:
@@ -303,32 +302,32 @@ public class TmcEngine {
         editor.setNoSign(args.isNoSign());
 
         // MP3 attributes
-        if(TmcCmd.AUTO_VALUE.equals(args.getTitle())) {
-            editor.setAutoTiTle(true);
-        } else {
-            editor.setTitle(args.getTitle());
-        }
+        String auto = TmcCmd.AUTO_VALUE;
+
+        if(auto.equals(args.getTitle()))    editor.setAutoTitle(true);
+        else                                editor.setTitle(args.getTitle());
+        if(auto.equals(args.getAlbum()))    editor.setAutoAlbum(true);
+        else                                editor.setAlbum(args.getAlbum());
+        if(auto.equals(args.getYear()))     editor.setAutoYear(true);
+        else                                editor.setYear(JkConverter.stringToInteger(args.getYear()));
+        if(auto.equals(args.getTrack()))    editor.setAutoTrack(true);
+        else                                editor.setTrack(ID3SetPos.parse(args.getTrack()));
+        if(auto.equals(args.getCdPos()))    editor.setAutoCdPos(true);
+        else                                editor.setCdPos(ID3SetPos.parse(args.getCdPos()));
 
         editor.setArtist(args.getArtist());
-        editor.setAlbum(args.getAlbum());
-        editor.setYear(JkConverter.stringToInteger(args.getYear()));
-
-        if(TmcCmd.AUTO_VALUE.equals(args.getTrack())) {
-            editor.setAutoTrack(true);
-        } else {
-            editor.setTrack(ID3SetPos.parse(args.getTrack()));
-        }
 
         ID3Genre genre = ID3Genre.getByName(args.getGenre());
         genre = genre == null ? ID3Genre.getByNumber(JkConverter.stringToInteger(args.getGenre())) : genre;
         editor.setGenre(genre);
 
-        editor.setCdPos(ID3SetPos.parse(args.getCdPos()));
-
         try {
-            if (args.getCover() != null) {
-                MimeType mt = MimeType.getByExtension(args.getCover());
-                byte[] picData = JkBytes.getBytes(args.getCover());
+            if(auto.equals(args.getCover())) {
+                editor.setAutoCover(true);
+            } else if (args.getCover() != null) {
+                Path coverPath = Paths.get(args.getCover());
+                MimeType mt = MimeType.getByExtension(coverPath);
+                byte[] picData = JkBytes.getBytes(coverPath);
                 Picture cover = new Picture(mt, TagmodConst.COVER_TYPE, TagmodConst.COVER_DESCR, picData);
                 editor.setCover(cover);
             }
@@ -339,7 +338,7 @@ public class TmcEngine {
         }
 
         try {
-            if(TmcCmd.AUTO_VALUE.equals(args.getLyrics())) {
+            if(auto.equals(args.getLyrics())) {
                 editor.setAutoLyrics(true);
             } else if(StringUtils.isNotBlank(args.getLyrics())) {
                 Path lpath = Paths.get(args.getLyrics());

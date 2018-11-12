@@ -57,6 +57,8 @@ public enum TmcArgType implements OptionName {
 	@OptName
 	ALL("all"),
 	@OptName
+	AUTO_ALL("autoAll"),
+	@OptName
 	TAGMOD("tm"),
 	@OptName
 	TAGv1("t1"),

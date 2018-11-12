@@ -60,7 +60,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	private Object genre;
 	@Opt(name = "lyrics", aliases = {"-lyrics"}, classes = {Boolean.class, String.class})
 	private Object lyrics;
-	@Opt(name = "cover", aliases = {"-cover"}, classes = {Boolean.class, Path.class})
+	@Opt(name = "cover", aliases = {"-cover"}, classes = {Boolean.class, String.class})
 	private Object cover;
 
 	@Opt(name = "clear", aliases = {"-clear"})
@@ -80,6 +80,8 @@ public class TmcArgs extends InputOption<TmcCmd> {
     private Boolean audio = false;
     @Opt(name = "all", aliases = {"-all"})
     private Boolean all = false;
+    @Opt(name = "autoAll", aliases = {"-autoAll", "autoall", "-autoall", "aa", "-aa"})
+    private Boolean autoAll = false;
     @Opt(name = "table", aliases = {"-table"})
     private Boolean table = false;
 
@@ -174,6 +176,9 @@ public class TmcArgs extends InputOption<TmcCmd> {
     public boolean isAll() {
         return all != null && all;
     }
+    public boolean isAutoAll() {
+        return autoAll != null && autoAll;
+    }
     public boolean isAttribute() {
         return attribute != null && attribute;
     }
@@ -205,8 +210,8 @@ public class TmcArgs extends InputOption<TmcCmd> {
     public String getLyrics() {
         return lyrics instanceof String ? (String)lyrics : null;
     }
-    public Path getCover() {
-        return cover instanceof Path ? (Path)cover : null;
+    public String getCover() {
+        return cover instanceof String ? (String)cover : null;
     }
 
 	public TxtEncoding getEncoding() {

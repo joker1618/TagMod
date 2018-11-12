@@ -56,16 +56,17 @@ class TmcArgFunction {
 
 	static Function<Object[],String> validateCoverPath() {
 		return objArr -> {
-			if(objArr.length != 1) {
-				return strf("Only one cover path expected (found %d)", objArr.length);
-			}
-
-			Path[] parr = (Path[]) objArr;
-			if(MimeType.getByExtension(parr[0]) == null) {
-				String extAllowed = Arrays.stream(MimeType.values()).flatMap(mt -> mt.allowedExtensions().stream()).collect(Collectors.joining(", "));
-				return strf("Wrong cover %s. Allowed images: %s", parr[0], extAllowed);
-			}
-
+            String spath = ((String[]) objArr)[0];
+            if(!TmcCmd.AUTO_VALUE.equalsIgnoreCase(spath)) {
+                Path coverPath = Paths.get(spath);
+                if(!Files.isRegularFile(Paths.get(spath))) {
+                    return strf("Invalid lyrics path %s", spath);
+                }
+                if(MimeType.getByExtension(coverPath) == null) {
+                    String extAllowed = Arrays.stream(MimeType.values()).flatMap(mt -> mt.allowedExtensions().stream()).collect(Collectors.joining(", "));
+                    return strf("Wrong cover %s. Allowed images: %s", coverPath, extAllowed);
+                }
+            }
 			return null;
 		};
 	}

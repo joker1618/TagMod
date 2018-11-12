@@ -6,12 +6,14 @@ import xxx.joker.apps.tagmod.model.facade.TagmodAttributes;
 import xxx.joker.apps.tagmod.model.facade.TagmodFile;
 import xxx.joker.apps.tagmod.model.facade.TagmodSign;
 import xxx.joker.apps.tagmod.model.id3.enums.ID3Genre;
+import xxx.joker.apps.tagmod.model.id3.enums.MimeType;
 import xxx.joker.apps.tagmod.model.id3.enums.TxtEncoding;
 import xxx.joker.apps.tagmod.model.id3.standard.ID3SetPos;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Lyrics;
 import xxx.joker.apps.tagmod.model.id3v2.frame.data.Picture;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.util.TmFormat;
+import xxx.joker.libs.core.utils.JkBytes;
 import xxx.joker.libs.language.JkLanguage;
 import xxx.joker.libs.language.JkLanguageDetector;
 import xxx.joker.libs.core.utils.JkConverter;
@@ -25,21 +27,20 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static xxx.joker.libs.core.utils.JkStrings.strf;
 
 public class TmcEditor {
 
+    private static final String AUTO_COVER_FILENAME = "cover.jpg";
     private static final String AUTO_LYRICS_EXT = "lyrics";
 
     // remove all frames before set new ones
     private boolean clear;
 
     private boolean noSign;
-
-    private boolean autoTiTle;
-    private boolean autoTrack;
-    private boolean autoLyrics;
 
     private String title;
     private String artist;
@@ -52,6 +53,7 @@ public class TmcEditor {
     private Lyrics lyrics;
 
     private Set<MP3Attribute> toDeletes = new HashSet<>();
+    private Set<MP3Attribute> autoAttributes = new HashSet<>();
 
     public TmcEditor() {
 
@@ -63,16 +65,6 @@ public class TmcEditor {
 
     public void setNoSign(boolean noSign) {
         this.noSign = noSign;
-    }
-
-    public void setAutoTiTle(boolean autoTiTle) {
-        this.autoTiTle = autoTiTle;
-    }
-    public void setAutoTrack(boolean autoTrack) {
-        this.autoTrack = autoTrack;
-    }
-    public void setAutoLyrics(boolean autoLyrics) {
-        this.autoLyrics = autoLyrics;
     }
 
     public void setTitle(String title) {
@@ -148,6 +140,36 @@ public class TmcEditor {
         else        toDeletes.remove(MP3Attribute.OTHER_LYRICS);
     }
 
+    public void setAutoTitle(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.TITLE);
+        else        autoAttributes.remove(MP3Attribute.TITLE);
+    }
+    public void setAutoAlbum(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.ALBUM);
+        else        autoAttributes.remove(MP3Attribute.ALBUM);
+    }
+    public void setAutoYear(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.YEAR);
+        else        autoAttributes.remove(MP3Attribute.YEAR);
+    }
+    public void setAutoTrack(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.TRACK);
+        else        autoAttributes.remove(MP3Attribute.TRACK);
+    }
+    public void setAutoCdPos(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.CD_POS);
+        else        autoAttributes.remove(MP3Attribute.CD_POS);
+    }
+    public void setAutoCover(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.COVER);
+        else        autoAttributes.remove(MP3Attribute.COVER);
+    }
+    public void setAutoLyrics(boolean auto) {
+        if(auto)	autoAttributes.add(MP3Attribute.LYRICS);
+        else        autoAttributes.remove(MP3Attribute.LYRICS);
+    }
+
+
     public boolean editTagmodFile(TagmodFile tmFile, Integer version, TxtEncoding encoding, Integer padding) throws Exception {
         TagmodAttributes tmAttribs = new TagmodAttributes();
 
@@ -163,15 +185,28 @@ public class TmcEditor {
         tmAttribs.setAttribute(MP3Attribute.LYRICS, lyrics);
 
         // Auto attributes
-        if(autoTiTle || autoTrack || autoLyrics) {
-            AutoValues autoValues = new AutoValues(tmFile, autoTrack);
-            if(autoTiTle) {
+        if(!autoAttributes.isEmpty()) {
+            AutoValues autoValues = new AutoValues(tmFile, true);
+            if(autoAttributes.contains(MP3Attribute.TITLE)) {
                 tmAttribs.setAttributeString(MP3Attribute.TITLE, autoValues.title);
             }
-            if(autoTrack && autoValues.track != null) {
+            if(autoAttributes.contains(MP3Attribute.ALBUM)) {
+                tmAttribs.setAttributeString(MP3Attribute.ALBUM, autoValues.album);
+            }
+            if(autoAttributes.contains(MP3Attribute.YEAR) && autoValues.year != null) {
+                tmAttribs.setAttributeString(MP3Attribute.YEAR, autoValues.year);
+            }
+            if(autoAttributes.contains(MP3Attribute.TRACK) && autoValues.track != null) {
                 tmAttribs.setAttributeString(MP3Attribute.TRACK, autoValues.track.toString());
             }
-            if(autoLyrics) {
+            if(autoAttributes.contains(MP3Attribute.CD_POS) && autoValues.cdPos != null) {
+                tmAttribs.setAttributeString(MP3Attribute.CD_POS, autoValues.cdPos.toString());
+            }
+            if(autoAttributes.contains(MP3Attribute.COVER) && Files.exists(autoValues.coverPath)) {
+                Picture cover = parseCover(autoValues.coverPath);
+                tmAttribs.setAttribute(MP3Attribute.COVER, cover);
+            }
+            if(autoAttributes.contains(MP3Attribute.LYRICS) && Files.exists(autoValues.lyricsPath)) {
                 Lyrics lyrics = parseLyrics(autoValues.lyricsPath);
                 tmAttribs.setAttribute(MP3Attribute.LYRICS, lyrics);
             }
@@ -195,46 +230,81 @@ public class TmcEditor {
     }
 
     private Lyrics parseLyrics(Path lyricsPath) throws IOException {
-        if(!Files.exists(lyricsPath))    return null;
         String lyricsText = JkStreams.join(Files.readAllLines(lyricsPath), "\n");
         JkLanguage lan = JkLanguageDetector.detectLanguage(lyricsText);
         lan = lan == null ? JkLanguage.ENGLISH : lan;
         return new Lyrics(lan, TagmodConst.LYRICS_DESCR, lyricsText);
     }
+    private Picture parseCover(Path coverPath) throws IOException {
+        MimeType mimeType = MimeType.getByExtension(coverPath);
+        byte[] picData = JkBytes.getBytes(coverPath);
+        return new Picture(mimeType, TagmodConst.COVER_TYPE, TagmodConst.COVER_DESCR, picData);
+    }
 
     private static class AutoValues {
         private ID3SetPos track;
         private String title;
+        private String album;
+        private String year;
+        private ID3SetPos cdPos;
+        private Path coverPath;
         private Path lyricsPath;
 
         private static Map<Path, Integer> trackTotalMap = new HashMap<>();
+        private static Map<Path, Integer> cdPosTotalMap = new HashMap<>();
 
         AutoValues(TagmodFile tmFile, boolean setTrackTotal) {
             Path filePath = tmFile.getMp3File().getFilePath();
             Path fileParent = JkFiles.getParent(filePath);
 
+            // Set title and track
             String fileName = JkFiles.getFileName(filePath).trim();
-            int idxSpace = fileName.indexOf(' ');
-            if(idxSpace == -1) {
-                title = fileName;
-            } else {
-                Integer trackNum = JkConverter.stringToInteger(fileName.substring(0, idxSpace));
-                if(trackNum == null) {
-                    title = fileName;
-                } else {
-                    title = fileName.substring(idxSpace).trim();
-                    Integer tot = null;
-                    if(setTrackTotal) {
-                        tot = trackTotalMap.get(fileParent);
-                        if(tot == null) {
-                            tot = JkFiles.findFiles(fileParent, false, TmFormat::isMP3File).size();
-                            trackTotalMap.put(fileParent, tot);
-                        }
+            Matcher matcher = Pattern.compile("^([0-9]*) (.*)$").matcher(fileName);
+            if(!matcher.matches()) {
+                // Track number found
+                title = matcher.group(2).trim();
+                Integer trackNum = JkConverter.stringToInteger(matcher.group(1));
+                Integer tot = null;
+                if(setTrackTotal) {
+                    tot = trackTotalMap.get(fileParent);
+                    if(tot == null) {
+                        tot = JkFiles.findFiles(fileParent, false, TmFormat::isMP3File).size();
+                        trackTotalMap.put(fileParent, tot);
                     }
-                    track = new ID3SetPos(trackNum, tot);
                 }
+                track = new ID3SetPos(trackNum, tot);
+            } else {
+                // Track number NOT found --> title only
+                title = fileName;
             }
 
+            // Set year, album and cdPos
+            String str = JkFiles.getFileName(fileParent);
+            matcher = Pattern.compile("^(.*) .?CD *([0-9]).?$").matcher(str);
+            if(matcher.matches()) {
+                String firstGroup = matcher.group(1);
+                Integer posNum = JkConverter.stringToInteger(matcher.group(2));
+                Path parentParent = JkFiles.getParent(fileParent);
+                Integer tot = cdPosTotalMap.get(parentParent);
+                if(tot == null) {
+                    tot = JkFiles.findFiles(parentParent, false, Files::isDirectory, p -> JkFiles.getFileName(p).startsWith(firstGroup)).size();
+                    cdPosTotalMap.put(parentParent, tot);
+                }
+                cdPos = new ID3SetPos(posNum, tot);
+                str = firstGroup;
+            }
+
+            matcher = Pattern.compile("^([0-9]{4}) (.*)$").matcher(str);
+            if(matcher.matches()) {
+                year = matcher.group(1);
+                album = matcher.group(2).trim();
+            } else {
+                // Year NOT found --> album only
+                album = str.trim();
+            }
+
+            // Set cover and lyrics
+            coverPath = fileParent.resolve(AUTO_COVER_FILENAME);
             lyricsPath = fileParent.resolve(strf("%s.%s", fileName, AUTO_LYRICS_EXT));
         }
 
