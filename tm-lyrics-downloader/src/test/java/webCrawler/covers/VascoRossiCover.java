@@ -1,4 +1,4 @@
-package xxx.joker.apps.tagmod.downloader.covers;
+package webCrawler.covers;
 
 import common.TestUtil;
 import org.apache.commons.lang3.tuple.Pair;

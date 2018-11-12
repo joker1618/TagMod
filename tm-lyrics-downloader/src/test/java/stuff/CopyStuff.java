@@ -14,6 +14,7 @@ import xxx.joker.apps.tagmod.model.id3v2.frame.data.TextInfo;
 import xxx.joker.apps.tagmod.model.mp3.MP3Attribute;
 import xxx.joker.apps.tagmod.util.TmFormat;
 import xxx.joker.libs.core.utils.JkConsole;
+import xxx.joker.libs.core.utils.JkConverter;
 import xxx.joker.libs.core.utils.JkFiles;
 import xxx.joker.libs.core.utils.JkStreams;
 
@@ -22,6 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static xxx.joker.libs.core.utils.JkConsole.display;
@@ -30,117 +33,125 @@ import static xxx.joker.libs.core.utils.JkStrings.strf;
 public class CopyStuff {
 
     @Test
-    public void copyLyrics() {
-        final Path root = TestUtil.HOME.resolve("Desktop\\jk music\\Vasco Rossi\\2lyrics");
-        final boolean doCopy = false;
-        final boolean checkOnlyTitle = false;
-
-        List<Path> files = JkFiles.findFiles(root, true, TmFormat::isMP3File);
-        List<TagmodFile> tmFiles = JkStreams.map(files, TagmodFile::new);
-
-        LyricsModel model = LyricsModel.getInstance();
-        TreeSet<WebLyrics> lyrics = model.getWebLyrics();
-        Map<Path, WebLyrics> okMap = new TreeMap<>();
-
-        for(TagmodFile tmfile : tmFiles) {
-            TagmodAttributes tmattr = tmfile.getTagmodAttributes();
-            List<WebLyrics> filterLyrics;
-
-            if(!checkOnlyTitle) {
-                filterLyrics = lyrics.stream()
-                        .filter(wl -> wl.getArtist().equalsIgnoreCase(((TextInfo) tmattr.getFrameData(MP3Attribute.ARTIST)).getInfo()))
-                        .filter(wl -> wl.getYear().equalsIgnoreCase(((TextInfo) tmattr.getFrameData(MP3Attribute.YEAR)).getInfo()))
-                        .filter(wl -> wl.getAlbum().equalsIgnoreCase(((TextInfo) tmattr.getFrameData(MP3Attribute.ALBUM)).getInfo()))
-                        .filter(wl -> wl.getTrack() == ID3SetPos.parse(((TextInfo) tmattr.getFrameData(MP3Attribute.TRACK)).getInfo()).getIndex())
-                        .collect(Collectors.toList());
-            } else {
-                filterLyrics = lyrics.stream().filter(wl -> wl.getTitle().equalsIgnoreCase(((TextInfo) tmattr.getFrameData(MP3Attribute.TITLE)).getInfo())).collect(Collectors.toList());
-            }
-
-            Path fpath = tmfile.getMp3File().getFilePath();
-            if(filterLyrics.isEmpty()) {
-                display("NO lyrics found for %s", fpath);
-            } else if(filterLyrics.size() != 1) {
-                display("%d lyrics found for %s", filterLyrics.size(), fpath);
-                filterLyrics.forEach(fl -> display("\t%s", fl));
-            } else {
-                okMap.put(fpath, filterLyrics.get(0));
-            }
-        }
-
-        display("%d/%d lyrics associated.", okMap.size(), tmFiles.size());
-
-        if(doCopy) {
-            okMap.forEach((k, v) -> {
-                Path lpath = Paths.get(k.toString().replaceAll("mp3$", "lyrics"));
-                JkFiles.writeFile(lpath, v.getLyricsText(), true);
-            });
-        }
-
-        display("\nEND lyrics copy");
-    }
-
-
-    @Test
-    public void displayValues() {
-        boolean showTitlesOnly = false;
-        String year = "";
-        String artist = "Vasco Rossi";
-        String album = "";
-
-        LyricsModel model = LyricsModel.getInstance();
-
-        List<WebLyrics> llist = model.getWebLyrics().stream()
-                .filter(wl -> artist.isEmpty() || wl.getArtist().equalsIgnoreCase(artist))
-                .filter(wl -> year.isEmpty() || wl.getYear().equalsIgnoreCase(year))
-                .filter(wl -> album.isEmpty() || wl.getAlbum().equalsIgnoreCase(album))
-                .sorted()
-                .collect(Collectors.toList());
-
-        display("%s - %s - %s", artist, year, album);
-        if(showTitlesOnly) {
-            llist.forEach(l -> display("%s", l.getTitle()));
-        } else {
-            llist.forEach(l -> display("%s", l));
-        }
-
-        llist.stream().map(WebLyrics::getAlbum).distinct().forEach(l -> display("%s", l));
-
-    }
-
-    @Test
-    public void copyTitlesFiles() {
-        final Path root = TestUtil.HOME.resolve("Desktop\\jk music\\Vasco Rossi\\1wmod");
+    public void createTitlesFiles() {
+        final Path root = TestUtil.HOME.resolve("Desktop\\jk music\\The Offspring");
+        String artist = "The Offspring";
         final boolean doCopy = true;
-        final boolean verbose = false;
+
         LyricsModel model = LyricsModel.getInstance();
 
         List<Path> folders = JkFiles.findFiles(root, true, TmFormat::isMP3File).stream()
-                .map(p -> p.toAbsolutePath().normalize().getParent())
+                .map(JkFiles::getParent)
                 .sorted().distinct().collect(Collectors.toList());
 
-        folders.forEach(f -> display(f.toString()));
-
-        display("Root folder is %s\n", root);
+        display("ROOT FOLDER is %s%s\n", root, doCopy?"":"  (not create files)");
 
         for(Path folder : folders) {
+            display("Folder %s", folder);
+
             String fname = folder.getFileName().toString();
-            String year = fname.replaceAll(" .*", "");
-            String album = fname.replaceAll("^[0-9]{4} ", "");
+            Matcher matcher = Pattern.compile("^([0-9]{4}) (.*)").matcher(fname);
+            if(!matcher.matches())  {
+                display("  ... skip");
+                continue;
+            }
+
+            String year = matcher.group(1);
+            String album = matcher.group(2).trim();
 
             List<String> titles = model.getWebLyrics().stream()
-                .filter(wl -> year.isEmpty() || wl.getYear().equalsIgnoreCase(year))
-                .filter(wl -> album.isEmpty() || StringUtils.startsWithIgnoreCase(album, wl.getAlbum()))
+                .filter(wl -> wl.getArtist().equalsIgnoreCase(artist))
+                .filter(wl -> wl.getYear().equalsIgnoreCase(year))
+                .filter(wl -> StringUtils.startsWithIgnoreCase(album, wl.getAlbum()))
                 .sorted(Comparator.comparing(WebLyrics::getTrack))
                 .map(WebLyrics::getTitle)
                 .collect(Collectors.toList());
 
-            int numSongs = JkFiles.findFiles(folder, false, TmFormat::isMP3File).size();
+            List<Path> files = JkFiles.findFiles(folder, false, TmFormat::isMP3File);
+            display("  Titles: %d/%d", titles.size(), files.size());
+//            titles.forEach(t -> display("  %s",t));
+            boolean resTitles = titles.size() == files.size();
 
-            if(doCopy)      JkFiles.writeFile(folder.resolve("titles.txt"), titles, true);
-            display("%s titles file for %s", doCopy ? "Created":"Sample", folder.getFileName());
-            display("Song associated: %d/%d  %s", titles.size(), numSongs, titles.size() == numSongs ? "OK":"WRONG");
-            if(verbose)     titles.forEach(t -> display("  %s",t));
+//            if(doCopy) {
+            if(doCopy && resTitles) {
+                Path outPath = folder.resolve("titles.txt");
+                JkFiles.writeFile(outPath, titles, true);
+                display("  Created file %s", outPath);
+            }
+        }
+
+    }
+
+    @Test
+    public void createLyricsFiles() {
+        final Path root = TestUtil.HOME.resolve("Desktop\\jk music\\The Offspring");
+        String artist = "The Offspring";
+        final boolean doCopy = true;
+
+        LyricsModel model = LyricsModel.getInstance();
+
+        List<Path> folders = JkFiles.findFiles(root, true, TmFormat::isMP3File).stream()
+                .map(JkFiles::getParent)
+                .sorted().distinct().collect(Collectors.toList());
+
+        folders.forEach(f -> display(f.toString()));
+
+        display("ROOT FOLDER is %s%s\n", root, doCopy?"":"  (not create files)");
+
+        for(Path folder : folders) {
+            display("Folder %s", folder);
+
+            String fname = folder.getFileName().toString();
+            Matcher matcher = Pattern.compile("^([0-9]{4}) (.*)").matcher(fname);
+            if(!matcher.matches())  {
+                display("  ... skip");
+                continue;
+            }
+
+            String year = matcher.group(1);
+            String album = matcher.group(2).trim();
+
+            List<Path> files = JkFiles.findFiles(folder, false, TmFormat::isMP3File);
+            Map<Path, WebLyrics> lyricsMap = new HashMap<>();
+
+            for(Path file : files) {
+                matcher = Pattern.compile("^([0-9]*) (.*)").matcher(JkFiles.getFileName(file));
+                if (!matcher.matches()) {
+                    display("  ... skip %s", file);
+                    continue;
+                }
+//                int trackNum = JkConverter.stringToInteger(matcher.group(1));
+                String strTitle = matcher.group(2).trim();
+
+                List<WebLyrics> titles = model.getWebLyrics().stream()
+                        .filter(wl -> wl.getArtist().equalsIgnoreCase(artist))
+                        .filter(wl -> wl.getYear().equalsIgnoreCase(year))
+                        .filter(wl -> StringUtils.startsWithIgnoreCase(album, wl.getAlbum()))
+//                        .filter(wl -> wl.getTrack() == trackNum)
+                        .filter(wl -> wl.getTitle().equals(strTitle))
+                        .collect(Collectors.toList());
+
+                if(titles.isEmpty()) {
+                    display("  No lyrics for %s", file);
+                } else if(titles.size() > 1) {
+                    display("  %d lyrics for %s", titles.size(), file);
+//                    titles.forEach(wl -> display("%s\n%s\n", wl.toString(), wl.getLyricsText()));
+                } else {
+                    lyricsMap.put(file, titles.get(0));
+                }
+            }
+
+            display("  Lyrics: %d/%d", lyricsMap.size(), files.size());
+            boolean resLyrics = lyricsMap.size() == files.size();
+
+//            if(doCopy) {
+            if(doCopy && resLyrics) {
+                for (Path file : lyricsMap.keySet()) {
+                    Path outPath = folder.resolve(JkFiles.getFileName(file) + ".lyrics");
+                    JkFiles.writeFile(outPath, lyricsMap.get(file).getLyricsText(), true);
+                    display("  Created file %s", outPath);
+                }
+            }
         }
 
     }

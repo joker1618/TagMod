@@ -14,6 +14,8 @@ import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static xxx.joker.libs.core.utils.JkConsole.display;
 
@@ -21,19 +23,13 @@ public class Tests extends CommonTest {
 
 	@Test
 	public void test() throws IOException {
-//	    long gb = 1024L * 1024 * 1024;
-//	    int exp = 0;
-//	    double value = 0d;
-//        JkColumnFmtBuilder colb = new JkColumnFmtBuilder();
-//        while(value < gb) {
-//            value = Math.pow(2, exp);
-//            colb.addLines(strf("%d|%s", exp, JkOutputFmt.humanSize(value)));
-//            exp++;
-//        }
-//        display(colb.toString("|", 3));
-
-        display("*ciao*".replaceAll("^\\*", "").replaceAll("\\*$", ""));
-        display("**ciao**".replaceAll("^\\*", "").replaceAll("\\*$", ""));
+        String str = "1986 giovanni maledetto  [CD 2]";
+        Pattern pattern = Pattern.compile("^([0-9]{4}) (.*) .?CD *([0-9]).?$");
+        Matcher matcher = pattern.matcher(str);
+        display("%s\t%s", str, matcher.matches());
+        display("  %s", matcher.group(1));
+        display("  %s", matcher.group(2));
+        display("  %s", matcher.group(3));
 
 	}
 	@Test

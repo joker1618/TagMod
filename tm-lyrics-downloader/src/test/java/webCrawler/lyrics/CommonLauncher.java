@@ -1,4 +1,4 @@
-package xxx.joker.apps.tagmod.downloader.lyrics;
+package webCrawler.lyrics;
 
 import org.junit.Test;
 import xxx.joker.apps.tagmod.downloader.lyrics.model.LyricsModel;

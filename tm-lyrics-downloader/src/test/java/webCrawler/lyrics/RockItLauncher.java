@@ -1,6 +1,7 @@
-package xxx.joker.apps.tagmod.downloader.lyrics;
+package webCrawler.lyrics;
 
 import org.junit.Test;
+import xxx.joker.apps.tagmod.downloader.lyrics.RockItCrawler;
 
 import static xxx.joker.libs.core.utils.JkConsole.display;
 
