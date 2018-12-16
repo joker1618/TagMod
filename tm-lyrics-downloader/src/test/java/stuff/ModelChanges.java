@@ -8,6 +8,7 @@ import xxx.joker.libs.core.utils.JkStreams;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeSet;
 
 import static xxx.joker.libs.core.utils.JkConsole.display;
@@ -31,7 +32,7 @@ public class ModelChanges {
     public void change() {
         LyricsModel model = LyricsModel.getInstance();
 
-        TreeSet<WebLyrics> webLyrics = model.getWebLyrics();
+        Set<WebLyrics> webLyrics = model.getWebLyrics();
         int size = webLyrics.size();
         webLyrics.removeIf(wl -> wl.getArtist().equals("Vasco Rossi") && wl.getAlbum().equals("Rewind") && wl.getTrack() == 20);
         webLyrics.removeIf(wl -> wl.getArtist().equals("The Offspring") && wl.getAlbum().equals("Rise And Fall, Rage And Grace") && wl.getTitle().equals("O.c. Life"));

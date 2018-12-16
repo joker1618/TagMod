@@ -5,6 +5,7 @@ import xxx.joker.libs.core.repository.JkDataModel;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 
 public class LyricsModel extends JkDataModel {
@@ -24,7 +25,7 @@ public class LyricsModel extends JkDataModel {
     }
 
     public void setAll(List<WebLyrics> webLyrics) {
-        TreeSet<WebLyrics> data = getData(WebLyrics.class);
+        Set<WebLyrics> data = getData(WebLyrics.class);
         data.removeIf(webLyrics::contains);
         data.addAll(webLyrics);
     }
@@ -33,7 +34,7 @@ public class LyricsModel extends JkDataModel {
         getData(WebLyrics.class).addAll(webLyrics);
     }
 
-    public TreeSet<WebLyrics> getWebLyrics() {
+    public Set<WebLyrics> getWebLyrics() {
         return getData(WebLyrics.class);
     }
 
