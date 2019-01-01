@@ -22,7 +22,7 @@ public class TmcMain {
             String[] fixedArgs = Arrays.stream(args).filter(arg -> !"-debug".equalsIgnoreCase(arg)).toArray(String[]::new);
 
             // Parse console input
-            InputParserImpl parser = new InputParserImpl(TmcArgs.class, TmcArgType.class, TmcCmd.class, JkFiles.getLauncherPath(TmcMain.class));
+            InputParserImpl parser = new InputParserImpl(TmcArgs.class, TmcArgType.class, TmcCmd.class);
             TmcArgs tmArgs = parser.parse(fixedArgs);
 
             // Execute command
