@@ -65,7 +65,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${user.home}/JokerApps/tagmod</outputDirectory>
+                            <outputDirectory>${joker.apps.folder}/tagmod</outputDirectory>
                             <resources>
                                 <resource>
                                     <directory>${project.build.directory}</directory>
