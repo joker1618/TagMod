@@ -21,7 +21,6 @@ public abstract class CommonTest {
 
     protected static final Path HOME = Paths.get(System.getProperty("user.home"));
     protected static final Path TAGMOD_FOLDER = HOME.resolve("IdeaProjects\\APPS\\tagmod");
-    private static final Path configPath = TAGMOD_FOLDER.resolve("config\\tagmod.config");
 
     @Before
     public void init() {
@@ -31,10 +30,8 @@ public abstract class CommonTest {
     protected TmcArgs parseArgs(String argsString, boolean insFilePrefix) {
         String[] args = parseArgsString(argsString, insFilePrefix);
         try {
-            TmcArgs tmArgs = new TmcArgs();
-            InputParserImpl parser = new InputParserImpl(tmArgs, TmcArgType.class, TmcCmd.class, JkFiles.getLauncherPath(TmcMain.class));
-            parser.parse(args);
-            return tmArgs;
+            InputParserImpl parser = new InputParserImpl(TmcArgs.class, TmcArgType.class, TmcCmd.class);
+            return parser.parse(args);
 
         } catch (InputValueException | InputParserException e) {
             display(e.getMessage());
