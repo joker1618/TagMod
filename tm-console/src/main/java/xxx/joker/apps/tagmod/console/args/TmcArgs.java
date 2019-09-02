@@ -97,7 +97,7 @@ public class TmcArgs extends InputOption<TmcCmd> {
 	@Opt(name = "noSign", aliases = {"nosign", "-nosign", "-noSign"})
 	private Boolean noSign = false;
 
-	@Opt(name = "files", aliases = {"-f", "-files"})
+	@Opt(name = "files", aliases = {"-f", "--files"})
 	private Path[] paths;
 
 	@Opt(name = "help", aliases = {"-h", "--help"})
